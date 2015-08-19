@@ -1,0 +1,25 @@
+#mainContainer{
+    margin: 2% 5% 0 5% ;
+}
+
+#navContainer{
+    margin-top: 1%;
+}
+
+.nav-pills li.active a{
+    background-color: #E6E6E6;
+    color: black;
+}
+.nav-pills li.active a:hover{
+    background-color: #E6E6E6;
+    color: black;
+}
+
+.nav-pills li a:hover{
+    background-color: transparent;
+    text-decoration: underline;
+}
+.nav-pills li.active a:focus{
+    background-color: transparent;
+    color: black;
+}
