@@ -23,3 +23,8 @@
     background-color: transparent;
     color: black;
 }
+
+#LoginForm{
+   width: 300px;
+   margin: 0 auto;
+}

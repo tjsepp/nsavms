@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authtools',
+     'crispy_forms',
     'debug_toolbar',
     'simple_history',
     'nsavolunteer',
@@ -109,6 +110,7 @@ TEMPLATE_DIRS = (
 
 
 AUTH_USER_MODEL = 'authtools.User'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 try:

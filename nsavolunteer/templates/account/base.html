@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+           <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet">
+           <link href="{{STATIC_URL}}css/nsavol_style.css" rel="stylesheet">
+
+
+
+        {% block extra_head %}
+
+        {% endblock %}
+
+        <title>
+            {% block title %}
+
+            {% endblock %}
+        </title>
+
+    </head>
+
+
+
+
+    <body>
+        <div class="container-fluid" id="mainContainer">
+
+        {%  include 'account/navbar.html' %}
+
+
+        <div class="baseContent">
+            {% block base_content %}
+
+            {% endblock %}
+        </div>
+        </div>
+    </body>
+
+
+</html>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="{{STATIC_URL}}js/bootstrap.min.js"></script>

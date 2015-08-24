@@ -23,7 +23,6 @@ class FamilyProfile(OrganizationBase):
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
     homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
     specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
-    doNotEmail = models.BooleanField(verbose_name='Do Not Email',db_column='emailOptOut',default=False)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
@@ -40,6 +39,7 @@ class VolunteerProfile(TimeStampedModel):
     volunteerType = models.ForeignKey('VolunteerType',null=True,blank=True,db_column='volunteerType',verbose_name='Volunteer Type')
     cellPhone =models.CharField(max_length=15,db_column='cellPhone',verbose_name='cell Phone', null=True, blank=True, default=None)
     interest = models.ManyToManyField('nsavolunteer.VolunteerInterests',db_table ='profileToInterest',verbose_name='Volunteer Interests', null=True, blank =True, related_name='profile_interest')
+    doNotEmail = models.BooleanField(verbose_name='Do Not Email',db_column='emailOptOut',default=False)
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -98,7 +98,6 @@ class VolunteerInterests(TimeStampedModel):
     '''
     interestId = models.AutoField(primary_key=True,db_column='interestId',verbose_name='Interest Id')
     interestName = models.CharField(db_column='interestName', max_length=200, null=True,verbose_name='Interest')
-    #interestType
     description = models.TextField(verbose_name='Interest Description', db_column='interestDescription', null=True, blank=True)
     history = HistoricalRecords()
 

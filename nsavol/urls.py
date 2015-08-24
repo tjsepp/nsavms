@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from .views import DashboardView
+
 
 urlpatterns = [
     url(r'^manage/', include(admin.site.urls)),
-    url(r'^user_dashboard',DashboardView.as_view(),name='user_dashboard'),
-    url(r'^nsavolunteer/',include('nsavolunteer.urls')),
+    url(r'',include('nsavolunteer.urls')),
 ]
 
 admin.site.site_header = 'NSA Volunteer Management Admin '
