@@ -43,6 +43,7 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     inlines = [userToProfileInline]
 
 
+
 #admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 #admin.site.register(Volunteers,VolunteerAdmin)
 admin.site.register(VolunteerProfile,VolunteerProfileAdmin)

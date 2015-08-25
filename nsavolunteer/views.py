@@ -5,6 +5,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.template.response import TemplateResponse
 from django.contrib.auth.forms import AuthenticationForm
 from forms import LoginForm
+from .models import *
 
 def homeView(request):
     # Create a response
@@ -31,3 +32,6 @@ class LogoutView(RedirectView):
     def get(self, request, *args, **kwargs):
         auth_logout(request)
         return super(LogoutView,self).get(request,args,kwargs)
+
+def userSettings(request):
+    cur_user = VolunteerProfile.objects.get(pk = request.user)
