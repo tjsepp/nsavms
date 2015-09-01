@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile
+from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from authtools.models import User
@@ -13,7 +13,10 @@ from organizations.models import (Organization, OrganizationUser,
 
 class VolunteerProfileAdmin(SimpleHistoryAdmin):
     model = VolunteerProfile
-    list_display = ('firstName','lastName','volunteerType','cellPhone')
+    search_fields = ('firstName','lastName')
+    filter_horizontal = ('interest',)
+    list_display = ('linkedUserAccount','firstName','lastName','volunteerType','cellPhone')
+    raw_id_fields = ('linkedUserAccount',)
 
 
 class UserToFamilyForm(forms.ModelForm):
@@ -38,6 +41,8 @@ class userToProfileInline(admin.TabularInline):
     '''
     model = FamilyToUser
     extra = 0
+    verbose_name = "Family Volunteer"
+    verbose_name_plural = "Family Volunteers"
 
 class FamilyProfileAdmin(SimpleHistoryAdmin):
     inlines = [userToProfileInline]
@@ -52,3 +57,4 @@ admin.site.register(VolunteerType,SimpleHistoryAdmin)
 admin.site.register(FamilyProfile,FamilyProfileAdmin)
 admin.site.register(FamilyToUser,UserToFamilyAdmin)
 admin.site.register(FamilyProfileOwner)
+admin.site.register(VolunteerNews)

@@ -17,19 +17,21 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class FamilyProfile(OrganizationBase):
-    streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
-    city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
-    zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
-    homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
-    specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
-    inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
-    active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
+class VolunteerNews(TimeStampedModel):
+    newsID = models.AutoField(primary_key=True,db_column='newsID',verbose_name='VolunteerNewsId')
+    headline = models.CharField(max_length=250,db_column='title',verbose_name='News Title', null=True, blank=False, default=None)
+    body = models.TextField(verbose_name='News Body', db_column='body', null=True, blank=False)
+    newsEndDate = models.DateField(verbose_name ='NewsEndDate', db_column='enddate', null=True, blank=False, help_text='For indefinite news, enter 1/1/2900')
+    topPriority = models.BooleanField(verbose_name='Top priority', db_column='prioriyy', default=False)
     history = HistoricalRecords()
 
-    class Meta:
-        verbose_name_plural='Family Profile'
+    def __unicode__(self):
+        return self.headline
 
+    class Meta:
+        verbose_name_plural='Volunteer News'
+        db_table = 'volunteerNews'
+        ordering = ['dateCreated']
 
 class VolunteerProfile(TimeStampedModel):
     volunteerProfileID =  models.AutoField(primary_key=True,db_column='volunteerProfileId',verbose_name='Volunteer Profile Id')
@@ -61,17 +63,36 @@ class VolunteerProfile(TimeStampedModel):
         ordering = ['linkedUserAccount__name']
 
 
+class FamilyProfile(OrganizationBase):
+    #familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
+    streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
+    city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
+    zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
+    homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
+    specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
+    inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
+    active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural='Family Profile'
+        db_table = 'familyProfile'
+
+
+
+
 class FamilyToUser(OrganizationUserBase):
     pass
 
     class Meta:
         verbose_name = 'User to Family'
         verbose_name_plural='Family to User'
+        db_table = 'familytouser'
 
 class FamilyProfileOwner(OrganizationOwnerBase):
-    pass
     class Meta:
         verbose_name_plural='Family Profile Owner'
+        db_table = 'familyProfileowner'
 
 
 class VolunteerType(TimeStampedModel):
