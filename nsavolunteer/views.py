@@ -9,7 +9,7 @@ from .models import *
 
 def homeView(request):
     # Create a response
-    response = TemplateResponse(request, 'account/base.html', {})
+    response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
     return response
@@ -17,7 +17,7 @@ def homeView(request):
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('user_dashboard')
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         user = form.get_user()
@@ -27,11 +27,21 @@ class LoginView(FormView):
 
 class LogoutView(RedirectView):
     permanent = False
-    url = reverse_lazy('user_dashboard')
+    url = reverse_lazy('home')
 
     def get(self, request, *args, **kwargs):
         auth_logout(request)
         return super(LogoutView,self).get(request,args,kwargs)
 
 def userSettings(request):
-    cur_user = VolunteerProfile.objects.get(pk = request.user)
+    cur_user = VolunteerProfile.objects.get(linkedUserAccount= request.user)
+    response = render(request,'userProfile.html',{'cur_user':cur_user})
+    return response
+
+'''
+def UserClientList(request):
+    ac = AcMember.objects.get(user__username=request.user)
+    accountlist = ac.acmember.all()
+    response = render(request,'userClientList.html',{'accountlist':accountlist})
+    return response
+'''

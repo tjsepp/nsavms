@@ -15,10 +15,11 @@ class LoginForm(AuthenticationForm):
         self.helper.layout = Layout(
             PrependedText('username','@',placeholder='email address'),
             PrependedText('password',"<span class='glyphicon glyphicon-asterisk'></span>",id="password-field", css_class="passwordfields", placeholder="password"),
-            HTML('<div class="form-group"><div class="col-md-4"> </div><div class="col-md-3">'),
+            HTML('<div class="form-group"><div class="col-md-4"> </div>'),
             ButtonHolder(
                 Submit('login', 'Sign in', css_class='btn-primary'),
-            )
+              ),
+            HTML('<div class="col-md-12" style="margin-left:12%; margin-top:3%"><a href="#">Recover Password</a>|<a href="#">Register</a></div>')
         )
 
 

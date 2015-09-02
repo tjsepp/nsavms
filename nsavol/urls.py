@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from organizations.backends import invitation_backend
 
 
 urlpatterns = [
     url(r'^manage/', include(admin.site.urls)),
-    url(r'',include('nsavolunteer.urls')),
+    url(r'^',include('nsavolunteer.urls')),
+    url(r'^invitations/', include(invitation_backend().get_urls())),
 ]
 
 admin.site.site_header = 'NSA Volunteer Management Admin '

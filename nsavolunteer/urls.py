@@ -18,7 +18,8 @@ from django.contrib import admin
 from .views import *
 
 urlpatterns = [
-url(r'^user_dashboard',homeView,name='user_dashboard'),
+url(r'^$',homeView,name='home'),
+url(r'^user_dashboard',userSettings,name='user_dashboard'),
 url(r'^login/$',LoginView.as_view(),name='mainlogin'),
 url(r'^logout/$',LogoutView.as_view(),name='mainlogout'),
 
