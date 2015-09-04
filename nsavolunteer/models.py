@@ -51,6 +51,13 @@ class VolunteerProfile(TimeStampedModel):
         return self.linkedUserAccount.name
     fullName.short_description = 'Full Name'
 
+    def get_interests(self):
+        from itertools import chain
+        if self.interest:
+            ints = self.interest.all()
+        return '%s' % " , ".join([int.interestName for int in ints])
+
+
     def save(self, force_insert=False,force_update=False):
         if not self.volunteerProfileID:
             self.firstName = self.linkedUserAccount.name.split()[0]

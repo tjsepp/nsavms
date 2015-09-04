@@ -1,6 +1,10 @@
 {%  extends 'account/base.html' %}
 {% block base_content %}
 
-    This will be the news page!
+    {%  for update in news %}
+    <h4 style="color: navy">{{ update.headline }}</h4>
+        <pre>{{ update.body }}</pre>
+        <p><i style="font-size: small">Posted - {{ update.dateCreated }}</i></p>
+    {% endfor %}
 
 {%  endblock %}

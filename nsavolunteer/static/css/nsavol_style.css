@@ -28,3 +28,27 @@
    width: 300px;
    margin: 0 auto;
 }
+
+.profileBlock {
+    #border:1px solid #a3a3a3 ;
+}
+
+.profileBlock .dataLabel{
+    text-align: right;
+    padding-right: 0;
+    color: #a3a3a3;
+}
+.profileBlock .dataValue {
+    text-align: left;
+    margin-left: -10px;
+}
+
+
+.interestTable{
+
+}
+
+.interestTable td{
+   padding: 0 20px 0 0;
+
+}

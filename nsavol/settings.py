@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authtools',
-     'crispy_forms',
+    'crispy_forms',
     'debug_toolbar',
     'simple_history',
     'nsavolunteer',
@@ -117,3 +117,4 @@ try:
     from localSettings import *
 except ImportError as e:
     pass
+

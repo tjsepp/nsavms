@@ -8,8 +8,9 @@ from forms import LoginForm
 from .models import *
 
 def homeView(request):
-    # Create a response
-    response = TemplateResponse(request, 'news.html', {})
+    news = VolunteerNews.objects.all()
+    response = render(request,'news.html',{'news':news})
+    #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
     return response
@@ -34,8 +35,8 @@ class LogoutView(RedirectView):
         return super(LogoutView,self).get(request,args,kwargs)
 
 def userSettings(request):
-    cur_user = VolunteerProfile.objects.get(linkedUserAccount= request.user)
-    response = render(request,'userProfile.html',{'cur_user':cur_user})
+    cur_user = VolunteerProfile.objects.select_related('user').get(linkedUserAccount= request.user)
+    response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user})
     return response
 
 '''
