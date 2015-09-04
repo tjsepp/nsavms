@@ -48,7 +48,7 @@ class VolunteerProfile(TimeStampedModel):
         return self.linkedUserAccount.name
 
     def fullName(self):
-        return self.linkedUserAccount.name
+        return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
 
     def get_interests(self):
@@ -88,8 +88,10 @@ class FamilyProfile(OrganizationBase):
 
 
 
+
 class FamilyToUser(OrganizationUserBase):
-    pass
+    organization = models.ForeignKey(FamilyProfile,verbose_name='Related Family')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,verbose_name='User')
 
     class Meta:
         verbose_name = 'User to Family'
@@ -127,6 +129,7 @@ class VolunteerInterests(TimeStampedModel):
     interestId = models.AutoField(primary_key=True,db_column='interestId',verbose_name='Interest Id')
     interestName = models.CharField(db_column='interestName', max_length=200, null=True,verbose_name='Interest')
     description = models.TextField(verbose_name='Interest Description', db_column='interestDescription', null=True, blank=True)
+    active = models.BooleanField(verbose_name='Active', db_column='active',default=True)
     history = HistoricalRecords()
 
     def __unicode__(self):

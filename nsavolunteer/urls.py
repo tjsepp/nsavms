@@ -20,8 +20,14 @@ from .views import *
 urlpatterns = [
 url(r'^$',homeView,name='home'),
 url(r'^user_dashboard',userSettings,name='user_dashboard'),
+url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
+url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
+url(r'^volunteerInterests',InterestList,name='volunteerInterests'),
+url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToProfile'),
+url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
 url(r'^login/$',LoginView.as_view(),name='mainlogin'),
 url(r'^logout/$',LogoutView.as_view(),name='mainlogout'),
+
 
 ]
 

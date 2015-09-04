@@ -8,11 +8,13 @@
       <div class="row">
         <nav class="navbar navbar" role="navigation" id="navContainer">
           <ul class="nav nav-pills">
-            <li class="active">
+            <li>
               <a href="{% url 'home' %}">Home</a>
             </li>
             <li>
-              <a href="#">Link 1</a>
+              {% if user.is_authenticated %}
+              <a href="{%  url 'userVolunteerData' %}">My Volunteer Data</a>
+              {%  endif %}
             </li>
             <li>
               <a href="#">Link 2</a>
@@ -33,7 +35,7 @@
                   <a href="#"></a>
                 </li>
                 <li>
-                  <a href="#">Sub Link 1</a>
+                  <a href="{%  url 'volunteerInterests' %}">Volunteer Interest Reference</a>
                 </li>
                 <li>
                   <a href="#">Sub Link 2</a>
@@ -54,6 +56,9 @@
                           <ul class="dropdown-menu">
                             <li>
                               <a href="{%  url 'user_dashboard' %}">My Profile</a>
+                            </li>
+                            <li>
+                              <a href="#">Change Login/password</a>
                             </li>
                             <li>
                               <a href="{% url 'mainlogout' %}">Log out</a>

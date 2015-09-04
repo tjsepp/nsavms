@@ -1,0 +1,13 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+
+
+{% block title %}Update Profile{% endblock %}
+
+
+{% block base_content %}
+<h2 style="color:#C0C0C0; text-align: center">Update Profile - {{ fullName }}</h2>
+    {%  crispy form %}
+
+{%  endblock %}

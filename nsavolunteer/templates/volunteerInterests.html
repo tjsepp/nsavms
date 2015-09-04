@@ -1,0 +1,26 @@
+{%  extends 'account/base.html' %}
+{% block base_content %}
+
+    {% if user.is_authenticated %}
+            {%  for int in interests %}
+                <div><b style="color:navy">{{ int.interestName }}</b></div>
+                <div>{{ int.description }}</div>
+                {% if int in profileInt %}
+                <a href="{% url 'deleteinterestFromProfile' int.interestId %}" class="glyphicon glyphicon-remove" style="color:red"></a>
+                {%  else %}
+                <a href="{% url 'addinterestToProfile' int.interestId %}" class="glyphicon glyphicon-plus" style="color: green"></a>
+                {%  endif %}
+                <hr>
+            {%  endfor %}
+
+     {% else %}
+
+
+            {%  for int in interests %}
+                <div><b style="color:navy">{{ int.interestName }}</b></div>
+                <div>{{ int.description }}</div>
+                <hr>
+            {%  endfor %}
+
+    {%  endif %}
+{%  endblock %}
