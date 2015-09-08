@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authtools',
+    'tinymce',
     'crispy_forms',
     'debug_toolbar',
     'simple_history',
@@ -101,7 +102,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
+STATIC_ROOT=''
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
@@ -111,6 +112,21 @@ TEMPLATE_DIRS = (
 
 AUTH_USER_MODEL = 'authtools.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins' : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
+    'theme': "advanced",
+    'theme_advanced_buttons1' : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect,fullscreen,code",
+    'theme_advanced_buttons2' : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,|,forecolor,backcolor",
+    'theme_advanced_buttons3' : "tablecontrols,|,hr,sub,sup,|,charmap",
+
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    'textcolor':True
+}
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True
+
+
 
 
 try:

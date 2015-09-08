@@ -4,7 +4,8 @@ $(document).ready(function() {
         includeSelectAllOption: true,
         enableCaseInsensitiveFiltering: true,
         nonSelectedText: 'Add Interests',
-        buttonWidth: '400px'
+        buttonWidth: '400px',
+        maxHeight: 200
     });
 
 });

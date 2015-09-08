@@ -7,6 +7,7 @@ from django.forms import ModelForm
 from django import forms
 from .models import *
 from authtools.models import User
+from tinymce.widgets import TinyMCE
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -59,3 +60,9 @@ class UserProfileForm(ModelForm):
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         )
+
+
+class volunteerAdminForm(ModelForm):
+    body = forms.CharField(widget=TinyMCE(attrs={'cols': 150, 'rows': 30}))
+    class Meta:
+        model = VolunteerNews

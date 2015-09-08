@@ -3,8 +3,8 @@
 
     {%  for update in news %}
     <h4 style="color: navy">{{ update.headline }}</h4>
-        <pre>{{ update.body }}</pre>
-        <p><i style="font-size: small">Posted - {{ update.dateCreated }}</i></p>
+        {{ update.body|safe }}
+        <p style="margin-bottom: 5%"><i style="font-size: small">Posted - {{ update.dateCreated }}</i></p>
     {% endfor %}
 
 {%  endblock %}

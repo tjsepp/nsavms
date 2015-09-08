@@ -36,23 +36,32 @@ class LogoutView(RedirectView):
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request,'news.html',{'news':news})
-    #response = TemplateResponse(request, 'news.html', {})
-    # Register the callback
-    # Return the response
     return response
 
 def userVolunteerData(request):
-    news = VolunteerNews.objects.all()
+    '''
+    This view will generate all data needed for all user data. This will include family,
+    grocery & donotions data
+    '''
+    #news = VolunteerNews.objects.all()
     response = render(request,'volunteerData/volunteerData.html')
     #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
     return response
 
+def VolunteerOpportunities(request):
+    #news = VolunteerNews.objects.all()
+    response = render(request,'volunteerOpportunities.html')
+    #response = TemplateResponse(request, 'news.html', {})
+    # Register the callback
+    # Return the response
+    return response
 
 def userSettings(request):
     cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get(linkedUserAccount= request.user)
-    response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user})
+    userFamily = FamilyToUser.objects.select_related('organization').filter(user_id = request.user).all()
+    response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user,'userFamily':userFamily})
     return response
 
 

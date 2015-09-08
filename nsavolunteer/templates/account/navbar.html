@@ -13,12 +13,13 @@
             </li>
             <li>
               {% if user.is_authenticated %}
-              <a href="{%  url 'userVolunteerData' %}">My Volunteer Data</a>
-              {%  endif %}
-            </li>
-            <li>
-              <a href="#">Link 2</a>
-            </li>
+                      <a href="{%  url 'userVolunteerData' %}">My Volunteer Data</a>
+
+                    </li>
+                    <li>
+                      <a href="{% url 'volunteeropps' %}">Volunteer Opportunities</a>
+                    </li>
+            {%  endif %}
             <li>
               <a href="#">Link 3</a>
             </li>
