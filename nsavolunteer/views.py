@@ -18,6 +18,7 @@ class LoginView(FormView):
     form_class = LoginForm
     success_url = reverse_lazy('userVolunteerData')
 
+
     def form_valid(self, form):
         user = form.get_user()
         auth_login(self.request, user )
@@ -59,6 +60,8 @@ def VolunteerOpportunities(request):
     return response
 
 def userSettings(request):
+    #profile = VolunteerProfile.objects.get_or_create(linkedUserAccount = request.user)
+    #cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get_or_create(linkedUserAccount= auth)
     cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get(linkedUserAccount= request.user)
     userFamily = FamilyToUser.objects.select_related('organization').filter(user_id = request.user).all()
     response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user,'userFamily':userFamily})

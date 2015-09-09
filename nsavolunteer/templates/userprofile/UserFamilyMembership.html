@@ -1,0 +1,28 @@
+            <hr>
+         <div  class ="row" id = "profileHeader"; style="color:navy; margin-top: 2%">
+                    <h4>Family/Group Membership</h4>
+         </div>
+
+            <div class="familyContainer" style="margin-bottom: 3%; border-bottom: 1px dotted #C0C0C0">
+             {% for fam in userFamily %}
+                 <div class="'row" style="margin-bottom: 1%">
+                <span style="color: navy">{{ fam.organization.name }}</span>  <a class="glyphicon glyphicon-edit" title="Edit Profile"style="font-size: small" href="#"></a>
+                 <p style="padding-left: 2%"><i>{{ fam.organization.streetAddress }},  {{ fam.organization.city }}  {{ fam.organization.zip }}</i></p>
+                 </div>
+                     <div class="familyMembers" style="margin-bottom: 2%">
+                         <span style="color: navy">Other Members:</span>
+                            {% for mems in fam.organization.users.all %}
+                                {% ifnotequal mems.id user.id %}
+                                <div class="'row">
+                                    <span style="padding-left: 2%">
+
+                                        {{ mems.name }}
+
+                                    </span>
+
+                                </div>
+                                {%  endifnotequal %}
+                             {%  endfor %}
+                     </div>
+             </div>
+             {% endfor %}
