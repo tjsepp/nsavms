@@ -6,7 +6,8 @@ from organizations.models import Organization, OrganizationUser
 from organizations.base import (OrganizationBase, OrganizationUserBase,
         OrganizationOwnerBase)
 from tinymce import models as tinymce_models
-
+from authtools.models import User
+from django.db.models.signals import post_save,pre_delete
 class TimeStampedModel(models.Model):
     '''
     An abstract base class that provides self-updating 'created' and 'modified' fields.
@@ -16,6 +17,8 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
+
+
 
 
 class VolunteerNews(TimeStampedModel):
@@ -48,23 +51,30 @@ class VolunteerProfile(TimeStampedModel):
 
     def __unicode__(self):
         return self.linkedUserAccount.name
-
+    '''
+    def deleteUserProfile(sender, instance,using=None,**kwargs):
+        recs = VolunteerProfile.history.filter(instance)
+        for rec in recs:
+            rec.delete()
+        VolunteerProfile.delete(instance)
+    pre_delete.connect(deleteUserProfile, sender=User)
+    '''
     def fullName(self):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
 
-    def get_interests(self):
-        from itertools import chain
-        if self.interest:
-            ints = self.interest.all()
-        return '%s' % " , ".join([int.interestName for int in ints])
 
 
-    def save(self, force_insert=False,force_update=False):
+    def save(self, force_insert=False,force_update=False, using=None):
         if not self.volunteerProfileID:
             self.firstName = self.linkedUserAccount.name.split()[0]
             self.lastName = self.linkedUserAccount.name.split()[1]
         super(VolunteerProfile,self).save(force_insert, force_update)
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            VolunteerProfile.objects.create(linkedUserAccount=instance)
+    post_save.connect(create_user_profile, sender=User)
 
     class Meta:
         verbose_name_plural='Volunteer Profile'
