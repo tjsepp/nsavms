@@ -9,6 +9,7 @@ from .models import *
 from authtools.models import User
 from tinymce.widgets import TinyMCE
 
+
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
@@ -26,8 +27,6 @@ class LoginForm(AuthenticationForm):
               ),
             HTML('<div class="col-md-12" style="margin-left:12%; margin-top:3%"><a href="#">Recover Password</a>|<a href="#">Register</a></div>')
         )
-
-
 
 
 class AuthUserUpdateForm(ModelForm):
@@ -61,8 +60,19 @@ class UserProfileForm(ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         )
 
+class FamilyProfileForm(ModelForm):
+    class Meta:
+        model = FamilyProfile
+
 
 class volunteerAdminForm(ModelForm):
     body = forms.CharField(widget=TinyMCE(attrs={'cols': 150, 'rows': 30}))
     class Meta:
         model = VolunteerNews
+
+class AddNewFamily(ModelForm):
+    class Meta:
+        model=FamilyProfile
+
+
+

@@ -8,6 +8,8 @@ from organizations.base import (OrganizationBase, OrganizationUserBase,
 from tinymce import models as tinymce_models
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
+
+
 class TimeStampedModel(models.Model):
     '''
     An abstract base class that provides self-updating 'created' and 'modified' fields.
@@ -17,8 +19,6 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
-
-
 
 
 class VolunteerNews(TimeStampedModel):
@@ -37,6 +37,7 @@ class VolunteerNews(TimeStampedModel):
         verbose_name_plural='Volunteer News'
         db_table = 'volunteerNews'
         ordering = ['dateCreated']
+
 
 class VolunteerProfile(TimeStampedModel):
     volunteerProfileID =  models.AutoField(primary_key=True,db_column='volunteerProfileId',verbose_name='Volunteer Profile Id')
@@ -62,6 +63,7 @@ class VolunteerProfile(TimeStampedModel):
     def fullName(self):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
+
 
 
 
@@ -107,6 +109,7 @@ class FamilyToUser(OrganizationUserBase):
         verbose_name_plural='Family to User'
         db_table = 'familytouser'
 
+
 class FamilyProfileOwner(OrganizationOwnerBase):
     class Meta:
         verbose_name_plural='Family Profile Owner'
@@ -148,3 +151,24 @@ class VolunteerInterests(TimeStampedModel):
         verbose_name_plural='Interest Type'
         db_table = 'volunteerInterests'
         ordering = ['interestName']
+
+
+class SchoolYear(TimeStampedModel):
+    yearId = models.AutoField(primary_key=True,db_column='yearId',verbose_name='School Year ID')
+    schoolYear = models.CharField(db_column='schoolYear', max_length=100, null=False,blank=False,verbose_name='School Year')
+    currentYear = models.BooleanField(db_column='currentYear',verbose_name='Current Year', default=False)
+
+    def __unicode__(self):
+        return self.schoolYear
+
+    def save(self, *args, **kwargs):
+        if self.currentYear:
+            SchoolYear.objects.filter(
+                currentYear=True).update(currentYear=False)
+        super(SchoolYear, self).save(*args, **kwargs)
+
+
+    class Meta:
+        verbose_name_plural='School Year'
+        db_table = 'schoolYear'
+        ordering = ['schoolYear']

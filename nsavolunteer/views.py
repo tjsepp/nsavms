@@ -1,16 +1,18 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404, render_to_response
 from django.views.generic import FormView, TemplateView, RedirectView, UpdateView
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.template.response import TemplateResponse
+from django.template import RequestContext
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
-from forms import LoginForm, UserProfileForm
+from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily
+
 from .models import *
 from authtools.models import User
-
+from django.forms.formsets import formset_factory
 
 
 class LoginView(FormView):
@@ -78,12 +80,23 @@ class UpdateVolunteerProfile(UpdateView):
     def get_success_url(self):
         return reverse('user_dashboard')
 
+class UpdateFamilyProfile(UpdateView):
+    form_class = FamilyProfileForm
+    template_name = 'forms/updateFamilyProfile.html'
 
+    def get_object(self):
+        return FamilyProfile.objects.get(pk=self.kwargs['famId'])
+        #return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
+
+    def get_success_url(self):
+        return reverse('user_dashboard')
+
+    '''
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateVolunteerProfile, self).get_context_data(*args, **kwargs)
         context['fullName'] = VolunteerProfile.objects.get(linkedUserAccount=self.request.user).fullName
         return context
-
+    '''
 
     def form_valid(self, form):
         profile = VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
@@ -123,3 +136,7 @@ def deleteInterestFromProfile(request,Intid):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     #return HttpResponseRedirect(querysnippet.get_absolute_url())
 deleteInterestFromProfile = login_required(deleteInterestFromProfile)
+
+def familyFormset(request):
+    familyFormset = formset_factory(AddNewFamily, extra=4)
+    return render_to_response('forms/familyFormset.html',{'formset':familyFormset},context_instance=RequestContext(request))

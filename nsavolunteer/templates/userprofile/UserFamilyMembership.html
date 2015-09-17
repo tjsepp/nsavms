@@ -6,7 +6,8 @@
             <div class="familyContainer" style="margin-bottom: 3%; border-bottom: 1px dotted #C0C0C0">
              {% for fam in userFamily %}
                  <div class="'row" style="margin-bottom: 1%">
-                <span style="color: navy">{{ fam.organization.name }}</span>  <a class="glyphicon glyphicon-edit" title="Edit Profile"style="font-size: small" href="#"></a>
+                <span style="color: navy">{{ fam.organization.name }}</span>
+                     <a class="glyphicon glyphicon-edit" title="Edit Profile"style="font-size: x-small" href="{% url 'updateFamilyProfile' fam.organization.id %}"></a>
                  <p style="padding-left: 2%"><i>{{ fam.organization.streetAddress }},  {{ fam.organization.city }}  {{ fam.organization.zip }}</i></p>
                  </div>
                      <div class="familyMembers" style="margin-bottom: 2%">

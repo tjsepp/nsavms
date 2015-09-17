@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews
+from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews,SchoolYear
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -32,6 +32,10 @@ class UserToFamilyAdmin(SimpleHistoryAdmin):
     form = UserToFamilyForm
 
 
+class SchoolYearAdmin(admin.ModelAdmin):
+    model = SchoolYear
+    list_display = ('schoolYear','currentYear')
+
 class userToProfileInline(admin.TabularInline):
     '''
     Inline that provides the family profile with the list of related users.
@@ -59,3 +63,4 @@ admin.site.register(FamilyProfile,FamilyProfileAdmin)
 admin.site.register(FamilyToUser,UserToFamilyAdmin)
 admin.site.register(FamilyProfileOwner)
 admin.site.register(VolunteerNews,VolunteerNewsAdmin)
+admin.site.register(SchoolYear,SchoolYearAdmin)
