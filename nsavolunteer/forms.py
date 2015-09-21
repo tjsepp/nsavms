@@ -32,6 +32,7 @@ class LoginForm(AuthenticationForm):
 class AuthUserUpdateForm(ModelForm):
     class Meta:
         model = User
+        fields='__all__'
     def __init__(self, *args, **kwargs):
         super(AuthUserUpdateForm,self).__init__(*args, **kwargs)
 
@@ -39,6 +40,7 @@ class AuthUserUpdateForm(ModelForm):
 class UserProfileForm(ModelForm):
     class Meta:
         model = VolunteerProfile
+        fields='__all__'
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm,self).__init__(*args, **kwargs)
@@ -63,16 +65,17 @@ class UserProfileForm(ModelForm):
 class FamilyProfileForm(ModelForm):
     class Meta:
         model = FamilyProfile
-
+        fields='__all__'
 
 class volunteerAdminForm(ModelForm):
     body = forms.CharField(widget=TinyMCE(attrs={'cols': 150, 'rows': 30}))
     class Meta:
         model = VolunteerNews
+        fields='__all__'
 
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile
-
+        fields='__all__'
 
 

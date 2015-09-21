@@ -10,6 +10,9 @@ from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 
 
+STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
+
+
 class TimeStampedModel(models.Model):
     '''
     An abstract base class that provides self-updating 'created' and 'modified' fields.
@@ -172,3 +175,21 @@ class SchoolYear(TimeStampedModel):
         verbose_name_plural='School Year'
         db_table = 'schoolYear'
         ordering = ['schoolYear']
+
+class RewardCardUsers(TimeStampedModel):
+    '''
+    This model will store the King Soopers & Safeway rewards card information
+    This will link values back to the user allowing the system to aggregate the information on the user level
+    '''
+    RewardCardId = models.AutoField(primary_key=True,db_column='rewardCardId',verbose_name='Reward Card ID')
+    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
+    storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
+    customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
+
+    def __unicode__(self):
+        return self.linkedUser.name
+
+    class Meta:
+        verbose_name_plural = 'Reward Card User Information'
+        db_table = 'rewardCardUserInformation'
+        ordering = ['dateCreated']

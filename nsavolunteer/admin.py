@@ -1,5 +1,6 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews,SchoolYear
+from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews,SchoolYear,\
+        RewardCardUsers
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -36,6 +37,11 @@ class SchoolYearAdmin(admin.ModelAdmin):
     model = SchoolYear
     list_display = ('schoolYear','currentYear')
 
+class RewardCardInfoAdmin(admin.ModelAdmin):
+    model = RewardCardUsers
+    list_display = ('linkedUser','storeName','customerCardNumber')
+    list_filter = ('storeName',)
+
 class userToProfileInline(admin.TabularInline):
     '''
     Inline that provides the family profile with the list of related users.
@@ -49,10 +55,11 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     inlines = [userToProfileInline]
 
 
-
-
 class VolunteerNewsAdmin(SimpleHistoryAdmin):
     form = volunteerAdminForm
+
+
+
 
 #admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 #admin.site.register(Volunteers,VolunteerAdmin)
@@ -64,3 +71,4 @@ admin.site.register(FamilyToUser,UserToFamilyAdmin)
 admin.site.register(FamilyProfileOwner)
 admin.site.register(VolunteerNews,VolunteerNewsAdmin)
 admin.site.register(SchoolYear,SchoolYearAdmin)
+admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
