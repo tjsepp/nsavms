@@ -25,6 +25,9 @@ class TimeStampedModel(models.Model):
 
 
 class VolunteerNews(TimeStampedModel):
+    '''
+    This class allows users to add news to the volunteer site. It is aided by tinyMCE which allows for specific formatting
+    '''
     newsID = models.AutoField(primary_key=True,db_column='newsID',verbose_name='VolunteerNewsId')
     headline = models.CharField(max_length=250,db_column='title',verbose_name='News Title', null=True, blank=False, default=None)
     #body = models.TextField(verbose_name='News Body', db_column='body', null=True, blank=False)
@@ -43,6 +46,10 @@ class VolunteerNews(TimeStampedModel):
 
 
 class VolunteerProfile(TimeStampedModel):
+    '''
+    This class contains the volunteer profile. It is related one:one with a user. It allows for expanded information on the user
+    model.
+    '''
     volunteerProfileID =  models.AutoField(primary_key=True,db_column='volunteerProfileId',verbose_name='Volunteer Profile Id')
     firstName = models.CharField(db_column='firstName', max_length=200, null=True,blank=True,verbose_name='First Name')
     lastName = models.CharField(db_column='lastName', max_length=200, null=True,blank=True,verbose_name='Last Name')
@@ -88,6 +95,10 @@ class VolunteerProfile(TimeStampedModel):
 
 
 class FamilyProfile(OrganizationBase):
+    '''
+    This creates a family/organization that allows for multiple users to be added. This will be the main unit used to
+    roll up all data to a family level.
+    '''
     #familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
     streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
     city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
@@ -104,6 +115,9 @@ class FamilyProfile(OrganizationBase):
 
 
 class FamilyToUser(OrganizationUserBase):
+    '''
+    model that relates the user to the family/group
+    '''
     organization = models.ForeignKey(FamilyProfile,verbose_name='Related Family')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,verbose_name='User')
 
