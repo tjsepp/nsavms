@@ -109,6 +109,7 @@ class FamilyProfile(OrganizationBase):
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
 
+
     class Meta:
         verbose_name_plural='Family Profile'
         db_table = 'familyProfile'
@@ -171,6 +172,10 @@ class VolunteerInterests(TimeStampedModel):
 
 
 class SchoolYear(TimeStampedModel):
+    '''
+    This model will give us the ability to define the scholl year. Over rode the save method
+     to define the current year. If current year is selected, all others will be set to 0.
+     '''
     yearId = models.AutoField(primary_key=True,db_column='yearId',verbose_name='School Year ID')
     schoolYear = models.CharField(db_column='schoolYear', max_length=100, null=False,blank=False,verbose_name='School Year')
     currentYear = models.BooleanField(db_column='currentYear',verbose_name='Current Year', default=False)
@@ -190,6 +195,48 @@ class SchoolYear(TimeStampedModel):
         db_table = 'schoolYear'
         ordering = ['schoolYear']
 
+
+class Student(TimeStampedModel):
+    '''
+    This model will store students. This will be linked to the family model to allow us to manage
+    a historical perspective of students.
+    '''
+    studentId = models.AutoField(primary_key=True,db_column='studentId',verbose_name='StudentId')
+    studentName = models.CharField(max_length=100,db_column='studentName',verbose_name='Student Name',null=True,blank=False)
+    activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
+    #teacher
+    #grade
+
+    def __unicode__(self):
+        return self.studentName
+
+    class Meta:
+        verbose_name_plural = 'Students'
+        db_table='Students'
+        ordering =['studentName']
+
+
+class StudentToFamily(TimeStampedModel):
+    stuToFamId = models.AutoField(primary_key=True,db_column='studentToFamilyId',verbose_name='StudentToFamilyId')
+    family = models.ForeignKey(FamilyProfile, db_column='family', verbose_name='Family', null=True, blank=True)
+    student = models.ForeignKey(Student, db_column='student', verbose_name='Student',null=True, blank=True)
+
+    def __unicode__(self):
+        return '%s - %s' %(self.student, self.family)
+
+    class Meta:
+        verbose_name_plural = 'Student To Family'
+        db_table = 'studentToFamily'
+        ordering = ['student']
+
+
+'''
+class Membership(models.Model):
+    person = models.ForeignKey(Person)
+    group = models.ForeignKey(Group)
+    date_joined = models.DateField()
+    invite_reason = models.CharField(max_length=64)
+'''
 class RewardCardUsers(TimeStampedModel):
     '''
     This model will store the King Soopers & Safeway rewards card information
@@ -207,3 +254,8 @@ class RewardCardUsers(TimeStampedModel):
         verbose_name_plural = 'Reward Card User Information'
         db_table = 'rewardCardUserInformation'
         ordering = ['dateCreated']
+
+
+
+
+
