@@ -74,9 +74,6 @@ class VolunteerProfile(TimeStampedModel):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
 
-
-
-
     def save(self, force_insert=False,force_update=False, using=None):
         if not self.volunteerProfileID:
             self.firstName = self.linkedUserAccount.name.split()[0]
@@ -92,46 +89,6 @@ class VolunteerProfile(TimeStampedModel):
         verbose_name_plural='Volunteer Profile'
         db_table = 'volunteerProfile'
         ordering = ['linkedUserAccount__name']
-
-
-class FamilyProfile(OrganizationBase):
-    '''
-    This creates a family/organization that allows for multiple users to be added. This will be the main unit used to
-    roll up all data to a family level.
-    '''
-    #familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
-    streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
-    city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
-    zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
-    homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
-    specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
-    inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
-    active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
-    history = HistoricalRecords()
-
-
-    class Meta:
-        verbose_name_plural='Family Profile'
-        db_table = 'familyProfile'
-
-
-class FamilyToUser(OrganizationUserBase):
-    '''
-    model that relates the user to the family/group
-    '''
-    organization = models.ForeignKey(FamilyProfile,verbose_name='Related Family')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,verbose_name='User')
-
-    class Meta:
-        verbose_name = 'User to Family'
-        verbose_name_plural='Family to User'
-        db_table = 'familytouser'
-
-
-class FamilyProfileOwner(OrganizationOwnerBase):
-    class Meta:
-        verbose_name_plural='Family Profile Owner'
-        db_table = 'familyProfileowner'
 
 
 class VolunteerType(TimeStampedModel):
@@ -150,7 +107,6 @@ class VolunteerType(TimeStampedModel):
         verbose_name_plural='Volunteer Type'
         db_table = 'volunteerType'
         ordering = ['volunteerType']
-
 
 class VolunteerInterests(TimeStampedModel):
     '''
@@ -173,7 +129,7 @@ class VolunteerInterests(TimeStampedModel):
 
 class SchoolYear(TimeStampedModel):
     '''
-    This model will give us the ability to define the scholl year. Over rode the save method
+    This model will give us the ability to define the school year. Over rode the save method
      to define the current year. If current year is selected, all others will be set to 0.
      '''
     yearId = models.AutoField(primary_key=True,db_column='yearId',verbose_name='School Year ID')
@@ -215,28 +171,60 @@ class Student(TimeStampedModel):
         db_table='Students'
         ordering =['studentName']
 
-
 class StudentToFamily(TimeStampedModel):
-    stuToFamId = models.AutoField(primary_key=True,db_column='studentToFamilyId',verbose_name='StudentToFamilyId')
-    family = models.ForeignKey(FamilyProfile, db_column='family', verbose_name='Family', null=True, blank=True)
-    student = models.ForeignKey(Student, db_column='student', verbose_name='Student',null=True, blank=True)
-
-    def __unicode__(self):
-        return '%s - %s' %(self.student, self.family)
+    student = models.ForeignKey(Student)
+    group = models.ForeignKey('FamilyProfile')
 
     class Meta:
-        verbose_name_plural = 'Student To Family'
+        verbose_name_plural = 'Student To Family - Testing'
         db_table = 'studentToFamily'
         ordering = ['student']
+        unique_together = ("student", "group")
+
+    def __unicode__(self):
+        return '%s (%s)' %(self.student,self.group)
 
 
-'''
-class Membership(models.Model):
-    person = models.ForeignKey(Person)
-    group = models.ForeignKey(Group)
-    date_joined = models.DateField()
-    invite_reason = models.CharField(max_length=64)
-'''
+class FamilyProfile(TimeStampedModel):
+    '''
+    This creates a family/organization that allows for multiple users to be added. This will be the main unit used to
+    roll up all data to a family level.
+    '''
+    familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
+    familyName =  models.CharField(max_length=50,db_column='familyName',verbose_name='Family Name', null=True, blank=True, default=None)
+    streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
+    city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
+    zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
+    homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
+    specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
+    inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
+    volunteers = models.ManyToManyField(settings.AUTH_USER_MODEL,verbose_name='Volunteers',through='VolunteerToFamily')
+    students = models.ManyToManyField(Student,verbose_name='Students',through='StudentToFamily')
+    active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
+    history = HistoricalRecords()
+
+    def __unicode__(self):
+        return self.familyName
+
+
+    class Meta:
+        verbose_name_plural='Family Profile - Testing'
+        db_table = 'familyProfile2'
+
+
+class VolunteerToFamily(TimeStampedModel):
+    person = models.ForeignKey(settings.AUTH_USER_MODEL)
+    group = models.ForeignKey(FamilyProfile)
+
+    class Meta:
+        verbose_name_plural = 'Volunteer To Family - Testing'
+        unique_together = ("person", "group")
+
+    def __unicode__(self):
+        return '%s (%s)' %(self.person.name,self.group)
+
+
+
 class RewardCardUsers(TimeStampedModel):
     '''
     This model will store the King Soopers & Safeway rewards card information
@@ -255,6 +243,7 @@ class RewardCardUsers(TimeStampedModel):
         db_table = 'rewardCardUserInformation'
         ordering = ['dateCreated']
 
+#################### Testing ################################
 
 
 

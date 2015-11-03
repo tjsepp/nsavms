@@ -65,7 +65,7 @@ def userSettings(request):
     #profile = VolunteerProfile.objects.get_or_create(linkedUserAccount = request.user)
     #cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get_or_create(linkedUserAccount= auth)
     cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get(linkedUserAccount= request.user)
-    userFamily = FamilyToUser.objects.select_related('organization').filter(user_id = request.user).all()
+    userFamily = VolunteerToFamily.objects.select_related('group').filter(person_id = request.user).all()
     response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user,'userFamily':userFamily})
     return response
 

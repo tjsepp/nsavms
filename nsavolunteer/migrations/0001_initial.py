@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
+import tinymce.models
 import django.db.models.deletion
-import organizations.base
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -17,9 +17,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FamilyProfile',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(help_text='The name of the organization', max_length=200)),
-                ('is_active', models.BooleanField(default=True)),
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('familyProfileId', models.AutoField(serialize=False, verbose_name=b'Family Profile Id', primary_key=True, db_column=b'FamilyProfileId')),
+                ('familyName', models.CharField(db_column=b'familyName', default=None, max_length=50, blank=True, null=True, verbose_name=b'Family Name')),
                 ('streetAddress', models.CharField(max_length=200, null=True, verbose_name=b'Street Address', db_column=b'streetAddress', blank=True)),
                 ('city', models.CharField(max_length=50, null=True, verbose_name=b'city', db_column=b'city', blank=True)),
                 ('zip', models.CharField(max_length=15, null=True, verbose_name=b'zip', db_column=b'zip', blank=True)),
@@ -29,43 +30,18 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=True, verbose_name=b'active', db_column=b'active')),
             ],
             options={
-                'db_table': 'familyProfile',
-                'verbose_name_plural': 'Family Profile',
+                'db_table': 'familyProfile2',
+                'verbose_name_plural': 'Family Profile - Testing',
             },
-            bases=(organizations.base.UnicodeMixin, models.Model),
-        ),
-        migrations.CreateModel(
-            name='FamilyProfileOwner',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('organization', models.OneToOneField(related_name='owner', to='nsavolunteer.FamilyProfile')),
-            ],
-            options={
-                'db_table': 'familyProfileowner',
-                'verbose_name_plural': 'Family Profile Owner',
-            },
-            bases=(organizations.base.UnicodeMixin, models.Model),
-        ),
-        migrations.CreateModel(
-            name='FamilyToUser',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('organization', models.ForeignKey(related_name='organization_users', to='nsavolunteer.FamilyProfile')),
-                ('user', models.ForeignKey(related_name='nsavolunteer_familytouser', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'db_table': 'familytouser',
-                'verbose_name': 'User to Family',
-                'verbose_name_plural': 'Family to User',
-            },
-            bases=(organizations.base.UnicodeMixin, models.Model),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='HistoricalFamilyProfile',
             fields=[
-                ('id', models.IntegerField(verbose_name='ID', db_index=True, auto_created=True, blank=True)),
-                ('name', models.CharField(help_text='The name of the organization', max_length=200)),
-                ('is_active', models.BooleanField(default=True)),
+                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
+                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
+                ('familyProfileId', models.IntegerField(db_index=True, verbose_name=b'Family Profile Id', db_column=b'FamilyProfileId', blank=True)),
+                ('familyName', models.CharField(db_column=b'familyName', default=None, max_length=50, blank=True, null=True, verbose_name=b'Family Name')),
                 ('streetAddress', models.CharField(max_length=200, null=True, verbose_name=b'Street Address', db_column=b'streetAddress', blank=True)),
                 ('city', models.CharField(max_length=50, null=True, verbose_name=b'city', db_column=b'city', blank=True)),
                 ('zip', models.CharField(max_length=15, null=True, verbose_name=b'zip', db_column=b'zip', blank=True)),
@@ -93,6 +69,7 @@ class Migration(migrations.Migration):
                 ('interestId', models.IntegerField(db_index=True, verbose_name=b'Interest Id', db_column=b'interestId', blank=True)),
                 ('interestName', models.CharField(max_length=200, null=True, verbose_name=b'Interest', db_column=b'interestName')),
                 ('description', models.TextField(null=True, verbose_name=b'Interest Description', db_column=b'interestDescription', blank=True)),
+                ('active', models.BooleanField(default=True, verbose_name=b'Active', db_column=b'active')),
                 ('history_id', models.AutoField(serialize=False, primary_key=True)),
                 ('history_date', models.DateTimeField()),
                 ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
@@ -112,7 +89,7 @@ class Migration(migrations.Migration):
                 ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
                 ('newsID', models.IntegerField(db_index=True, verbose_name=b'VolunteerNewsId', db_column=b'newsID', blank=True)),
                 ('headline', models.CharField(default=None, max_length=250, null=True, verbose_name=b'News Title', db_column=b'title')),
-                ('body', models.TextField(null=True, verbose_name=b'News Body', db_column=b'body')),
+                ('body', tinymce.models.HTMLField(null=True, verbose_name=b'News Body', db_column=b'body')),
                 ('newsEndDate', models.DateField(help_text=b'For indefinite news, enter 1/1/2900', null=True, verbose_name=b'NewsEndDate', db_column=b'enddate')),
                 ('topPriority', models.BooleanField(default=False, verbose_name=b'Top priority', db_column=b'prioriyy')),
                 ('history_id', models.AutoField(serialize=False, primary_key=True)),
@@ -171,6 +148,71 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='RewardCardUsers',
+            fields=[
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('RewardCardId', models.AutoField(serialize=False, verbose_name=b'Reward Card ID', primary_key=True, db_column=b'rewardCardId')),
+                ('storeName', models.CharField(max_length=25, null=True, verbose_name=b'Store', db_column=b'store', choices=[(b'King Soopers', b'King Soopers'), (b'Safeway', b'Safeway')])),
+                ('customerCardNumber', models.CharField(max_length=50, null=True, verbose_name=b'Card Number', db_column=b'cardNumber')),
+                ('linkedUser', models.ForeignKey(related_name='rewardCardUser', db_column=b'linkedUser', verbose_name=b'LinkedUser', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ['dateCreated'],
+                'db_table': 'rewardCardUserInformation',
+                'verbose_name_plural': 'Reward Card User Information',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='SchoolYear',
+            fields=[
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('yearId', models.AutoField(serialize=False, verbose_name=b'School Year ID', primary_key=True, db_column=b'yearId')),
+                ('schoolYear', models.CharField(max_length=100, verbose_name=b'School Year', db_column=b'schoolYear')),
+                ('currentYear', models.BooleanField(default=False, verbose_name=b'Current Year', db_column=b'currentYear')),
+            ],
+            options={
+                'ordering': ['schoolYear'],
+                'db_table': 'schoolYear',
+                'verbose_name_plural': 'School Year',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Student',
+            fields=[
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('studentId', models.AutoField(serialize=False, verbose_name=b'StudentId', primary_key=True, db_column=b'studentId')),
+                ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
+                ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
+            ],
+            options={
+                'ordering': ['studentName'],
+                'db_table': 'Students',
+                'verbose_name_plural': 'Students',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='StudentToFamily',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('group', models.ForeignKey(to='nsavolunteer.FamilyProfile')),
+                ('student', models.ForeignKey(to='nsavolunteer.Student')),
+            ],
+            options={
+                'ordering': ['student'],
+                'db_table': 'studentToFamily',
+                'verbose_name_plural': 'Student To Family - Testing',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='VolunteerInterests',
             fields=[
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
@@ -178,6 +220,7 @@ class Migration(migrations.Migration):
                 ('interestId', models.AutoField(serialize=False, verbose_name=b'Interest Id', primary_key=True, db_column=b'interestId')),
                 ('interestName', models.CharField(max_length=200, null=True, verbose_name=b'Interest', db_column=b'interestName')),
                 ('description', models.TextField(null=True, verbose_name=b'Interest Description', db_column=b'interestDescription', blank=True)),
+                ('active', models.BooleanField(default=True, verbose_name=b'Active', db_column=b'active')),
             ],
             options={
                 'ordering': ['interestName'],
@@ -193,7 +236,7 @@ class Migration(migrations.Migration):
                 ('dateUpdated', models.DateTimeField(auto_now=True)),
                 ('newsID', models.AutoField(serialize=False, verbose_name=b'VolunteerNewsId', primary_key=True, db_column=b'newsID')),
                 ('headline', models.CharField(default=None, max_length=250, null=True, verbose_name=b'News Title', db_column=b'title')),
-                ('body', models.TextField(null=True, verbose_name=b'News Body', db_column=b'body')),
+                ('body', tinymce.models.HTMLField(null=True, verbose_name=b'News Body', db_column=b'body')),
                 ('newsEndDate', models.DateField(help_text=b'For indefinite news, enter 1/1/2900', null=True, verbose_name=b'NewsEndDate', db_column=b'enddate')),
                 ('topPriority', models.BooleanField(default=False, verbose_name=b'Top priority', db_column=b'prioriyy')),
             ],
@@ -225,6 +268,20 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='VolunteerToFamily',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('group', models.ForeignKey(to='nsavolunteer.FamilyProfile')),
+                ('person', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name_plural': 'Volunteer To Family - Testing',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='VolunteerType',
             fields=[
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
@@ -240,11 +297,19 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='volunteertofamily',
+            unique_together=set([('person', 'group')]),
+        ),
         migrations.AddField(
             model_name='volunteerprofile',
             name='volunteerType',
             field=models.ForeignKey(db_column=b'volunteerType', blank=True, to='nsavolunteer.VolunteerType', null=True, verbose_name=b'Volunteer Type'),
             preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='studenttofamily',
+            unique_together=set([('student', 'group')]),
         ),
         migrations.AddField(
             model_name='historicalvolunteerprofile',
@@ -253,15 +318,15 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='familyprofileowner',
-            name='organization_user',
-            field=models.OneToOneField(to='nsavolunteer.FamilyToUser'),
+            model_name='familyprofile',
+            name='students',
+            field=models.ManyToManyField(to='nsavolunteer.Student', verbose_name=b'Students', through='nsavolunteer.StudentToFamily'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='familyprofile',
-            name='users',
-            field=models.ManyToManyField(related_name='nsavolunteer_familyprofile', through='nsavolunteer.FamilyToUser', to=settings.AUTH_USER_MODEL),
+            name='volunteers',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, verbose_name=b'Volunteers', through='nsavolunteer.VolunteerToFamily'),
             preserve_default=True,
         ),
     ]

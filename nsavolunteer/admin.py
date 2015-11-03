@@ -1,6 +1,6 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,FamilyProfileOwner,FamilyToUser,VolunteerProfile, VolunteerNews,SchoolYear,\
-        RewardCardUsers,Student
+from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerToFamily,VolunteerProfile, VolunteerNews,SchoolYear,\
+        RewardCardUsers,Student,FamilyProfile,VolunteerToFamily,StudentToFamily
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -22,14 +22,14 @@ class UserToFamilyForm(forms.ModelForm):
     '''
     organization = forms.ModelChoiceField(queryset=FamilyProfile.objects.all(),label='Family')
     class Meta:
-        model = FamilyToUser
+        model = VolunteerToFamily
         fields = '__all__'
 
 class UserToFamilyAdmin(SimpleHistoryAdmin):
     '''
     Uses custom form to clean up labels
     '''
-    model = FamilyToUser
+    model = VolunteerToFamily
     form = UserToFamilyForm
 
 
@@ -46,7 +46,7 @@ class userToProfileInline(admin.TabularInline):
     '''
     Inline that provides the family profile with the list of related users.
     '''
-    model = FamilyToUser
+    model = VolunteerToFamily
     extra = 0
     verbose_name = "Family Volunteer"
     verbose_name_plural = "Family Volunteers"
@@ -67,10 +67,10 @@ admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 admin.site.register(VolunteerInterests,SimpleHistoryAdmin)
 admin.site.register(VolunteerType,SimpleHistoryAdmin)
 admin.site.register(FamilyProfile,FamilyProfileAdmin)
-admin.site.register(FamilyToUser,UserToFamilyAdmin)
+admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
 #admin.site.register(FamilyProfileOwner)
 admin.site.register(VolunteerNews,VolunteerNewsAdmin)
 admin.site.register(SchoolYear,SchoolYearAdmin)
 admin.site.register(Student)
-
+admin.site.register(StudentToFamily)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
