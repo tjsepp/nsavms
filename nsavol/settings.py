@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'simple_history',
     'nsavolunteer',
+    'nsaSchool',
 
 )
 

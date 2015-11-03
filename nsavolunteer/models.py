@@ -127,29 +127,7 @@ class VolunteerInterests(TimeStampedModel):
         ordering = ['interestName']
 
 
-class SchoolYear(TimeStampedModel):
-    '''
-    This model will give us the ability to define the school year. Over rode the save method
-     to define the current year. If current year is selected, all others will be set to 0.
-     '''
-    yearId = models.AutoField(primary_key=True,db_column='yearId',verbose_name='School Year ID')
-    schoolYear = models.CharField(db_column='schoolYear', max_length=100, null=False,blank=False,verbose_name='School Year')
-    currentYear = models.BooleanField(db_column='currentYear',verbose_name='Current Year', default=False)
 
-    def __unicode__(self):
-        return self.schoolYear
-
-    def save(self, *args, **kwargs):
-        if self.currentYear:
-            SchoolYear.objects.filter(
-                currentYear=True).update(currentYear=False)
-        super(SchoolYear, self).save(*args, **kwargs)
-
-
-    class Meta:
-        verbose_name_plural='School Year'
-        db_table = 'schoolYear'
-        ordering = ['schoolYear']
 
 
 class Student(TimeStampedModel):
@@ -162,6 +140,7 @@ class Student(TimeStampedModel):
     activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
     #teacher
     #grade
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.studentName
@@ -174,9 +153,10 @@ class Student(TimeStampedModel):
 class StudentToFamily(TimeStampedModel):
     student = models.ForeignKey(Student)
     group = models.ForeignKey('FamilyProfile')
+    history = HistoricalRecords()
 
     class Meta:
-        verbose_name_plural = 'Student To Family - Testing'
+        verbose_name_plural = 'Student To Family'
         db_table = 'studentToFamily'
         ordering = ['student']
         unique_together = ("student", "group")
@@ -208,16 +188,17 @@ class FamilyProfile(TimeStampedModel):
 
 
     class Meta:
-        verbose_name_plural='Family Profile - Testing'
-        db_table = 'familyProfile2'
+        verbose_name_plural='Family Profile'
+        db_table = 'familyProfile'
 
 
 class VolunteerToFamily(TimeStampedModel):
     person = models.ForeignKey(settings.AUTH_USER_MODEL)
     group = models.ForeignKey(FamilyProfile)
+    history = HistoricalRecords()
 
     class Meta:
-        verbose_name_plural = 'Volunteer To Family - Testing'
+        verbose_name_plural = 'Volunteer To Family'
         unique_together = ("person", "group")
 
     def __unicode__(self):
@@ -234,6 +215,7 @@ class RewardCardUsers(TimeStampedModel):
     linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.linkedUser.name
@@ -243,7 +225,6 @@ class RewardCardUsers(TimeStampedModel):
         db_table = 'rewardCardUserInformation'
         ordering = ['dateCreated']
 
-#################### Testing ################################
 
 
 

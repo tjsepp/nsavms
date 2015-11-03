@@ -1,28 +1,36 @@
 <hr>
-         <div  class ="row" id = "profileHeader"; style="color:navy; margin-top: 2%">
+   <div  class ="row" id = "profileHeader"; style="color:navy; margin-top: 2%">
                     <h4>Family/Group Membership</h4>
          </div>
 
-            <div class="familyContainer" style="margin-bottom: 3%; border-bottom: 1px dotted #C0C0C0">
-                {% for fam in userFamily %}
-                 <div class="'row" style="margin-bottom: 1%"> <span style="color: navy">{{fam.group.familyName}}</span> 
-                    <a class="glyphicon glyphicon-edit" title="Edit Profile"style="font-size: x-small" href="{% url 'updateFamilyProfile' fam.group.familyProfileId %}"></a>
 
-                    <p style="padding-left: 2%"><i>{{ fam.group.streetAddress }},  {{ fam.group.city }}  {{ fam.group.zip }}</i></p>
+    <div class="familyContainer" style="margin-bottom: 3%; border-bottom: 1px dotted #C0C0C0">
+        {% for fam in userFamily %}
+            <div class="'row" style="margin-bottom: 1%"> 
+                    <span style="color: navy">
+                        <b>{{fam.group.familyName}}</b>
+                     </span> 
+                <div style="padding-left: 2%">
+                    <i>
+                        {{ fam.group.streetAddress }},  {{ fam.group.city }}  {{ fam.group.zip }}
+                    </i>
                 </div>
 
-                    <div class="familyMembers" style="margin-bottom: 2%"> 
-                        <span style="color: navy">Other Members:</span> 
-                            {% for mems in fam.group.volunteers.all %} 
-                                        {% ifnotequal mems.id user.id %}
-                                            <div class="'row"> 
-                                        <span style="padding-left: 2%">  
-                                            {{ mems.name }}  
-                                        </span>
-                                            </div> 
-                                                {% endifnotequal %}  
+                <div class="familyMembers" style="margin-bottom: 1%"> 
+                    <span style="color: navy">Family Volunteers:</span> 
+                        {% for mems in fam.group.volunteers.all %}
+                            <ul>
+                                {% ifnotequal mems.id user.id %}
+                                    <li style="margin: 0%">
+                                    {{ mems.name }}
+                                    </li>
+                                 {% endifnotequal %}
+                            </ul>
 
-                            {% endfor %}
+                        {% endfor %}
+                </div>
+            </div>
 
-                {%  endfor %}
-             </div>
+        {% endfor %}
+
+    </div>

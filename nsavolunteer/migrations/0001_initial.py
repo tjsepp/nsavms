@@ -30,8 +30,8 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=True, verbose_name=b'active', db_column=b'active')),
             ],
             options={
-                'db_table': 'familyProfile2',
-                'verbose_name_plural': 'Family Profile - Testing',
+                'db_table': 'familyProfile',
+                'verbose_name_plural': 'Family Profile',
             },
             bases=(models.Model,),
         ),
@@ -58,6 +58,66 @@ class Migration(migrations.Migration):
                 'ordering': ('-history_date', '-history_id'),
                 'get_latest_by': 'history_date',
                 'verbose_name': 'historical family profile',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='HistoricalRewardCardUsers',
+            fields=[
+                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
+                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
+                ('RewardCardId', models.IntegerField(db_index=True, verbose_name=b'Reward Card ID', db_column=b'rewardCardId', blank=True)),
+                ('storeName', models.CharField(max_length=25, null=True, verbose_name=b'Store', db_column=b'store', choices=[(b'King Soopers', b'King Soopers'), (b'Safeway', b'Safeway')])),
+                ('customerCardNumber', models.CharField(max_length=50, null=True, verbose_name=b'Card Number', db_column=b'cardNumber')),
+                ('history_id', models.AutoField(serialize=False, primary_key=True)),
+                ('history_date', models.DateTimeField()),
+                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+                ('linkedUser', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'linkedUser', db_constraint=False, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ('-history_date', '-history_id'),
+                'get_latest_by': 'history_date',
+                'verbose_name': 'historical reward card users',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='HistoricalStudent',
+            fields=[
+                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
+                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
+                ('studentId', models.IntegerField(db_index=True, verbose_name=b'StudentId', db_column=b'studentId', blank=True)),
+                ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
+                ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
+                ('history_id', models.AutoField(serialize=False, primary_key=True)),
+                ('history_date', models.DateTimeField()),
+                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ('-history_date', '-history_id'),
+                'get_latest_by': 'history_date',
+                'verbose_name': 'historical student',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='HistoricalStudentToFamily',
+            fields=[
+                ('id', models.IntegerField(verbose_name='ID', db_index=True, auto_created=True, blank=True)),
+                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
+                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
+                ('history_id', models.AutoField(serialize=False, primary_key=True)),
+                ('history_date', models.DateTimeField()),
+                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('group', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='nsavolunteer.FamilyProfile', null=True)),
+                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ('-history_date', '-history_id'),
+                'get_latest_by': 'history_date',
+                'verbose_name': 'historical student to family',
             },
             bases=(models.Model,),
         ),
@@ -128,6 +188,26 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='HistoricalVolunteerToFamily',
+            fields=[
+                ('id', models.IntegerField(verbose_name='ID', db_index=True, auto_created=True, blank=True)),
+                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
+                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
+                ('history_id', models.AutoField(serialize=False, primary_key=True)),
+                ('history_date', models.DateTimeField()),
+                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('group', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='nsavolunteer.FamilyProfile', null=True)),
+                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+                ('person', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ('-history_date', '-history_id'),
+                'get_latest_by': 'history_date',
+                'verbose_name': 'historical volunteer to family',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='HistoricalVolunteerType',
             fields=[
                 ('dateCreated', models.DateTimeField(editable=False, blank=True)),
@@ -165,22 +245,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='SchoolYear',
-            fields=[
-                ('dateCreated', models.DateTimeField(auto_now_add=True)),
-                ('dateUpdated', models.DateTimeField(auto_now=True)),
-                ('yearId', models.AutoField(serialize=False, verbose_name=b'School Year ID', primary_key=True, db_column=b'yearId')),
-                ('schoolYear', models.CharField(max_length=100, verbose_name=b'School Year', db_column=b'schoolYear')),
-                ('currentYear', models.BooleanField(default=False, verbose_name=b'Current Year', db_column=b'currentYear')),
-            ],
-            options={
-                'ordering': ['schoolYear'],
-                'db_table': 'schoolYear',
-                'verbose_name_plural': 'School Year',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Student',
             fields=[
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
@@ -208,7 +272,7 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['student'],
                 'db_table': 'studentToFamily',
-                'verbose_name_plural': 'Student To Family - Testing',
+                'verbose_name_plural': 'Student To Family',
             },
             bases=(models.Model,),
         ),
@@ -277,7 +341,7 @@ class Migration(migrations.Migration):
                 ('person', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'verbose_name_plural': 'Volunteer To Family - Testing',
+                'verbose_name_plural': 'Volunteer To Family',
             },
             bases=(models.Model,),
         ),
@@ -315,6 +379,12 @@ class Migration(migrations.Migration):
             model_name='historicalvolunteerprofile',
             name='volunteerType',
             field=models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'volunteerType', db_constraint=False, blank=True, to='nsavolunteer.VolunteerType', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='historicalstudenttofamily',
+            name='student',
+            field=models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='nsavolunteer.Student', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
