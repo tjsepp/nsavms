@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import SchoolYear
+from models import SchoolYear,Grades
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -11,3 +11,4 @@ class SchoolYearAdmin(admin.ModelAdmin):
     list_display = ('schoolYear','currentYear')
 
 admin.site.register(SchoolYear,SchoolYearAdmin)
+admin.site.register(Grades)

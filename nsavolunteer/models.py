@@ -8,6 +8,7 @@ from organizations.base import (OrganizationBase, OrganizationUserBase,
 from tinymce import models as tinymce_models
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
+from nsaSchool.models import Grades
 
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
@@ -139,7 +140,7 @@ class Student(TimeStampedModel):
     studentName = models.CharField(max_length=100,db_column='studentName',verbose_name='Student Name',null=True,blank=False)
     activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
     #teacher
-    #grade
+    grade = models.ForeignKey(Grades,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -147,7 +148,7 @@ class Student(TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Students'
-        db_table='Students'
+        db_table='students'
         ordering =['studentName']
 
 class StudentToFamily(TimeStampedModel):
