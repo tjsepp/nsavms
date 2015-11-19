@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('nsaSchool', '0001_initial'),
     ]
 
     operations = [
@@ -90,10 +91,10 @@ class Migration(migrations.Migration):
                 ('studentId', models.IntegerField(db_index=True, verbose_name=b'StudentId', db_column=b'studentId', blank=True)),
                 ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
                 ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
-                ('grade', models.CharField(max_length=3, null=True, verbose_name=b'Grade', db_column=b'grade', blank=True)),
                 ('history_id', models.AutoField(serialize=False, primary_key=True)),
                 ('history_date', models.DateTimeField()),
                 ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('grade', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'gradeLevel', db_constraint=False, blank=True, to='nsaSchool.GradeLevel', null=True)),
                 ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
@@ -253,7 +254,7 @@ class Migration(migrations.Migration):
                 ('studentId', models.AutoField(serialize=False, verbose_name=b'StudentId', primary_key=True, db_column=b'studentId')),
                 ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
                 ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
-                ('grade', models.CharField(max_length=3, null=True, verbose_name=b'Grade', db_column=b'grade', blank=True)),
+                ('grade', models.ForeignKey(db_column=b'gradeLevel', blank=True, to='nsaSchool.GradeLevel', null=True, verbose_name=b'Grade Level')),
             ],
             options={
                 'ordering': ['studentName'],

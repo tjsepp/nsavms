@@ -8,10 +8,11 @@ from organizations.base import (OrganizationBase, OrganizationUserBase,
 from tinymce import models as tinymce_models
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
-from nsaSchool.models import Grades
+from nsaSchool.models import GradeLevel,Teachers
 
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
+VOLSTATUS = (('pending','Pending'),('approved','Approved'))
 
 
 class TimeStampedModel(models.Model):
@@ -57,6 +58,7 @@ class VolunteerProfile(TimeStampedModel):
     linkedUserAccount = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='linkedUser')
     volunteerType = models.ForeignKey('VolunteerType',null=True,blank=True,db_column='volunteerType',verbose_name='Volunteer Type')
     cellPhone =models.CharField(max_length=15,db_column='cellPhone',verbose_name='cell Phone', null=True, blank=True, default=None)
+    volStatus = models.CharField(max_length=15,db_column='volStatus',verbose_name='Volunteer Status',null=True,blank=True,choices=VOLSTATUS,default='pending')
     interest = models.ManyToManyField('nsavolunteer.VolunteerInterests',db_table ='profileToInterest',verbose_name='Volunteer Interests', null=True, blank =True, related_name='profile_interest')
     doNotEmail = models.BooleanField(verbose_name='Do Not Email',db_column='emailOptOut',default=False)
     history = HistoricalRecords()
@@ -91,7 +93,7 @@ class VolunteerProfile(TimeStampedModel):
         db_table = 'volunteerProfile'
         ordering = ['linkedUserAccount__name']
 
-
+##
 class VolunteerType(TimeStampedModel):
     '''
     This class contains the different type of volunteers
@@ -139,8 +141,8 @@ class Student(TimeStampedModel):
     studentId = models.AutoField(primary_key=True,db_column='studentId',verbose_name='StudentId')
     studentName = models.CharField(max_length=100,db_column='studentName',verbose_name='Student Name',null=True,blank=False)
     activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
-    #teacher
-    grade = models.ForeignKey(Grades,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
+    teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True)
+    grade = models.ForeignKey(GradeLevel,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
 
     def __unicode__(self):

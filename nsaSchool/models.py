@@ -14,7 +14,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class Grades(models.Model):
+class GradeLevel(models.Model):
     gradeId = models.AutoField(primary_key=True,db_column='gradeId',verbose_name='Grade ID')
     gradeName = models.CharField(max_length=25, db_column='gradeName', null=True, blank=False,verbose_name='Grade Name')
     gradeOrder = models.IntegerField(db_column='gradeOrder',unique=True,null=True,blank=True, verbose_name='Grade Order')
@@ -55,5 +55,17 @@ class SchoolYear(TimeStampedModel):
         ordering = ['schoolYear']
 
 
-#class Teachers(TimeStampedModel):
-    #teacherId
+
+class Teachers(TimeStampedModel):
+    teacherId = models.AutoField(primary_key=True,db_column='teacherId',verbose_name='Teacher ID')
+    firstName = models.CharField(max_length=30, db_column='firstName',null=True, blank=True,verbose_name='First Name')
+    lastName = models.CharField(max_length=30, db_column='lastName',null=True, blank=True,verbose_name='Last Name')
+    gradeLevel = models.ForeignKey('GradeLevel',db_column='gradeLevel',null=True,blank=True, verbose_name='Grade Level')
+
+    def __unicode__(self):
+        return '%s %s' %(self.firstName, self.lastName)
+
+    class Meta:
+        verbose_name_plural = 'Teachers'
+        db_table='teachers'
+        ordering =['lastName']
