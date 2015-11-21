@@ -1,6 +1,6 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
-
+from tinymce import models as tinymce_models
 
 
 class TimeStampedModel(models.Model):
@@ -12,6 +12,28 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class VolunteerNews(TimeStampedModel):
+    '''
+    This class allows users to add news to the volunteer site. It is aided by tinyMCE which allows for specific formatting
+    '''
+    newsID = models.AutoField(primary_key=True,db_column='newsID',verbose_name='VolunteerNewsId')
+    headline = models.CharField(max_length=250,db_column='title',verbose_name='News Title', null=True, blank=False, default=None)
+    #body = models.TextField(verbose_name='News Body', db_column='body', null=True, blank=False)
+    body = tinymce_models.HTMLField(verbose_name='News Body', db_column='body', null=True, blank=False)
+    newsEndDate = models.DateField(verbose_name ='NewsEndDate', db_column='enddate', null=True, blank=False, help_text='For indefinite news, enter 1/1/2900')
+    topPriority = models.BooleanField(verbose_name='Top priority', db_column='prioriyy', default=False)
+    history = HistoricalRecords()
+
+    def __unicode__(self):
+        return self.headline
+
+    class Meta:
+        verbose_name_plural='Volunteer News'
+        db_table = 'volunteerNews'
+        ordering = ['dateCreated']
+
 
 
 class GradeLevel(models.Model):

@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import tinymce.models
 import django.db.models.deletion
 from django.conf import settings
 
@@ -21,7 +20,7 @@ class Migration(migrations.Migration):
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
                 ('dateUpdated', models.DateTimeField(auto_now=True)),
                 ('familyProfileId', models.AutoField(serialize=False, verbose_name=b'Family Profile Id', primary_key=True, db_column=b'FamilyProfileId')),
-                ('familyName', models.CharField(db_column=b'familyName', default=None, max_length=50, blank=True, null=True, verbose_name=b'Family Name')),
+                ('familyName', models.CharField(default=None, max_length=50, null=True, verbose_name=b'Family Name', db_column=b'familyName')),
                 ('streetAddress', models.CharField(max_length=200, null=True, verbose_name=b'Street Address', db_column=b'streetAddress', blank=True)),
                 ('city', models.CharField(max_length=50, null=True, verbose_name=b'city', db_column=b'city', blank=True)),
                 ('zip', models.CharField(max_length=15, null=True, verbose_name=b'zip', db_column=b'zip', blank=True)),
@@ -42,7 +41,7 @@ class Migration(migrations.Migration):
                 ('dateCreated', models.DateTimeField(editable=False, blank=True)),
                 ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
                 ('familyProfileId', models.IntegerField(db_index=True, verbose_name=b'Family Profile Id', db_column=b'FamilyProfileId', blank=True)),
-                ('familyName', models.CharField(db_column=b'familyName', default=None, max_length=50, blank=True, null=True, verbose_name=b'Family Name')),
+                ('familyName', models.CharField(default=None, max_length=50, null=True, verbose_name=b'Family Name', db_column=b'familyName')),
                 ('streetAddress', models.CharField(max_length=200, null=True, verbose_name=b'Street Address', db_column=b'streetAddress', blank=True)),
                 ('city', models.CharField(max_length=50, null=True, verbose_name=b'city', db_column=b'city', blank=True)),
                 ('zip', models.CharField(max_length=15, null=True, verbose_name=b'zip', db_column=b'zip', blank=True)),
@@ -96,6 +95,7 @@ class Migration(migrations.Migration):
                 ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
                 ('grade', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'gradeLevel', db_constraint=False, blank=True, to='nsaSchool.GradeLevel', null=True)),
                 ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
+                ('teacher', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'teacher', db_constraint=False, blank=True, to='nsaSchool.Teachers', null=True)),
             ],
             options={
                 'ordering': ('-history_date', '-history_id'),
@@ -145,28 +145,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='HistoricalVolunteerNews',
-            fields=[
-                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
-                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
-                ('newsID', models.IntegerField(db_index=True, verbose_name=b'VolunteerNewsId', db_column=b'newsID', blank=True)),
-                ('headline', models.CharField(default=None, max_length=250, null=True, verbose_name=b'News Title', db_column=b'title')),
-                ('body', tinymce.models.HTMLField(null=True, verbose_name=b'News Body', db_column=b'body')),
-                ('newsEndDate', models.DateField(help_text=b'For indefinite news, enter 1/1/2900', null=True, verbose_name=b'NewsEndDate', db_column=b'enddate')),
-                ('topPriority', models.BooleanField(default=False, verbose_name=b'Top priority', db_column=b'prioriyy')),
-                ('history_id', models.AutoField(serialize=False, primary_key=True)),
-                ('history_date', models.DateTimeField()),
-                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
-                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
-            ],
-            options={
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
-                'verbose_name': 'historical volunteer news',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='HistoricalVolunteerProfile',
             fields=[
                 ('dateCreated', models.DateTimeField(editable=False, blank=True)),
@@ -175,6 +153,7 @@ class Migration(migrations.Migration):
                 ('firstName', models.CharField(max_length=200, null=True, verbose_name=b'First Name', db_column=b'firstName', blank=True)),
                 ('lastName', models.CharField(max_length=200, null=True, verbose_name=b'Last Name', db_column=b'lastName', blank=True)),
                 ('cellPhone', models.CharField(db_column=b'cellPhone', default=None, max_length=15, blank=True, null=True, verbose_name=b'cell Phone')),
+                ('volStatus', models.CharField(db_column=b'volStatus', default=b'pending', choices=[(b'pending', b'Pending'), (b'approved', b'Approved')], max_length=15, blank=True, null=True, verbose_name=b'Volunteer Status')),
                 ('doNotEmail', models.BooleanField(default=False, verbose_name=b'Do Not Email', db_column=b'emailOptOut')),
                 ('history_id', models.AutoField(serialize=False, primary_key=True)),
                 ('history_date', models.DateTimeField()),
@@ -255,6 +234,7 @@ class Migration(migrations.Migration):
                 ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
                 ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
                 ('grade', models.ForeignKey(db_column=b'gradeLevel', blank=True, to='nsaSchool.GradeLevel', null=True, verbose_name=b'Grade Level')),
+                ('teacher', models.ForeignKey(db_column=b'teacher', blank=True, to='nsaSchool.Teachers', null=True)),
             ],
             options={
                 'ordering': ['studentName'],
@@ -297,24 +277,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='VolunteerNews',
-            fields=[
-                ('dateCreated', models.DateTimeField(auto_now_add=True)),
-                ('dateUpdated', models.DateTimeField(auto_now=True)),
-                ('newsID', models.AutoField(serialize=False, verbose_name=b'VolunteerNewsId', primary_key=True, db_column=b'newsID')),
-                ('headline', models.CharField(default=None, max_length=250, null=True, verbose_name=b'News Title', db_column=b'title')),
-                ('body', tinymce.models.HTMLField(null=True, verbose_name=b'News Body', db_column=b'body')),
-                ('newsEndDate', models.DateField(help_text=b'For indefinite news, enter 1/1/2900', null=True, verbose_name=b'NewsEndDate', db_column=b'enddate')),
-                ('topPriority', models.BooleanField(default=False, verbose_name=b'Top priority', db_column=b'prioriyy')),
-            ],
-            options={
-                'ordering': ['dateCreated'],
-                'db_table': 'volunteerNews',
-                'verbose_name_plural': 'Volunteer News',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='VolunteerProfile',
             fields=[
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
@@ -323,6 +285,7 @@ class Migration(migrations.Migration):
                 ('firstName', models.CharField(max_length=200, null=True, verbose_name=b'First Name', db_column=b'firstName', blank=True)),
                 ('lastName', models.CharField(max_length=200, null=True, verbose_name=b'Last Name', db_column=b'lastName', blank=True)),
                 ('cellPhone', models.CharField(db_column=b'cellPhone', default=None, max_length=15, blank=True, null=True, verbose_name=b'cell Phone')),
+                ('volStatus', models.CharField(db_column=b'volStatus', default=b'pending', choices=[(b'pending', b'Pending'), (b'approved', b'Approved')], max_length=15, blank=True, null=True, verbose_name=b'Volunteer Status')),
                 ('doNotEmail', models.BooleanField(default=False, verbose_name=b'Do Not Email', db_column=b'emailOptOut')),
                 ('interest', models.ManyToManyField(related_name='profile_interest', to='nsavolunteer.VolunteerInterests', db_table=b'profileToInterest', blank=True, null=True, verbose_name=b'Volunteer Interests')),
                 ('linkedUserAccount', models.OneToOneField(related_name='linkedUser', to=settings.AUTH_USER_MODEL)),

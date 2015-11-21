@@ -1,10 +1,9 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerToFamily,VolunteerProfile, VolunteerNews,RewardCardUsers,Student,FamilyProfile,VolunteerToFamily,StudentToFamily
+from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerToFamily,VolunteerProfile, RewardCardUsers,Student,FamilyProfile,VolunteerToFamily,StudentToFamily
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
 from django.db import models
-from forms import volunteerAdminForm
 
 
 
@@ -49,8 +48,6 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     inlines = [userToProfileInline]
 
 
-class VolunteerNewsAdmin(SimpleHistoryAdmin):
-    form = volunteerAdminForm
 
 
 
@@ -63,7 +60,6 @@ admin.site.register(VolunteerType,SimpleHistoryAdmin)
 admin.site.register(FamilyProfile,FamilyProfileAdmin)
 admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
 #admin.site.register(FamilyProfileOwner)
-admin.site.register(VolunteerNews,VolunteerNewsAdmin)
 admin.site.register(Student)
 admin.site.register(StudentToFamily)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)

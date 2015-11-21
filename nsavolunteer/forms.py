@@ -67,12 +67,6 @@ class FamilyProfileForm(ModelForm):
         model = FamilyProfile
         fields='__all__'
 
-class volunteerAdminForm(ModelForm):
-    body = forms.CharField(widget=TinyMCE(attrs={'cols': 150, 'rows': 30}))
-    class Meta:
-        model = VolunteerNews
-        fields='__all__'
-
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile

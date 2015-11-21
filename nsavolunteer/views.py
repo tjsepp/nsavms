@@ -14,6 +14,8 @@ from .models import *
 from authtools.models import User
 from django.forms.formsets import formset_factory
 
+from nsaSchool.models import VolunteerNews
+
 
 class LoginView(FormView):
     template_name = 'account/login.html'
@@ -38,7 +40,7 @@ class LogoutView(RedirectView):
 
 def homeView(request):
     news = VolunteerNews.objects.all()
-    response = render(request,'news.html',{'news':news})
+    response = render(request,'home.html')
     return response
 
 def userVolunteerData(request):

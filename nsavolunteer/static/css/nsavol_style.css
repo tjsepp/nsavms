@@ -1,36 +1,47 @@
-#mainContainer{
-    margin: 2% 5% 5% 5% ;
+
+body{
+    font-family: "American Typewriter";
 }
 
-#navContainer{
-    margin-top: 1%;
+
+.homepage-banner{
+background-image: url("/static/img/NSAStudents.jpeg");
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+height: 450px;
+margin-bottom: 50px;
 }
 
-.nav-pills li.active a{
-    background-color: #E6E6E6;
-    color: black;
-}
-.nav-pills li.active a:hover{
-    background-color: #E6E6E6;
-    color: black;
+.header-text{
+    font-size: 20px;
+    margin-top: 25%;
+    background-color: rgba(0,0,0,0.4);
+    padding: 5px;
+    border-radius: 10px;
+    margin-left: auto;
+    font-family: arial;
 }
 
-.nav-pills li a:hover{
-    background-color: transparent;
-    text-decoration: underline;
+.homepage-header{
+    font-size: 50px;
+    color: white;
+    font-weight: 600;
 }
-.nav-pills li.active a:focus{
-    background-color: transparent;
-    color: black;
+
+.center{
+    text-align: center;
 }
 
 #LoginForm{
    width: 300px;
    margin: 0 auto;
+   margin-top: 5%;
 }
 
 .profileBlock {
     #border:1px solid #a3a3a3 ;
+    margin: 5%;
 }
 
 .profileBlock .dataLabel{

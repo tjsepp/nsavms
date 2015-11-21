@@ -5,7 +5,6 @@ from simple_history.models import HistoricalRecords
 from organizations.models import Organization, OrganizationUser
 from organizations.base import (OrganizationBase, OrganizationUserBase,
         OrganizationOwnerBase)
-from tinymce import models as tinymce_models
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers
@@ -13,6 +12,8 @@ from nsaSchool.models import GradeLevel,Teachers
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
+GRADELEVEL = (('0','Kindergarten'),('1','1st Grade'),('2','2nd Grade'),('3','3rd Grade'),('4','4th Grade'),
+              ('5','5th Grade'),('6','6th Grade'),('7','7th Grade'),('8','8th Grade'))
 
 
 class TimeStampedModel(models.Model):
@@ -26,25 +27,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class VolunteerNews(TimeStampedModel):
-    '''
-    This class allows users to add news to the volunteer site. It is aided by tinyMCE which allows for specific formatting
-    '''
-    newsID = models.AutoField(primary_key=True,db_column='newsID',verbose_name='VolunteerNewsId')
-    headline = models.CharField(max_length=250,db_column='title',verbose_name='News Title', null=True, blank=False, default=None)
-    #body = models.TextField(verbose_name='News Body', db_column='body', null=True, blank=False)
-    body = tinymce_models.HTMLField(verbose_name='News Body', db_column='body', null=True, blank=False)
-    newsEndDate = models.DateField(verbose_name ='NewsEndDate', db_column='enddate', null=True, blank=False, help_text='For indefinite news, enter 1/1/2900')
-    topPriority = models.BooleanField(verbose_name='Top priority', db_column='prioriyy', default=False)
-    history = HistoricalRecords()
 
-    def __unicode__(self):
-        return self.headline
-
-    class Meta:
-        verbose_name_plural='Volunteer News'
-        db_table = 'volunteerNews'
-        ordering = ['dateCreated']
 
 
 class VolunteerProfile(TimeStampedModel):
@@ -93,7 +76,7 @@ class VolunteerProfile(TimeStampedModel):
         db_table = 'volunteerProfile'
         ordering = ['linkedUserAccount__name']
 
-##
+
 class VolunteerType(TimeStampedModel):
     '''
     This class contains the different type of volunteers
@@ -128,9 +111,6 @@ class VolunteerInterests(TimeStampedModel):
         verbose_name_plural='Interest Type'
         db_table = 'volunteerInterests'
         ordering = ['interestName']
-
-
-
 
 
 class Student(TimeStampedModel):
@@ -174,7 +154,7 @@ class FamilyProfile(TimeStampedModel):
     roll up all data to a family level.
     '''
     familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
-    familyName =  models.CharField(max_length=50,db_column='familyName',verbose_name='Family Name', null=True, blank=True, default=None)
+    familyName =  models.CharField(max_length=50,db_column='familyName',verbose_name='Family Name', null=True, blank=False, default=None)
     streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
     city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')

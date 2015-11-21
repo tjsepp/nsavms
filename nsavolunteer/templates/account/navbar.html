@@ -1,80 +1,54 @@
-<div class="row" style="margin-top:10px;">
-        <div class="col-md-6">
-          <img id="logo-main" src="{{STATIC_URL}}img/logo_topo.png" width="200" alt="Northstar Logo">
-        </div>
+<div class="navbar navbar-default navbar-fixed-top" style="border-bottom: solid navy 1px" role="navigation">
 
-      </div>
+    <div class ="container">
+             <a class="navbar-brand">
+                 <img class ="img-responsive" style="max-width: 100%; margin-top: -15px; margin-left: -2%" src="{{STATIC_URL}}img/nsavms.png">
+             </a>
 
-      <div class="row">
-        <nav class="navbar navbar" role="navigation" id="navContainer">
-          <ul class="nav nav-pills">
-            <li>
-              <a href="{% url 'home' %}">Home</a>
-            </li>
-            <li>
-              {% if user.is_authenticated %}
-                      <a href="{%  url 'userVolunteerData' %}">My Volunteer Data</a>
+        <div class ='navbar-header'>
+             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                 <span class ="sr-only">Toggle Navigation</span>
+                 <span class ='icon-bar'></span>
+                 <span class ='icon-bar'></span>
+                 <span class ='icon-bar'></span>
+             </button>
+         </div>
 
-                    </li>
-                    <li>
-                      <a href="{% url 'volunteeropps' %}">Volunteer Opportunities</a>
-                    </li>
-            {%  endif %}
-            <li>
-              <a href="#">Link 3</a>
-            </li>
-            <li>
-              <a href="#">Link 4</a>
-            </li>
-
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                More<b class="caret"></b></a>
-
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#"></a>
+         <div class="navbar-collapse collapse">
+            <ul class=" nav navbar-nav navbar-right">
+                <li class="active"><a href="{%  url 'home' %}">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">Admin & Dashboard</li>
+                                <li><a href="#">Admin 1</a></li>
+                                <li><a href="#">Admin 2</a></li>
+                                <li><a href="#">Admin 3</a></li>
+                            <li class="dropdown-header">School Testing</li>
+                                <li><a href="#">Testing 1</a></li>
+                                <li><a href="#">Testing 2</a></li>
+                                <li><a href="#">Testing 3</a></li>
+                        </ul>
                 </li>
-                <li>
-                  <a href="{%  url 'volunteerInterests' %}">Volunteer Interest Reference</a>
-                </li>
-                <li>
-                  <a href="#">Sub Link 2</a>
-                </li>
-                <li>
-                  <a href="#">Sub Link 3
-                  </a>
-                </li>
-              </ul>
-
 
 
                 {% if user.is_authenticated %}
-                  <li class="dropdown pull-right">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    Welcome: {{user.name}}<b class="caret"></b></a>
-
-                          <ul class="dropdown-menu">
-                            <li>
-                              <a href="{%  url 'user_dashboard' %}">My Profile</a>
-                            </li>
-                            <li>
-                              <a href="#">Change Login/password</a>
-                            </li>
-                            <li>
-                              <a href="{% url 'mainlogout' %}">Log out</a>
-                            </li>
-                          </ul>
-
-
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome: {{user.name}}<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">{{ user.name }}'s information</li>
+                                    <li><a href="{%  url 'user_dashboard' %}">My Profile</a></li>
+                                    <li><a href="#">Change Login/password</a></li>
+                                    <li><a href="{% url 'mainlogout' %}">Log out</a></li>
+                            </ul>
+                    </li>
                 {% else %}
-                    <li class="pull-right">
-                        <a href="{% url 'mainlogin' %}">Log In</a>
-                     </li>
+                    <li><a href="{% url 'mainlogin' %}">Log In</a></li>
                 {% endif %}
-         </ul>
-        </nav>
-      </div>
+            </ul>
+         </div>
 
 
-
+    </div>
+</div>
