@@ -4,6 +4,7 @@ body{
 }
 
 
+
 .homepage-banner{
 background-image: url("/static/img/NSAStudents.jpeg");
 background-size: cover;
@@ -14,7 +15,7 @@ margin-bottom: 50px;
 }
 
 .header-text{
-    font-size: 20px;
+    font-size: 18px;
     margin-top: 25%;
     background-color: rgba(0,0,0,0.4);
     padding: 5px;
@@ -24,7 +25,7 @@ margin-bottom: 50px;
 }
 
 .homepage-header{
-    font-size: 50px;
+    font-size: 40px;
     color: white;
     font-weight: 600;
 }
@@ -66,5 +67,9 @@ margin-bottom: 50px;
 
 #volunteerProfileForm{
        width: 400px;
-   margin: 0 auto;
+       margin: 0 auto;
+
+}
+.profile-form{
+    margin-top: 5%;
 }
