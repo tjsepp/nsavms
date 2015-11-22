@@ -5,7 +5,10 @@
         <meta charset="UTF-8">
 
            <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet">
+           <link href="{{STATIC_URL}}css/font-awesome.min.css" rel="stylesheet">
            <link href="{{STATIC_URL}}css/nsavol_style.css" rel="stylesheet">
+           <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+
         {% block extra_head %}
 
         {% endblock %}
@@ -22,13 +25,10 @@
 
         {%  include 'account/navbar.html' %}
 
-
-
             {% block base_content %}
-
             {% endblock %}
-        </div>
 
+        </div>
     </body>
 
 

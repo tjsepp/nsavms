@@ -8,20 +8,21 @@
         {% for fam in userFamily %}
             <div class="'row" style="margin-bottom: 1%"> 
                     <span style="color: navy">
-                        <b>{{fam.group.familyName}}</b>
+                        <strong>{{fam.group.familyName}}</strong>
                      </span> 
                 <div style="padding-left: 2%">
-                    <i>
-                        {{ fam.group.streetAddress }},  {{ fam.group.city }}  {{ fam.group.zip }}
-                    </i>
+                    <address>
+                        {{ fam.group.streetAddress }}, <br> {{ fam.group.city }}, CO  {{ fam.group.zip }}
+                    </address>
                 </div>
 
-                <div class="familyMembers" style="margin-bottom: 1%"> 
-                    <span style="color: navy">Family Volunteers:</span> 
+
+                <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
+                    <span style="color: navy">Family Members:</span> 
                         {% for mems in fam.group.volunteers.all %}
                             <ul>
                                 {% ifnotequal mems.id user.id %}
-                                    <li style="margin: 0%">
+                                    <li style="margin: 0%;padding: 0px">
                                     {{ mems.name }}
                                     </li>
                                  {% endifnotequal %}
@@ -34,3 +35,5 @@
         {% endfor %}
 
     </div>
+
+

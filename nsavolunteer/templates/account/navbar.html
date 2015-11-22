@@ -8,27 +8,26 @@
         <div class ='navbar-header'>
              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                  <span class ="sr-only">Toggle Navigation</span>
-                 <span class ='icon-bar'></span>
-                 <span class ='icon-bar'></span>
-                 <span class ='icon-bar'></span>
+                 <span class ='glyphicon glyphicon-menu-hamburger'></span>
+
              </button>
          </div>
 
          <div class="navbar-collapse collapse">
             <ul class=" nav navbar-nav navbar-right">
                 <li class="active"><a href="{%  url 'home' %}">Home</a></li>
-                <li><a href="#">About</a></li>
+                <li><a href="#">News</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li class="dropdown-header">Admin & Dashboard</li>
-                                <li><a href="#">Admin 1</a></li>
-                                <li><a href="#">Add A New Family</a></li>
-                                <li><a href="#">Year End Management</a></li>
-                            <li class="dropdown-header">School Testing</li>
-                                <li><a href="#">Testing 1</a></li>
-                                <li><a href="#">Testing 2</a></li>
-                                <li><a href="#">Testing 3</a></li>
+                            <li class="dropdown-header"><b>Admin & Dashboard</b></li>
+                                <li class="navIndent"><a href="#">Admin 1</a></li>
+                                <li class="navIndent"><a href="#">Add A New Family</a></li>
+                                <li class="navIndent"><a href="#">Year End Management</a></li>
+                            <li class="dropdown-header"><b>School Testing</b></li>
+                                <li class="navIndent"><a href="#">Testing 1</a></li>
+                                <li class="navIndent"><a href="#">Testing 2</a></li>
+                                <li class="navIndent"><a href="#">Testing 3</a></li>
                         </ul>
                 </li>
 
@@ -37,10 +36,10 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome: {{user.name}}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li class="dropdown-header">{{ user.name }}'s information</li>
-                                    <li><a href="{%  url 'user_dashboard' %}">My Profile</a></li>
-                                    <li><a href="#">Change Login/password</a></li>
-                                    <li><a href="{% url 'mainlogout' %}">Log out</a></li>
+                                <li class="dropdown-header"><b>{{ user.name }}'s information</b></li>
+                                    <li class="navIndent"><a href="{%  url 'user_dashboard' %}">My Profile</a></li>
+                                    <li class="navIndent"><a href="#">Change Login/password</a></li>
+                                    <li class="navIndent"><a href="{% url 'mainlogout' %}">Log out</a></li>
                             </ul>
                     </li>
                 {% else %}
