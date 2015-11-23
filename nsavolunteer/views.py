@@ -3,12 +3,12 @@ from django.views.generic import FormView, TemplateView, RedirectView, UpdateVie
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.template.response import TemplateResponse
 from django.template import RequestContext
-from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
-from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily
+from braces.views import LoginRequiredMixin
+from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra
 
 from .models import *
 from authtools.models import User
@@ -36,6 +36,20 @@ class LogoutView(RedirectView):
     def get(self, request, *args, **kwargs):
         auth_logout(request)
         return super(LogoutView,self).get(request,args,kwargs)
+
+
+class ChangePassword(LoginRequiredMixin, FormView):
+    template_name = 'account/changePassword.html'
+    form_class = PasswordChangeFormExtra
+    success_url = reverse_lazy('userVolunteerData')
+
+    def  get_form(self, form_class):
+        return form_class(user=self.request.user, **self.get_form_kwargs())
+
+    def form_valid(self,form):
+        form.save()
+        update_session_auth_hash(self.request, form.user)
+        return super(ChangePassword,self).form_valid(form)
 
 
 def homeView(request):
