@@ -38,7 +38,7 @@
                             <ul class="dropdown-menu">
                                 <li class="dropdown-header"><b>{{ user.name }}'s information</b></li>
                                     <li class="navIndent"><a href="{%  url 'user_dashboard' %}">My Profile</a></li>
-                                    <li class="navIndent"><a href="#">Change Login/password</a></li>
+                                    <li class="navIndent"><a href="{% url 'changepassword' %}">Change Password</a></li>
                                     <li class="navIndent"><a href="{% url 'mainlogout' %}">Log out</a></li>
                             </ul>
                     </li>

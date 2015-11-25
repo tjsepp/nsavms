@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authtools',
+    'braces',
     'tinymce',
     'crispy_forms',
     'debug_toolbar',
