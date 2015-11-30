@@ -40,9 +40,9 @@ class PasswordChangeFormExtra(PasswordChangeForm):
         #self.helper.label_class = 'col-lg-2'
         #self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
-            'old_password',
-            'new_password1',
-            'new_password2',
+            PrependedText('old_password',"<span class='glyphicon glyphicon-asterisk'></span>",css_class="passwordfields", placeholder="Old Password"),
+            PrependedText('new_password1',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Old Password"),
+            PrependedText('new_password2',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Old Password"),
             HTML('<div class="form-group"><div class="col-md-4"> </div>'),
             ButtonHolder(
                 Submit('submit', 'Reset', css_class='btn-primary'),
