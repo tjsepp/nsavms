@@ -1,0 +1,23 @@
+{%  extends 'account/base.html' %}
+{% block base_content %}
+<div class="col-lg-12"
+<div class="row" style="margin-bottom: 3%; padding: 5px">
+
+        {%  for int in interests %}
+                {% if forloop.first %}
+                    <div class="row"  style="margin-bottom: 1%">{% endif %}
+                        <div class="col-lg-3 col-md-3 col-xs-12">
+         <span style="margin-right: 3%"><b style="color:navy">{{ int.interestName }}</b></span>
+                {% if int in profileInt %}
+                <a href="{% url 'deleteinterestFromProfile' int.interestId %}" class="fa fa-check-square-o" style="font-size: medium"></a>
+                {%  else %}
+                <a href="{% url 'addinterestToProfile' int.interestId %}" class="fa fa-square-o" style="font-size: medium"></a>
+                {%  endif %}
+                     </div>
+                {% if forloop.counter|divisibleby:4 %}</div><div class="row" style="margin-bottom: 1%">{% endif %}
+            {% if forloop.last %}</div>{% endif %}
+        {% endfor %}
+</div>
+</div>
+
+{%  endblock %}

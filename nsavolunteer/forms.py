@@ -85,20 +85,30 @@ class UserProfileForm(ModelForm):
         super(UserProfileForm,self).__init__(*args, **kwargs)
         self.fields['interest'].queryset = VolunteerInterests.objects.filter(active=True).all()
         self.helper = FormHelper(self)
-        self.helper.form_class='form-hprizontal'
+        self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'
         self.helper.form_id='volunteerProfileForm'
         #self.helper.label_class='col-md-2'
         #self.helper.field_class='col-md-5'
         self.helper.layout = Layout(
-            'firstName',
-            'lastName',
-            'volunteerType',
-            'cellPhone',
-            'interest',
+            Div(
+            Div('firstName',css_class='col-md-6',),
+            Div('lastName',css_class='col-md-6',),
+            css_class='row',
+            ),
+            Div(
+            Div('volunteerType',css_class='col-md-6',),
+            Div('cellPhone',css_class='col-md-6',),
+             css_class='row',
+            ),
+            HTML("{% include 'forms/volunteerInterests.html' %}"),
         Field('linkedUserAccount', type="hidden"),
+        Field('interest', type="hidden"),
+        HTML('<div class="form-group"><div class="col-lg-5"> </div>'),
+        ButtonHolder(
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ),
         )
 
 class FamilyProfileForm(ModelForm):

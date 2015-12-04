@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidde
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
-from django.template.response import TemplateResponse
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
@@ -96,6 +95,13 @@ class UpdateVolunteerProfile(UpdateView):
     def get_success_url(self):
         return reverse('user_dashboard')
 
+    def get_context_data(self, **kwargs):
+        context = super(UpdateVolunteerProfile, self).get_context_data(**kwargs)
+        context['interests'] = VolunteerInterests.objects.filter(active=True).all()
+        context['profileInt'] = self.object.interest.all()
+        return context
+
+
 class UpdateFamilyProfile(UpdateView):
     form_class = FamilyProfileForm
     template_name = 'forms/updateFamilyProfile.html'
@@ -132,7 +138,7 @@ def InterestList(request):
     else:
         profileInt =''
     interests = VolunteerInterests.objects.filter(active=True).all()
-    response = render(request,'volunteerInterests.html',{'interests':interests,'profileInt':profileInt})
+    response = render(request, 'userprofile/templates/forms/volunteerInterests.html',{'interests':interests,'profileInt':profileInt})
     return response
 
 def addInterestToProfile(request,Intid):

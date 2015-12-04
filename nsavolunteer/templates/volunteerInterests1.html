@@ -3,6 +3,7 @@
 
     {% if user.is_authenticated %}
             {%  for int in interests %}
+
                 <div><b style="color:navy">{{ int.interestName }}</b></div>
                 <div>{{ int.description }}</div>
                 {% if int in profileInt %}
