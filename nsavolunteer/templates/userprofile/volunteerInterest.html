@@ -4,6 +4,7 @@
                 </div>
 
                 <div class="row">
+                {%  if cur_user.interest.all %}
                         {% for int2 in cur_user.interest.all %}
                         <div class="col-md-3 col-sm-12 col-xs-12">
                             <span data-toggle="tooltip" title="{{int2.description}}">
@@ -15,4 +16,7 @@
                     <div class="row">
                         {% endif %}
                         {% endfor %}
+                {% else %}
+                    You have not selected any interests - Please update your profile.
+                {% endif %}
                     </div>

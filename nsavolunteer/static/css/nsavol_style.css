@@ -105,3 +105,19 @@ margin-bottom: 50px;
     margin-bottom: 15px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: #333333;
+  opacity:0.8;
+    }
+
+.panel > .panel-heading {
+    background-image: none;
+    background-color: white;
+    color: Navy;
+}

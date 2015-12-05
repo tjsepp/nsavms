@@ -101,10 +101,18 @@ class UserProfileForm(ModelForm):
             Div('cellPhone',css_class='col-md-6',),
              css_class='row',
             ),
-            HTML("{% include 'forms/volunteerInterests.html' %}"),
+
         Field('linkedUserAccount', type="hidden"),
+        Div(
+        Div(HTML('<b>Volunteer Interests</b>'),css_class='panel-heading'
+        ),
+        Div(
+        HTML("{% include 'forms/volunteerInterests.html' %}"),
+        css_class='panel-body'),
+        css_class='panel panel-default'
+        ),
         Field('interest', type="hidden"),
-        HTML('<div class="form-group"><div class="col-lg-5"> </div>'),
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
