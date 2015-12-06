@@ -5,7 +5,11 @@
         <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offfset-3 col-lg-7 center">
             <div class="header-text">
                 <h2 class="homepage-header">
-                    Our Volunteers Make a Difference!
+                      {% if user.is_authenticated %}
+                        You Make a Difference!
+                      {% else %}
+                          Our Volunteers Make a Difference!
+                      {% endif %}
                 </h2>
 
             </div>
@@ -21,8 +25,8 @@
                     <span class='fa fa-child' style="font-size: 5em; color: #191970"></span>
                 </div>
                 <div class="center homepage-component">
-                    <h3>Title 1</h3>
-                    blah blah blah blah blah
+                    <h3>Log Hours</h3>
+                    Log your volunteer hours simply and easily.
                 </div>
             </div>
 
@@ -31,8 +35,8 @@
                     <span class='fa fa-gear' style="font-size: 5em; color: #191970"></span>
                 </div>
                  <div class="center homepage-component">
-                    <h3>Title 2</h3>
-                    blah blah blah blah blah
+                    <h3>Set Up Your Profile</h3>
+                    Set up or update your profile and select volunteer interests
                  </div>
             </div>
 
@@ -41,8 +45,8 @@
                     <span class='fa fa-laptop' style="font-size: 5em; color: #191970"></span>
                 </div>
                  <div class="center homepage-component">
-                    <h3>Title 3</h3>
-                    blah blah blah blah blah
+                    <h3>Track Shopping Credits</h3>
+                    Track credits earned through King Soopers and Safeway gift cards.
                 </div>
             </div>
 
@@ -51,8 +55,8 @@
                     <span class='fa fa-cube' style="font-size: 5em; color: #191970"></span>
                 </div>
                  <div class="center homepage-component">
-                    <h3>Title 4</h3>
-                    blah blah blah blah blah
+                    <h3>Keep Track of Total Hours</h3>
+                    Track your total number of volunteer hours.
 
                 </div>
             </div>
@@ -65,7 +69,7 @@
 
             <div class="col-md-6 col-sm-6 col-xs-12 faq-col">
                 <div class="faq-item">
-                    <h3 class="question"><i class='fa fa-genderless'> Section Header 1</i></h3>
+                    <h3 class="question"><i class='fa fa-genderless'> Find What Fits</i></h3>
                 <p class="answer">
                     Volunteering can take on many forms from helping in the classroom, assisting staff in the
                     lunchroom and on the playground, or doing projects at home.
@@ -74,7 +78,7 @@
                 </div>
 
                  <div class="faq-item">
-                    <h3 class="question"><i class='fa fa-genderless'> Section Header 1</i></h3>
+                    <h3 class="question"><i class='fa fa-genderless'> Annual Requirement</i></h3>
                 <p class="answer">
                     At NSA, each family is required to volunteer a minimum of 40 hours per academic year
                     (or 20 hours for single parent families – you must contact the Volunteer Coordinator to qualify)
@@ -84,7 +88,7 @@
 
             <div class="col-md-6 col-sm-6 col-xs-12 faq-col">
                 <div class="faq-item">
-                    <h3 class="question"><i class='fa fa-genderless'> Section Header 2</i></h3>
+                    <h3 class="question"><i class='fa fa-genderless'> Before You Get Started</i></h3>
                     <p class="answer">
                         In order to access VMS and log your hours, you must return the necessary school registration
                     forms and DCSD Parent Volunteer Agreement.
@@ -94,7 +98,7 @@
 
             <div class="col-md-6 col-sm-6 col-xs-12 faq-col">
                 <div class="faq-item">
-                    <h3 class="question"><i class='fa fa-genderless'> Section Header 2</i></h3>
+                    <h3 class="question"><i class='fa fa-genderless'> Stay Current</i></h3>
                     <p class="answer">
                     At the start of each new school year volunteers are required to log into the VMS to verify and update
                         their contact information and to update their student information.
