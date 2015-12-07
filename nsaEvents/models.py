@@ -15,6 +15,18 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+class DaysOfWeek(models.Model):
+    dayId = models.AutoField(primary_key=True,db_column='dayId',verbose_name='Week Day ID')
+    dayName = models.CharField(max_length=25,db_column='dayName',verbose_name='Day',null=True,blank=False)
+
+    def __unicode__(self):
+        return self.dayName
+
+    class Meta:
+        verbose_name_plural = 'Days'
+        db_table = 'nsaDaysofWeek'
+        ordering = ['dayId']
+
 
 class NsaEvents(TimeStampedModel):
     eventName = models.CharField(max_length=100, db_column='eventName',verbose_name='Event Name', null=True,blank=False)
@@ -24,6 +36,7 @@ class NsaEvents(TimeStampedModel):
     autoApprove = models.BooleanField(verbose_name='Auto Approve',db_column='autoApporve',default=True,blank=False)
     description = models.TextField(verbose_name='Event Description', db_column='eventDescription', null=True, blank=False)
     internalComments= models.TextField(verbose_name='Internal Comments', db_column='internamComments', null=True, blank=True)
+    recurring = models.BooleanField(db_column='recurringEvent',verbose_name='recurring Event', default=False)
     history = HistoricalRecords()
 
     class Meta:

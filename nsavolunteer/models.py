@@ -7,7 +7,7 @@ from organizations.base import (OrganizationBase, OrganizationUserBase,
         OrganizationOwnerBase)
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
-from nsaSchool.models import GradeLevel,Teachers
+from nsaSchool.models import GradeLevel,Teachers,SchoolYear
 
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
@@ -215,13 +215,28 @@ class RewardCardUsage(TimeStampedModel):
     spent on reward refils/repurchases
     '''
     rewardCardusageId= models.AutoField(primary_key=True,db_column='rewardCardUsageId',verbose_name='Reward Card Usage ID')
-    customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
-    volunteerId = models.ForeignKey('settings.AUTH_USER_MODEL',db_column='volunteer',verbose_name='Volunteer', blank=True, null=True)
+    customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number',blank=False,null=True)
+    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='rewardCardValue')
     refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
     refillValue = models.DecimalField(db_column='refillValue',verbose_name='Refill Value',max_digits=8, decimal_places=2)
+    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+    storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
+    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
 
-    def __init__(self):
-        return '%s - $%d' %(self.customerCardNumber,self.refillValue)
+
+    def __unicode__(self):
+        return '%s - %s - $%0.2f' %(self.volunteerId.name,self.refillDate,self.refillValue)
+
+    def volunteer_Hours(self):
+        return self.refillValue/100
+
+    def save(self, force_insert=False,force_update=False, using=None):
+        if not self.volunteerId:
+            cardUser = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
+            self.volunteerId = cardUser.linkedUser
+        if not self.volunteerHours:
+            self.volunteerHours = self.volunteer_Hours()
+        super(RewardCardUsage,self).save(force_insert, force_update)
 
     class Meta:
         verbose_name_plural='Reward Card Data'

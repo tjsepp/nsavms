@@ -8,12 +8,17 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra
-
 from .models import *
 from authtools.models import User
 from django.forms.formsets import formset_factory
+from django.db.models import Sum
+from nsaSchool.models import VolunteerNews, SchoolYear
 
-from nsaSchool.models import VolunteerNews
+
+def homeView(request):
+    news = VolunteerNews.objects.all()
+    response = render(request,'home.html')
+    return response
 
 
 class LoginView(FormView):
@@ -51,30 +56,26 @@ class ChangePassword(LoginRequiredMixin, FormView):
         return super(ChangePassword,self).form_valid(form)
 
 
-def homeView(request):
-    news = VolunteerNews.objects.all()
-    response = render(request,'home.html')
-    return response
 
 def userVolunteerData(request):
     '''
     This view will generate all data needed for all user data. This will include family,
     grocery & donotions data
     '''
-    #news = VolunteerNews.objects.all()
-    response = render(request,'volunteerData/volunteerData.html')
+
+    curYear = SchoolYear.objects.get(currentYear = 1)
+    rewardCardData = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear)
+    totalVolunteerHoursUser =RewardCardUsage.objects.filter(volunteerId =
+        request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+
+    response = render(request,'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
+        'totalVolunteerHoursUser':totalVolunteerHoursUser})
     #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
     return response
 
-def VolunteerOpportunities(request):
-    #news = VolunteerNews.objects.all()
-    response = render(request,'volunteerOpportunities.html')
-    #response = TemplateResponse(request, 'news.html', {})
-    # Register the callback
-    # Return the response
-    return response
+
 
 def userSettings(request):
     #profile = VolunteerProfile.objects.get_or_create(linkedUserAccount = request.user)
@@ -127,19 +128,6 @@ class UpdateFamilyProfile(UpdateView):
         userAcct.name ='%s %s' %(form.instance.firstName,form.instance.lastName)
         userAcct.save()
         return super(UpdateVolunteerProfile, self).form_valid(form)
-
-def InterestList(request):
-    '''
-    View for active Interests list.
-    Users can add interests from this template
-    '''
-    if request.user.is_authenticated():
-        profileInt = VolunteerProfile.objects.get(linkedUserAccount=request.user).interest.all()
-    else:
-        profileInt =''
-    interests = VolunteerInterests.objects.filter(active=True).all()
-    response = render(request, 'userprofile/templates/forms/volunteerInterests.html',{'interests':interests,'profileInt':profileInt})
-    return response
 
 def addInterestToProfile(request,Intid):
     profile = get_object_or_404(VolunteerProfile,linkedUserAccount=request.user)

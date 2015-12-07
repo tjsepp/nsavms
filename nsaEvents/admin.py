@@ -5,3 +5,4 @@ from .models import *
 # Register your models here.
 
 admin.site.register(NsaEvents)
+admin.site.register(DaysOfWeek)

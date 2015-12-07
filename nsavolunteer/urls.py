@@ -19,12 +19,10 @@ from .views import *
 
 urlpatterns = [
 url(r'^$',homeView,name='home'),
-url(r'^user_dashboard',userSettings,name='user_dashboard'),
+url(r'^user_profile',userSettings,name='user_profile'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
 url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
-url(r'^Volunteeropportunities',VolunteerOpportunities,name='volunteeropps'),
-url(r'^volunteerInterests',InterestList,name='volunteerInterests'),
 url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToProfile'),
 url(r'^addfamilies$',familyFormset,name='addfamilies'),
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),

@@ -91,6 +91,7 @@ class UserProfileForm(ModelForm):
         #self.helper.label_class='col-md-2'
         #self.helper.field_class='col-md-5'
         self.helper.layout = Layout(
+
             Div(
             Div('firstName',css_class='col-md-6',),
             Div('lastName',css_class='col-md-6',),
@@ -103,21 +104,14 @@ class UserProfileForm(ModelForm):
             ),
 
         Field('linkedUserAccount', type="hidden"),
-        Div(
-        Div(HTML('<b>Volunteer Interests</b>'),css_class='panel-heading'
-        ),
-        Div(
+        HTML('<h5><b>Volunteer Interests</b></h5>'),
         HTML("{% include 'forms/volunteerInterests.html' %}"),
-        css_class='panel-body'),
-        css_class='panel panel-default'
-        ),
         Field('interest', type="hidden"),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
-        ),
-        )
+        ))
 
 class FamilyProfileForm(ModelForm):
     class Meta:
