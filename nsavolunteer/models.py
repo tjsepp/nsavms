@@ -209,6 +209,22 @@ class RewardCardUsers(TimeStampedModel):
         ordering = ['dateCreated']
 
 
+class RewardCardUsage(TimeStampedModel):
+    '''
+    This model will contain the monthly values allowing the system to tabulate the total money
+    spent on reward refils/repurchases
+    '''
+    rewardCardusageId= models.AutoField(primary_key=True,db_column='rewardCardUsageId',verbose_name='Reward Card Usage ID')
+    customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
+    volunteerId = models.ForeignKey('settings.AUTH_USER_MODEL',db_column='volunteer',verbose_name='Volunteer', blank=True, null=True)
+    refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
+    refillValue = models.DecimalField(db_column='refillValue',verbose_name='Refill Value',max_digits=8, decimal_places=2)
 
+    def __init__(self):
+        return '%s - $%d' %(self.customerCardNumber,self.refillValue)
 
+    class Meta:
+        verbose_name_plural='Reward Card Data'
+        db_table = 'rewardCardData'
+        ordering = ['refillDate']
 
