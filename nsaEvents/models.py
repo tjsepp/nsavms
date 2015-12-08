@@ -18,6 +18,7 @@ class TimeStampedModel(models.Model):
 class DaysOfWeek(models.Model):
     dayId = models.AutoField(primary_key=True,db_column='dayId',verbose_name='Week Day ID')
     dayName = models.CharField(max_length=25,db_column='dayName',verbose_name='Day',null=True,blank=False)
+    dayAbbr = models.CharField(max_length=25,db_column='dayAbbr',verbose_name='Abbreviation',null=True,blank=False)
 
     def __unicode__(self):
         return self.dayName
@@ -37,7 +38,21 @@ class NsaEvents(TimeStampedModel):
     description = models.TextField(verbose_name='Event Description', db_column='eventDescription', null=True, blank=False)
     internalComments= models.TextField(verbose_name='Internal Comments', db_column='internamComments', null=True, blank=True)
     recurring = models.BooleanField(db_column='recurringEvent',verbose_name='recurring Event', default=False)
+    daysOfWeek = models.ManyToManyField(DaysOfWeek,verbose_name='Days of the Week',blank =True)
     history = HistoricalRecords()
+
+    def getDaysOfWeek(self):
+        days = self.daysOfWeek.all()
+        return 'Every %s'%(','.join([dd.dayAbbr for dd in days]))
+
+    def eventDetailsDisplay(self):
+        if self.recurring == True:
+            return self.getDaysOfWeek()
+        else:
+            return self.eventDate
+
+    def __unicode__(self):
+        return self.eventName
 
     class Meta:
         verbose_name_plural = 'NSA Events'
