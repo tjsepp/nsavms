@@ -36,6 +36,11 @@ class RewardCardInfoAdmin(admin.ModelAdmin):
     list_display = ('linkedUser','storeName','customerCardNumber')
     list_filter = ('storeName',)
 
+class RewardCardDataAdmin(admin.ModelAdmin):
+    models= RewardCardUsage
+    list_display = ('storeName','schoolYear')
+    list_editable = ('schoolYear',)
+
 class userToProfileInline(admin.TabularInline):
     '''
     Inline that provides the family profile with the list of related users.
@@ -63,5 +68,5 @@ admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
 #admin.site.register(FamilyProfileOwner)
 admin.site.register(Student)
 admin.site.register(StudentToFamily)
-admin.site.register(RewardCardUsage)
+admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
