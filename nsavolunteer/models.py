@@ -121,7 +121,7 @@ class Student(TimeStampedModel):
     studentId = models.AutoField(primary_key=True,db_column='studentId',verbose_name='StudentId')
     studentName = models.CharField(max_length=100,db_column='studentName',verbose_name='Student Name',null=True,blank=False)
     activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
-    teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True)
+    teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True,on_delete=models.SET_NULL)
     grade = models.ForeignKey(GradeLevel,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
 
