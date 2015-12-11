@@ -65,7 +65,7 @@ ROOT_URLCONF = 'nsavol.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/home/tjsepp/webapps/nsavol/myproject/nsavolunteer'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -24,7 +24,7 @@ def homeView(request):
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('userVolunteerData')
+    success_url = reverse_lazy('home')
 
 
     def form_valid(self, form):

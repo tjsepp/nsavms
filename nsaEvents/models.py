@@ -30,6 +30,7 @@ class DaysOfWeek(models.Model):
 
 
 class NsaEvents(TimeStampedModel):
+    eventId= models.AutoField(primary_key=True,db_column='eventId',verbose_name='Event ID')
     eventName = models.CharField(max_length=100, db_column='eventName',verbose_name='Event Name', null=True,blank=False)
     eventDate = models.DateField(db_column='eventDate',verbose_name='Event Date',null=True,blank=True)
     eventLeader =models.ForeignKey(settings.AUTH_USER_MODEL,db_column='eventLeader',related_name='eventLeader')
@@ -58,4 +59,3 @@ class NsaEvents(TimeStampedModel):
         verbose_name_plural = 'NSA Events'
         db_table = 'nsaEvents'
         ordering = ['eventName']
-

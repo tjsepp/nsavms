@@ -209,6 +209,27 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='RewardCardUsage',
+            fields=[
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('rewardCardusageId', models.AutoField(serialize=False, verbose_name=b'Reward Card Usage ID', primary_key=True, db_column=b'rewardCardUsageId')),
+                ('customerCardNumber', models.CharField(max_length=50, null=True, verbose_name=b'Card Number', db_column=b'customerCardNumber')),
+                ('refillDate', models.DateField(null=True, verbose_name=b'Refill Date', db_column=b'refillDate', blank=True)),
+                ('refillValue', models.DecimalField(decimal_places=2, verbose_name=b'Refill Value', max_digits=8, db_column=b'refillValue')),
+                ('volunteerHours', models.DecimalField(db_column=b'volunteerHours', decimal_places=3, max_digits=8, blank=True, null=True, verbose_name=b'Volunteer Hours')),
+                ('storeName', models.CharField(max_length=25, null=True, verbose_name=b'Store', db_column=b'store', choices=[(b'King Soopers', b'King Soopers'), (b'Safeway', b'Safeway')])),
+                ('schoolYear', models.ForeignKey(db_column=b'SchoolYear', verbose_name=b'School Year', to='nsaSchool.SchoolYear', null=True)),
+                ('volunteerId', models.ForeignKey(related_name='rewardCardValue', db_column=b'volunteer', blank=True, to=settings.AUTH_USER_MODEL, null=True, verbose_name=b'Volunteer')),
+            ],
+            options={
+                'ordering': ['refillDate'],
+                'db_table': 'rewardCardData',
+                'verbose_name_plural': 'Reward Card Data',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='RewardCardUsers',
             fields=[
                 ('dateCreated', models.DateTimeField(auto_now_add=True)),
@@ -234,7 +255,7 @@ class Migration(migrations.Migration):
                 ('studentName', models.CharField(max_length=100, null=True, verbose_name=b'Student Name', db_column=b'studentName')),
                 ('activeStatus', models.BooleanField(default=True, verbose_name=b'Active Status', db_column=b'activeStatus')),
                 ('grade', models.ForeignKey(db_column=b'gradeLevel', blank=True, to='nsaSchool.GradeLevel', null=True, verbose_name=b'Grade Level')),
-                ('teacher', models.ForeignKey(db_column=b'teacher', blank=True, to='nsaSchool.Teachers', null=True)),
+                ('teacher', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, db_column=b'teacher', blank=True, to='nsaSchool.Teachers', null=True)),
             ],
             options={
                 'ordering': ['studentName'],

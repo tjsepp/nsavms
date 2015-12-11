@@ -2,13 +2,10 @@ from django.db import models
 from django.conf import settings
 from authtools.models import AbstractEmailUser
 from simple_history.models import HistoricalRecords
-from organizations.models import Organization, OrganizationUser
-from organizations.base import (OrganizationBase, OrganizationUserBase,
-        OrganizationOwnerBase)
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers,SchoolYear
-
+from nsaEvents.models import NsaEvents
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
@@ -25,9 +22,6 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
-
-
-
 
 
 class VolunteerProfile(TimeStampedModel):
@@ -133,6 +127,7 @@ class Student(TimeStampedModel):
         db_table='students'
         ordering =['studentName']
 
+
 class StudentToFamily(TimeStampedModel):
     student = models.ForeignKey(Student)
     group = models.ForeignKey('FamilyProfile')
@@ -187,6 +182,23 @@ class VolunteerToFamily(TimeStampedModel):
     def __unicode__(self):
         return '%s (%s)' %(self.person.name,self.group)
 
+class VolunteerHours(TimeStampedModel):
+    volunteerHoursId = models.AutoField(primary_key=True,db_column='volunteerHoursId',verbose_name='Volunteer Hours Id')
+    event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=True, verbose_name='Event', related_name='volHours')
+    eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=True, null=True)
+    volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer')
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family')
+    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
+    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+
+
+    def __unicode__(self):
+        return "%s's %s on %s" %(self.volunteer.name, self.event, self.eventDate)
+
+    class Meta:
+        verbose_name_plural = 'Volunteer Hours'
+        db_table = 'volunteerHours'
+        ordering = ['eventDate']
 
 
 class RewardCardUsers(TimeStampedModel):
@@ -239,7 +251,7 @@ class RewardCardUsage(TimeStampedModel):
         super(RewardCardUsage,self).save(force_insert, force_update)
 
     class Meta:
-        verbose_name_plural='Reward Card Data'
+        verbose_name_plural='Reward Card Purchase Data'
         db_table = 'rewardCardData'
         ordering = ['refillDate']
 
