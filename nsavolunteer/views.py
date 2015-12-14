@@ -94,7 +94,7 @@ class UpdateVolunteerProfile(UpdateView):
         return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
 
     def get_success_url(self):
-        return reverse('user_dashboard')
+        return reverse('user_profile')
 
     def get_context_data(self, **kwargs):
         context = super(UpdateVolunteerProfile, self).get_context_data(**kwargs)

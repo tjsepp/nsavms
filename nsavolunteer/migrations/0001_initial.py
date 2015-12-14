@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('nsaSchool', '0001_initial'),
+        ('nsaEvents', '0001_initial'),
     ]
 
     operations = [
@@ -225,7 +226,7 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['refillDate'],
                 'db_table': 'rewardCardData',
-                'verbose_name_plural': 'Reward Card Data',
+                'verbose_name_plural': 'Reward Card Purchase Data',
             },
             bases=(models.Model,),
         ),
@@ -277,6 +278,26 @@ class Migration(migrations.Migration):
                 'ordering': ['student'],
                 'db_table': 'studentToFamily',
                 'verbose_name_plural': 'Student To Family',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='VolunteerHours',
+            fields=[
+                ('dateCreated', models.DateTimeField(auto_now_add=True)),
+                ('dateUpdated', models.DateTimeField(auto_now=True)),
+                ('volunteerHoursId', models.AutoField(serialize=False, verbose_name=b'Volunteer Hours Id', primary_key=True, db_column=b'volunteerHoursId')),
+                ('eventDate', models.DateField(null=True, verbose_name=b'Volunteer Date', db_column=b'volunteerDate', blank=True)),
+                ('volunteerHours', models.DecimalField(db_column=b'volunteerHours', decimal_places=3, max_digits=8, blank=True, null=True, verbose_name=b'Volunteer Hours')),
+                ('event', models.ForeignKey(related_name='volHours', db_column=b'event', blank=True, to='nsaEvents.NsaEvents', null=True, verbose_name=b'Event')),
+                ('family', models.ForeignKey(db_column=b'family', verbose_name=b'Family', to='nsavolunteer.FamilyProfile')),
+                ('schoolYear', models.ForeignKey(db_column=b'SchoolYear', verbose_name=b'School Year', to='nsaSchool.SchoolYear', null=True)),
+                ('volunteer', models.ForeignKey(db_column=b'volunteer', verbose_name=b'volunteer', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ['eventDate'],
+                'db_table': 'volunteerHours',
+                'verbose_name_plural': 'Volunteer Hours',
             },
             bases=(models.Model,),
         ),
