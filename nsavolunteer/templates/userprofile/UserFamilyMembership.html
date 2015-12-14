@@ -8,7 +8,8 @@
         {% for fam in userFamily %}
             <div class="'row" style="margin-bottom: 1%"> 
                     <span style="color: navy">
-                        <strong>{{fam.group.familyName}}</strong>
+                        <strong>{{fam.group.familyName}} <a class="glyphicon glyphicon-edit" title="Edit Profile"
+                                            style="font-size: small" href="{% url 'updateFamilyProfile' fam.group.familyProfileId %}"></a></strong>
                      </span> 
                 <div style="padding-left: 2%">
                     <address>
@@ -18,18 +19,34 @@
 
 
                 <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
-                    <span style="color: navy">Family Members:</span> 
-                        {% for mems in fam.group.volunteers.all %}
-                            <ul>
+                    <span style="color: navy">Family Volunteers:</span> 
+                        <ul>
+                            {% for mems in fam.group.volunteers.all %}
+
                                 {% ifnotequal mems.id user.id %}
-                                    <li style="margin: 0%;padding: 0px">
+                                    <li>
                                     {{ mems.name }}
                                     </li>
-                                 {% endifnotequal %}
-                            </ul>
-
-                        {% endfor %}
+                                {% endifnotequal %}
+                            {% endfor %}
+                        </ul>
                 </div>
+
+                <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
+                    <span style="color: navy">Students:</span> 
+                    <ul>
+                        {% for mems in fam.group.students.all %}
+
+                                <li>
+                                  {{ mems.getFullStudentName }} <i>({{ mems.grade }} - {{ mems.teacher }})
+                                 <a class="glyphicon glyphicon-edit" title="Edit Profile"
+                                            style="font-size: small" href="{% url 'updatestudent' mems.studentId %}"></a></i>
+                                 </li>
+                       {% endfor %}
+                    </ul>
+                </div>
+
+
             </div>
 
         {% endfor %}

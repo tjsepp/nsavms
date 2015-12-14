@@ -1,15 +1,14 @@
 from django.shortcuts import render,get_object_or_404, render_to_response
 from django.views.generic import FormView, TemplateView, RedirectView, UpdateView
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra
+from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra, StudentUpdateForm
 from .models import *
-from authtools.models import User
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
@@ -56,7 +55,6 @@ class ChangePassword(LoginRequiredMixin, FormView):
         return super(ChangePassword,self).form_valid(form)
 
 
-
 def userVolunteerData(request):
     '''
     This view will generate all data needed for all user data. This will include family,
@@ -76,7 +74,7 @@ def userVolunteerData(request):
     return response
 
 
-
+@login_required
 def userSettings(request):
     #profile = VolunteerProfile.objects.get_or_create(linkedUserAccount = request.user)
     #cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get_or_create(linkedUserAccount= auth)
@@ -86,7 +84,7 @@ def userSettings(request):
     return response
 
 
-class UpdateVolunteerProfile(UpdateView):
+class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
     form_class = UserProfileForm
     template_name = 'forms/updateVolunteerProfile.html'
 
@@ -103,7 +101,7 @@ class UpdateVolunteerProfile(UpdateView):
         return context
 
 
-class UpdateFamilyProfile(UpdateView):
+class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
     form_class = FamilyProfileForm
     template_name = 'forms/updateFamilyProfile.html'
 
@@ -112,22 +110,35 @@ class UpdateFamilyProfile(UpdateView):
         #return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
 
     def get_success_url(self):
-        return reverse('user_dashboard')
+        return reverse('user_profile')
 
-    '''
     def get_context_data(self, *args, **kwargs):
-        context = super(UpdateVolunteerProfile, self).get_context_data(*args, **kwargs)
-        context['fullName'] = VolunteerProfile.objects.get(linkedUserAccount=self.request.user).fullName
+        context = super(UpdateFamilyProfile, self).get_context_data(*args, **kwargs)
+        #context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famId']).familyName
+        context['familyName'] = 'Testing'
         return context
-    '''
 
     def form_valid(self, form):
-        profile = VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
-        userAcct =User.objects.get(pk=self.request.user.id)
-        profile.linkedUserAccount_id = self.request.user
-        userAcct.name ='%s %s' %(form.instance.firstName,form.instance.lastName)
-        userAcct.save()
-        return super(UpdateVolunteerProfile, self).form_valid(form)
+        family_mod = form.save(commit=False)
+        family_mod.save()
+        StudentToFamily.objects.filter(group = family_mod).all().delete()
+        for student in form.cleaned_data.get('students'):
+            famStudents = StudentToFamily(group=family_mod,student = student)
+            famStudents.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+
+class UpdateStudent(LoginRequiredMixin,UpdateView):
+    form_class = StudentUpdateForm
+    template_name = 'forms/studentUpdate.html'
+
+    def get_object(self):
+        return Student.objects.get(pk=self.kwargs['stuId'])
+
+    def get_success_url(self):
+        return reverse('user_profile')
+
 
 def addInterestToProfile(request,Intid):
     profile = get_object_or_404(VolunteerProfile,linkedUserAccount=request.user)
@@ -138,6 +149,7 @@ def addInterestToProfile(request,Intid):
     #return HttpResponseRedirect(querysnippet.get_absolute_url())
 addInterestToProfile = login_required(addInterestToProfile)
 
+
 def deleteInterestFromProfile(request,Intid):
     profile = get_object_or_404(VolunteerProfile,linkedUserAccount=request.user)
     interest = VolunteerInterests.objects.get(pk=Intid)
@@ -146,6 +158,7 @@ def deleteInterestFromProfile(request,Intid):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     #return HttpResponseRedirect(querysnippet.get_absolute_url())
 deleteInterestFromProfile = login_required(deleteInterestFromProfile)
+
 
 def familyFormset(request):
     familyFormset = formset_factory(AddNewFamily, extra=4)

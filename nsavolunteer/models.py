@@ -113,19 +113,23 @@ class Student(TimeStampedModel):
     a historical perspective of students.
     '''
     studentId = models.AutoField(primary_key=True,db_column='studentId',verbose_name='StudentId')
-    studentName = models.CharField(max_length=100,db_column='studentName',verbose_name='Student Name',null=True,blank=False)
+    studentFirstName = models.CharField(max_length=100,db_column='studentFirstName',verbose_name='Students First Name',null=True,blank=False)
+    studentLastName = models.CharField(max_length=100,db_column='studentLastName',verbose_name='Students Last Name',null=True,blank=False)
     activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
     teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True,on_delete=models.SET_NULL)
     grade = models.ForeignKey(GradeLevel,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
 
+    def getFullStudentName(self):
+        return '%s %s' %(self.studentFirstName, self.studentLastName)
+
     def __unicode__(self):
-        return self.studentName
+        return self.getFullStudentName()
 
     class Meta:
         verbose_name_plural = 'Students'
         db_table='students'
-        ordering =['studentName']
+        ordering =['studentLastName']
 
 
 class StudentToFamily(TimeStampedModel):

@@ -118,6 +118,56 @@ class FamilyProfileForm(ModelForm):
         model = FamilyProfile
         fields='__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(FamilyProfileForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        #self.helper.label_class='col-md-2'
+        #self.helper.field_class='col-md-5'
+        self.helper.layout = Layout(
+        'familyName',
+        'streetAddress',
+        'city',
+        'zip',
+        'homePhone',
+        Field('students', type='hidden'),
+        Field('specialInfo',type='hidden'),
+        Field('inactiveDate',type='hidden'),
+        Field('active',type='hidden'),
+        Field('volunteers',type='hidden'),
+         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
+
+class StudentUpdateForm(ModelForm):
+    class Meta:
+        model = Student
+        fields='__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(StudentUpdateForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            'studentFirstName',
+            'studentLastName',
+            'teacher',
+            'grade',
+            'activeStatus',
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
+
+
+
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile

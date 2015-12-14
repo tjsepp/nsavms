@@ -19,10 +19,10 @@ class VolunteerProfileAdmin(SimpleHistoryAdmin):
 class UserToFamilyForm(forms.ModelForm):
     '''This form is used in the UserToFamilyAdmin to help clean up the labels ex. change from organization to Family
     '''
-    organization = forms.ModelChoiceField(queryset=FamilyProfile.objects.all(),label='Family')
+    #organization = forms.ModelChoiceField(queryset=FamilyProfile.objects.all(),label='Family')
     class Meta:
         model = VolunteerToFamily
-        fields = '__all__'
+        fields = ('person', 'group')
 
 class UserToFamilyAdmin(SimpleHistoryAdmin):
     '''
