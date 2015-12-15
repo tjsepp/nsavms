@@ -1,0 +1,12 @@
+   <div  class ="row" id = "profileHeader"; style="color:navy; margin-top: 2%">
+                    <h4>Registered Reward Cards</h4>
+         </div>
+    <ul>
+    {% for card in rewardCards %}
+
+       <li>{{ card.storeName }} -   Card Number: {{ card.customerCardNumber }}</li>
+
+    {% endfor %}
+     </ul>
+
+
