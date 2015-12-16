@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404, render_to_response
-from django.views.generic import FormView, TemplateView, RedirectView, UpdateView
+from django.views.generic import FormView, CreateView, RedirectView, UpdateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
@@ -7,7 +7,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, upda
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra, StudentUpdateForm
+from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -23,7 +23,7 @@ def homeView(request):
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('userVolunteerData')
 
 
     def form_valid(self, form):
@@ -62,12 +62,18 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
-    rewardCardData = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear)
-    totalVolunteerHoursUser =RewardCardUsage.objects.filter(volunteerId =
-        request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    rewardCardData = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).order_by('-refillDate')
+    volhours = VolunteerHours.objects.filter(volunteer = request.user).filter(schoolYear=curYear).order_by('-eventDate')
+    rewardCardSum = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    volunteerHoursSum=VolunteerHours.objects.filter(volunteer = request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    if rewardCardSum==None:
+        rewardCardSum=0
+    if volunteerHoursSum ==None:
+        volunteerHoursSum = 0
 
+    totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
     response = render(request,'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
-        'totalVolunteerHoursUser':totalVolunteerHoursUser})
+        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours})
     #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
@@ -139,6 +145,34 @@ class UpdateStudent(LoginRequiredMixin,UpdateView):
 
     def get_success_url(self):
         return reverse('user_profile')
+
+
+class logUserHours(LoginRequiredMixin, CreateView):
+    form_class = AddUserEventForm
+    template_name = 'forms/addVolunteerHours.html'
+
+    def get_success_url(self):
+        return reverse('userVolunteerData')
+
+    def get_initial(self):
+        return {
+            'volunteer':self.request.user
+        }
+
+    def form_valid(self, form):
+        form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
+        form.save()
+        return super(logUserHours,self).form_valid(form)
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(logUserHours,self).get_context_data(*args, **kwargs)
+        context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
+        return context
+
+    def get_form_kwargs(self):
+        # pass "user" keyword argument with the current user to your form
+        kwargs = super(logUserHours, self).get_form_kwargs()
+        return kwargs
 
 
 def addInterestToProfile(request,Intid):

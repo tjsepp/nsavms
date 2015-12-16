@@ -32,7 +32,7 @@ class VolunteerNews(TimeStampedModel):
     class Meta:
         verbose_name_plural='Volunteer News'
         db_table = 'volunteerNews'
-        ordering = ['dateCreated']
+        ordering = ['-dateCreated']
 
 
 

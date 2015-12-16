@@ -6,6 +6,11 @@
     <b>{{ totalVolunteerHoursUser }}</b>
     </ul>
 <hr>
+    <h3>Volunteer Data</h3>
+    {% for hrs in volHours %}
+       <p>{{ hrs.eventDate}} - {{hrs.event}} - {{hrs.volunteerHours}}</p>
+    {% endfor %}
+<hr>
     <h3>Reward card Data</h3>
     {% for storeData in rewardCardData %}
        <p>{{ storeData.storeName }} - {{storeData.refillDate}} - ${{storeData.refillValue}}</p>

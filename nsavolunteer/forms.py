@@ -171,6 +171,30 @@ class StudentUpdateForm(ModelForm):
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile
-        fields='__all__'
 
 
+class AddUserEventForm(ModelForm):
+    class Meta:
+        model = VolunteerHours
+
+    def __init__(self, *args, **kwargs):
+
+        super(AddUserEventForm,self).__init__(*args, **kwargs)
+        self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+
+        self.helper.layout = Layout(
+            'event',
+            'eventDate',
+            Field('volunteer',type='hidden'),
+            'family',
+            'volunteerHours',
+            Field('schoolYear',type='hidden'),
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))

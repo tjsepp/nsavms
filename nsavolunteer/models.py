@@ -186,6 +186,14 @@ class VolunteerToFamily(TimeStampedModel):
     def __unicode__(self):
         return '%s (%s)' %(self.person.name,self.group)
 
+
+class VolunteerHoursManager(models.Manager):
+    def current_year(self):
+        curYear = SchoolYear.objects.get(currentYear = 1)
+        return self.get_queryset().filter(schoolYear = curYear)
+
+
+
 class VolunteerHours(TimeStampedModel):
     volunteerHoursId = models.AutoField(primary_key=True,db_column='volunteerHoursId',verbose_name='Volunteer Hours Id')
     event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=True, verbose_name='Event', related_name='volHours')
@@ -194,10 +202,13 @@ class VolunteerHours(TimeStampedModel):
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family')
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+    objects = VolunteerHoursManager()
 
 
     def __unicode__(self):
         return "%s's %s on %s" %(self.volunteer.name, self.event, self.eventDate)
+
+
 
     class Meta:
         verbose_name_plural = 'Volunteer Hours'
