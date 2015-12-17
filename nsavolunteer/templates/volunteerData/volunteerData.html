@@ -1,21 +1,62 @@
 {%  extends 'account/base.html' %}
 {% block base_content %}
 
+    <div class="container-fluid" style="padding: 7%">
     <h2 style="color:#C0C0C0; text-align: center; margin-bottom: 3%">User Dashboard</h2>
     Total Volunteer Hours:
     <b>{{ totalVolunteerHoursUser }}</b>
-    </ul>
-<hr>
-    <h3>Volunteer Data</h3>
-    {% for hrs in volHours %}
-       <p>{{ hrs.eventDate}} - {{hrs.event}} - {{hrs.volunteerHours}}</p>
-    {% endfor %}
-<hr>
-    <h3>Reward card Data</h3>
-    {% for storeData in rewardCardData %}
-       <p>{{ storeData.storeName }} - {{storeData.refillDate}} - ${{storeData.refillValue}}</p>
-    {% endfor %}
+
+
+    <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours</h4>
+    <table class="table table-hover table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Event</th>
+        <th>Hours Volunteered</th>
+    </tr>
+    </thead>
+        {% for hrs in volHours %}
+    <tr>
+        <td>
+            {{ hrs.eventDate }}
+        </td>
+        <td>
+            {{ hrs.event }}
+        </td>
+        <td>
+            {{ hrs.volunteerHours }}
+        </td>
+    </tr>
+        {% endfor %}
+    </table>
+
+
+    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Reward Cards</h4>
+    <table class="table table-hover table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th>Store</th>
+        <th>Refill Date</th>
+        <th>Refill Value</th>
+    </tr>
+    </thead>
+        {% for storeData in rewardCardData %}
+    <tr>
+        <td>
+            {{ storeData.storeName }}
+        </td>
+        <td>
+            {{ storeData.refillDate }}
+        </td>
+        <td>
+            ${{ storeData.refillValue }}
+        </td>
+    </tr>
+        {% endfor %}
+    </table>
+
 
 {{ totalVolunteerHoursFamily }}
-
+</div>
 {%  endblock %}
