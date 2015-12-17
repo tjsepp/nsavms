@@ -4,19 +4,16 @@
                 </div>
 
                 <div class="row">
+
                 {%  if cur_user.interest.all %}
-                        {% for int2 in cur_user.interest.all %}
-                        <div class="col-md-3 col-sm-12 col-xs-12">
-                            <span data-toggle="tooltip" title="{{int2.description}}">
-                                {{ int2.interestName }}
-                            </span>
-                        </div>
-                        {% if forloop.counter|divisibleby:4 %}
-                    </div>
-                    <div class="row">
-                        {% endif %}
-                        {% endfor %}
+                    {% for int in cur_user.interest.all%}
+                        {%  include './forms/volunteerInterests_modal.html' %}
+                        <a href="#{{ int.interestId }}" data-toggle="modal">{{ int.interestName }}</a>
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
                 {% else %}
                     <div class="alert alert-info" role="alert">You have not selected any interests - Please update your profile</div>
                 {% endif %}
-                    </div>
+
+
+                </div>
