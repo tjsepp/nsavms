@@ -160,7 +160,7 @@ class FamilyProfile(TimeStampedModel):
     homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
     specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
-    volunteers = models.ManyToManyField(settings.AUTH_USER_MODEL,verbose_name='Volunteers',through='VolunteerToFamily')
+    volunteers = models.ManyToManyField(User,verbose_name='Volunteers',through='VolunteerToFamily', related_name='family')
     students = models.ManyToManyField(Student,verbose_name='Students',through='StudentToFamily')
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()

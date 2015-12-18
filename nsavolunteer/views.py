@@ -7,7 +7,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, upda
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm, AddNewFamily, PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm
+from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -195,6 +195,9 @@ def deleteInterestFromProfile(request,Intid):
 deleteInterestFromProfile = login_required(deleteInterestFromProfile)
 
 
-def familyFormset(request):
-    familyFormset = formset_factory(AddNewFamily, extra=4)
-    return render_to_response('forms/familyFormset.html',{'formset':familyFormset},context_instance=RequestContext(request))
+class createFamily(CreateView):
+    form_class = AddNewFamily
+    template_name = 'forms/addNewFamily.html'
+
+    def get_success_url(self):
+        return reverse('userVolunteerData')
