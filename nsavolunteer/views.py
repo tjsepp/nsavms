@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404, render_to_response
-from django.views.generic import FormView, CreateView, RedirectView, UpdateView
+from django.views.generic import FormView, CreateView, RedirectView, UpdateView, ListView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
@@ -12,13 +12,19 @@ from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
-
+from authtools.forms import UserCreationForm
 
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request,'home.html')
     return response
 
+
+class VolunteerIndex(ListView):
+    model = VolunteerProfile
+    queryset = VolunteerProfile.objects.all().order_by('lastName')
+    context_object_name = "volunteerIndex"
+    template_name = "tables/volunteerIndex.html"
 
 class LoginView(FormView):
     template_name = 'account/login.html'
@@ -201,3 +207,36 @@ class createFamily(CreateView):
 
     def get_success_url(self):
         return reverse('userVolunteerData')
+
+
+def CreateNewFamily(request):
+    userFormSet = formset_factory(UserCreationForm, extra=2)
+
+
+    if request.method =='POST':
+        familyForm = AddNewFamily(request.POST,prefix='fam')
+        volunteers = userFormSet(request.POST,prefix='vols')
+
+        if familyForm.is_valid() and volunteers.is_valid():
+            famId = familyForm.save(commit=False)
+            familyForm.save()
+
+            new_volunteers=[]
+
+            for vol in volunteers:
+                volId = vol.save(commit=False)
+                volId.save()
+                VolunteerToFamily(group=famId,person=volId).save()
+    else:
+        familyForm = AddNewFamily()
+        volunteers = userFormSet()
+
+    context = {
+        "familyForm":familyForm,
+        'volunteers': volunteers,
+         }
+
+    return render(request, 'forms/testTemplate.html', context)
+
+
+

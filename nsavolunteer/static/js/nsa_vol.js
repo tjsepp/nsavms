@@ -9,3 +9,8 @@ $(document).ready(function() {
     });
 
 });
+
+
+$(document).ready(function() {
+    $('.datatable').DataTable();
+} );
