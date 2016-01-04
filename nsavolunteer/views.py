@@ -201,7 +201,7 @@ def deleteInterestFromProfile(request,Intid):
 deleteInterestFromProfile = login_required(deleteInterestFromProfile)
 
 
-class createFamily(CreateView):
+class CreateFamily(CreateView):
     form_class = AddNewFamily
     template_name = 'forms/addNewFamily.html'
 
@@ -209,34 +209,13 @@ class createFamily(CreateView):
         return reverse('userVolunteerData')
 
 
-def CreateNewFamily(request):
-    userFormSet = formset_factory(UserCreationForm, extra=2)
 
 
-    if request.method =='POST':
-        familyForm = AddNewFamily(request.POST,prefix='fam')
-        volunteers = userFormSet(request.POST,prefix='vols')
+class CreateNewFamily(CreateView):
+    form_class = AddNewFamily
+    template_name = 'forms/testTemplate.html'
 
-        if familyForm.is_valid() and volunteers.is_valid():
-            famId = familyForm.save(commit=False)
-            familyForm.save()
 
-            new_volunteers=[]
-
-            for vol in volunteers:
-                volId = vol.save(commit=False)
-                volId.save()
-                VolunteerToFamily(group=famId,person=volId).save()
-    else:
-        familyForm = AddNewFamily()
-        volunteers = userFormSet()
-
-    context = {
-        "familyForm":familyForm,
-        'volunteers': volunteers,
-         }
-
-    return render(request, 'forms/testTemplate.html', context)
 
 
 

@@ -168,17 +168,12 @@ class StudentUpdateForm(ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
-
-#volunteerFormset = inlineformset_factory(FamilyProfile,User,can_delete=False,extra=2)
-
-
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile
         exclude=['volunteers', 'students']
-    '''
-    def __init__(self, *args, **kwargs):
 
+    def __init__(self, *args, **kwargs):
         super(AddNewFamily,self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
@@ -193,13 +188,18 @@ class AddNewFamily(ModelForm):
             'specialInfo',
             'inactiveDate'
             'active',
-            HTML('{{ volunteers }}'),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
-    '''
+
+
+class AddFamilyVolunteers(ModelForm):
+    class Meta:
+        model=User
+        exclude=['volunteers', 'students']
+
 
 
 class AddUserEventForm(ModelForm):

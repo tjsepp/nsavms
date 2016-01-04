@@ -127,3 +127,7 @@ margin-bottom: 50px;
     font-size:4em;
     color:#191970
 }
+
+.dataTables_filter{
+    float: right;
+}

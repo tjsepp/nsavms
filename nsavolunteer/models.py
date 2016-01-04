@@ -158,7 +158,7 @@ class FamilyProfile(TimeStampedModel):
     city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
     homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
-    specialInfo = models.TextField(verbose_name='Volunteer Note', db_column='VolunteerNote', null=True, blank=True)
+    specialInfo = models.TextField(verbose_name='Family Note', db_column='VolunteerNote', null=True, blank=True)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     volunteers = models.ManyToManyField(User,verbose_name='Volunteers',through='VolunteerToFamily', related_name='family')
     students = models.ManyToManyField(Student,verbose_name='Students',through='StudentToFamily')

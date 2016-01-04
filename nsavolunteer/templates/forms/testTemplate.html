@@ -9,53 +9,8 @@
 {% block base_content %}
 
 <div style="margin-top: 10%">
-{% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
 
-    <form method="post" class="volunteerProfile">
-        {% csrf_token %}
+        {% crispy form %}
 
-             <div class="form-group">
-        <label for="exampleInputEmail1">Family Name</label>
-         <input type="text" class="form-control" placeholder="Text input">{{ familyForm.familyName }}
-         </div>
-
-
-
-        <label>Last Name</label>
-        {{ familyForm.streetAddress }}
-        {% if familyForm.streetAddress.errors %}
-            {% for error in familyForm.streetAddress.errors %}
-                {{ error|escape }}
-            {% endfor %}
-        {% endif %}
-
-        {{ volunteers.management_form }}
-
-        {% for user_form in volunteers %}
-            <div class="link-formset">
-                {{ user_form.email }}
-                {% if user_form.email.errors %}
-                    {% for error in user_form.email.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
-
-                {{ user_form.name }}
-                {% if user_form.name.errors %}
-                    {% for error in user_form.name.errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
-            </div>
-        {% endfor %}
-
-
-
-        <input type="submit" value="Update Profile" class="button"/>
-    </form>
 </div>
 {%  endblock %}
