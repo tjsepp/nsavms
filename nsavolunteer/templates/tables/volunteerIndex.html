@@ -23,6 +23,7 @@
                 <th>Status</th>
                 <th>Type</th>
                 <th>Email</th>
+                <th>Family Membership</th>
 
             </tr>
         </thead>
@@ -35,7 +36,7 @@
                 <td>{{ vol.volStatus }}</td>
                 <td>{{ vol.volunteerType }}</td>
                 <td>{{ vol.linkedUserAccount.email }}</td>
-
+                <td>{{ vol.getFamilies }}</td>
             </tr>
         {% endfor %}
          </tbody>

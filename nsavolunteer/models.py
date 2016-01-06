@@ -54,6 +54,14 @@ class VolunteerProfile(TimeStampedModel):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
 
+    def getFamilies(self):
+        fams = FamilyProfile.objects.filter(volunteers = self.linkedUserAccount)
+        if fams:
+            famList = '%s' % ",".join([fam.familyName for fam in fams])
+        else:
+            famList = 'Not tied to family'
+        return famList
+
     def save(self, force_insert=False,force_update=False, using=None):
         if not self.volunteerProfileID:
             self.firstName = self.linkedUserAccount.name.split()[0]
