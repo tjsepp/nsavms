@@ -7,7 +7,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, upda
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily
+from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -206,14 +206,15 @@ class CreateFamily(CreateView):
     template_name = 'forms/addNewFamily.html'
 
     def get_success_url(self):
+        return reverse('addusertofamily')
+
+
+class AddUsersToFamily(CreateView):
+    form_class = AddFamilyVolunteers
+    template_name = 'forms/addUsersToFamily.html'
+
+    def get_success_url(self):
         return reverse('userVolunteerData')
-
-
-
-
-class CreateNewFamily(CreateView):
-    form_class = AddNewFamily
-    template_name = 'forms/testTemplate.html'
 
 
 

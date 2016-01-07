@@ -195,10 +195,26 @@ class AddNewFamily(ModelForm):
         ))
 
 
-class AddFamilyVolunteers(ModelForm):
-    class Meta:
-        model=User
-        exclude=['volunteers', 'students']
+class AddFamilyVolunteers(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+
+        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+        self.fields['password2'].help_text=None
+        self.helper = FormHelper()
+        self.helper.form_class='form-inline volunteerProfile'
+        self.helper.form_id='volunteerProfile'
+        self.helper.layout = Layout(
+            'name',
+            'email',
+            'password1',
+            'password2',
+            ButtonHolder(
+                Submit('register', 'Register', css_class='btn-primary')
+            )
+        )
+
+
+
 
 
 
