@@ -204,9 +204,15 @@ deleteInterestFromProfile = login_required(deleteInterestFromProfile)
 class CreateFamily(CreateView):
     form_class = AddNewFamily
     template_name = 'forms/addNewFamily.html'
+    famid = None
 
     def get_success_url(self):
-        return reverse('addusertofamily')
+        return reverse('addusertofamily', kwargs={'famid': self.famid})
+
+    def form_valid(self, form):
+        fam = form.save()
+        self.famid = fam.familyProfileId
+        return super(CreateFamily, self).form_valid(form)
 
 
 class AddUsersToFamily(CreateView):
@@ -215,6 +221,15 @@ class AddUsersToFamily(CreateView):
 
     def get_success_url(self):
         return reverse('userVolunteerData')
+
+    def form_valid(self, form):
+        fpk = self.kwargs['famid']
+        fam = FamilyProfile.objects.get(pk=fpk)
+        vol = form.save()
+        m = VolunteerToFamily(person=vol,group=fam)
+        m.save()
+        return super(AddUsersToFamily, self).form_valid(form)
+
 
 
 
