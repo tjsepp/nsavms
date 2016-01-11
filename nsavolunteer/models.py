@@ -55,9 +55,14 @@ class VolunteerProfile(TimeStampedModel):
     fullName.short_description = 'Full Name'
 
     def getFamilies(self):
+        url = '' #add the url to the main family page
         fams = FamilyProfile.objects.filter(volunteers = self.linkedUserAccount)
         if fams:
-            famList = '%s' % ",".join([fam.familyName for fam in fams])
+            famlist1 =[]
+            for fam in fams:
+                link = "<a href='user_profile%s' target='_blank'>%s</a>" %(fam.familyProfileId,fam.familyName)
+                famlist1.append(link)
+            famList = '%s' % ",".join([famlink for famlink in famlist1])
         else:
             famList = 'Not tied to family'
         return famList

@@ -30,13 +30,17 @@
 
         <tbody>
         {%  for vol in volunteerIndex %}
-            <tr>
+            {% if vol.getFamilies == "Not tied to family" %}
+                <tr class="danger">
+            {%  else %}
+                <tr>
+            {%  endif %}
                 <td>{{ vol.firstName }}</td>
                 <td>{{ vol.lastName }}</td>
                 <td>{{ vol.volStatus }}</td>
                 <td>{{ vol.volunteerType }}</td>
                 <td>{{ vol.linkedUserAccount.email }}</td>
-                <td>{{ vol.getFamilies }}</td>
+                <td>{{ vol.getFamilies|safe }}</td>
             </tr>
         {% endfor %}
          </tbody>

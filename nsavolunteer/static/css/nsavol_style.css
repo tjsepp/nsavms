@@ -131,3 +131,8 @@ margin-bottom: 50px;
 .dataTables_filter{
     float: right;
 }
+
+#volunteerProfile{
+       width: 800px;
+       margin: 0 auto;
+}

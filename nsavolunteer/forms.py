@@ -208,8 +208,9 @@ class AddFamilyVolunteers(UserCreationForm):
             'email',
             'password1',
             'password2',
+            HTML('<div class="form-group"><div class="col-lg-5"></div>'),
             ButtonHolder(
-                Submit('register', 'Register', css_class='btn-primary')
+                self.helper.add_input(Submit('save', 'Save')),
             )
         )
 
