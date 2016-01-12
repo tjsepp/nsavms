@@ -5,15 +5,15 @@
 
 
     <div class="familyContainer" style="margin-bottom: 3%; border-bottom: 1px dotted #C0C0C0">
-        {% for fam in userFamily %}
+         {% for fam in userFamily %}
             <div class="'row" style="margin-bottom: 1%"> 
                     <span style="color: navy">
-                        <strong>{{fam.group.familyName}} <a class="glyphicon glyphicon-edit" title="Edit Profile"
-                                            style="font-size: small" href="{% url 'updateFamilyProfile' fam.group.familyProfileId %}"></a></strong>
+                        <strong>{{fam.familyName}} <a class="glyphicon glyphicon-edit" title="Edit Profile"
+                                            style="font-size: small" href="{% url 'updateFamilyProfile' fam.familyProfileId %}"></a></strong>
                      </span> 
                 <div style="padding-left: 2%">
                     <address>
-                        {{ fam.group.streetAddress }}, <br> {{ fam.group.city }}, CO  {{ fam.group.zip }}
+                        {{ fam.streetAddress }}, <br> {{ fam.city }}, CO  {{ fam.zip }}
                     </address>
                 </div>
 
@@ -21,7 +21,7 @@
                 <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
                     <span style="color: navy">Family Volunteers:</span> 
                         <ul>
-                            {% for mems in fam.group.volunteers.all %}
+                            {% for mems in fam.volunteers.all %}
 
                                 {% ifnotequal mems.id user.id %}
                                     <li>
@@ -35,7 +35,7 @@
                 <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
                     <span style="color: navy">Students:</span> 
                     <ul>
-                        {% for mems in fam.group.students.all %}
+                        {% for mems in fam.students.all %}
 
                                 <li>
                                   {{ mems.getFullStudentName }} <i>({{ mems.grade }} - {{ mems.teacher }})

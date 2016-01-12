@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerToFamily,VolunteerProfile, RewardCardUsers,Student,\
+from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerProfile, RewardCardUsers,Student,\
     FamilyProfile,VolunteerToFamily,StudentToFamily,RewardCardUsage,VolunteerHours
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
@@ -24,12 +24,12 @@ class UserToFamilyForm(forms.ModelForm):
         model = VolunteerToFamily
         fields = ('person', 'group')
 
-class UserToFamilyAdmin(SimpleHistoryAdmin):
-    '''
-    Uses custom form to clean up labels
-    '''
-    model = VolunteerToFamily
-    form = UserToFamilyForm
+#class UserToFamilyAdmin(SimpleHistoryAdmin):
+#    '''
+#    Uses custom form to clean up labels
+#    '''
+#    model = VolunteerToFamily
+#    form = UserToFamilyForm
 
 class RewardCardInfoAdmin(admin.ModelAdmin):
     model = RewardCardUsers
@@ -41,17 +41,23 @@ class RewardCardDataAdmin(admin.ModelAdmin):
     list_display = ('storeName','schoolYear')
     list_editable = ('schoolYear',)
 
-class userToProfileInline(admin.TabularInline):
-    '''
-    Inline that provides the family profile with the list of related users.
-    '''
-    model = VolunteerToFamily
-    extra = 0
-    verbose_name = "Family Volunteer"
-    verbose_name_plural = "Family Volunteers"
 
+#class userToProfileInline(admin.TabularInline):
+#    '''
+#    Inline that provides the family profile with the list of related users.
+#    '''
+#    model = VolunteerToFamily
+#    extra = 0
+#    verbose_name = "Family Volunteer"
+#    verbose_name_plural = "Family Volunteers"
+
+#class FamilyProfileAdmin(SimpleHistoryAdmin):
+#    inlines = [userToProfileInline]
 class FamilyProfileAdmin(SimpleHistoryAdmin):
-    inlines = [userToProfileInline]
+    model = FamilyProfile
+    search_fields = ('familyName',)
+    filter_horizontal = ('famvolunteers',)
+    list_display = ('familyName','streetAddress','city','homePhone',)
 
 
 
@@ -64,7 +70,7 @@ admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 admin.site.register(VolunteerInterests,SimpleHistoryAdmin)
 admin.site.register(VolunteerType,SimpleHistoryAdmin)
 admin.site.register(FamilyProfile,FamilyProfileAdmin)
-admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
+#admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
 #admin.site.register(FamilyProfileOwner)
 admin.site.register(Student)
 admin.site.register(StudentToFamily)
