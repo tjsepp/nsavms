@@ -222,6 +222,11 @@ class AddUsersToFamily(CreateView):
     def get_success_url(self):
         return reverse('userVolunteerData')
 
+    def get_context_data(self,*args, **kwargs):
+        context = super(AddUsersToFamily,self).get_context_data(*args, **kwargs)
+        context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famid'])
+        return context
+
     def form_valid(self, form):
         fpk = self.kwargs['famid']
         fam = FamilyProfile.objects.get(pk=fpk)
@@ -229,6 +234,3 @@ class AddUsersToFamily(CreateView):
         m = VolunteerToFamily(person=vol,group=fam)
         m.save()
         return super(AddUsersToFamily, self).form_valid(form)
-
-class CreateFamily2(CreateView):
-    pass

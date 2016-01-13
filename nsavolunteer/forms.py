@@ -11,7 +11,8 @@ from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm
 from tinymce.widgets import TinyMCE
 from django.forms.models import inlineformset_factory
 from authtools.forms import UserCreationForm
-from django.forms.formsets import BaseFormSet
+from django.forms.formsets import BaseFormSet,formset_factory
+
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -168,6 +169,7 @@ class StudentUpdateForm(ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
+
 class AddNewFamily(ModelForm):
     class Meta:
         model=FamilyProfile
@@ -213,9 +215,6 @@ class AddFamilyVolunteers(UserCreationForm):
                 self.helper.add_input(Submit('save', 'Save')),
             )
         )
-
-
-
 
 
 
