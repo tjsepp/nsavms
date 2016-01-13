@@ -13,6 +13,7 @@ from django.forms.formsets import formset_factory
 from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
+from extra_views import FormSetView
 
 def homeView(request):
     news = VolunteerNews.objects.all()
@@ -214,7 +215,7 @@ class CreateFamily(CreateView):
         self.famid = fam.familyProfileId
         return super(CreateFamily, self).form_valid(form)
 
-
+'''
 class AddUsersToFamily(CreateView):
     form_class = AddFamilyVolunteers
     template_name = 'forms/addUsersToFamily.html'
@@ -234,3 +235,22 @@ class AddUsersToFamily(CreateView):
         m = VolunteerToFamily(person=vol,group=fam)
         m.save()
         return super(AddUsersToFamily, self).form_valid(form)
+'''
+
+class AddUsersToFamily(FormSetView):
+    template_name = 'forms/addUsersToFamily.html'
+    form_class =  AddFamilyVolunteers
+    success_url = 'userVolunteerData'
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(AddUsersToFamily,self).get_context_data(*args, **kwargs)
+        context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famid'])
+        return context
+
+    def formset_valid(self, formset):
+        fpk = self.kwargs['famid']
+        fam = FamilyProfile.objects.get(pk=fpk)
+        vol = formset.save()
+        m = VolunteerToFamily(person=vol,group=fam)
+        m.save()
+        return super(AddUsersToFamily, self).formset_valid(formset)

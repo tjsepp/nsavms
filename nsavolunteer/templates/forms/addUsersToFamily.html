@@ -1,6 +1,6 @@
 {%  extends 'account/base.html' %}
 {% load crispy_forms_tags %}
-{% crispy example_form example_form.helper %}
+{% crispy formset helper %}
 
 
 {% block title %}Add New Users{% endblock %}
@@ -8,5 +8,5 @@
 
 {% block base_content %}
 <h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add Voluteers To {{ familyName }}</h2>
-    {%  crispy form %}
+   {% crispy formset formset.form.helper  %}
 {%  endblock %}

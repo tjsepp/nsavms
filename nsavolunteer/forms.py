@@ -197,6 +197,27 @@ class AddNewFamily(ModelForm):
         ))
 
 
+
+
+'''
+class AddFamilyVolunteers(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        self.helper =FormHelper()
+        self.helper.form_class='form-inline'
+        self.form_method = 'post'
+        self.layout = Layout(
+            'name',
+            'email',
+            'password1',
+            'password2',
+        )
+        self.render_required_fields = True
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.render_required_fields = True
+        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+VolunteersFormSet = formset_factory(AddFamilyVolunteers, extra=3)
+
+'''
 class AddFamilyVolunteers(UserCreationForm):
     def __init__(self, *args, **kwargs):
 
@@ -210,11 +231,7 @@ class AddFamilyVolunteers(UserCreationForm):
             'email',
             'password1',
             'password2',
-            HTML('<div class="form-group"><div class="col-lg-5"></div>'),
-            ButtonHolder(
-                self.helper.add_input(Submit('save', 'Save')),
             )
-        )
 
 
 
