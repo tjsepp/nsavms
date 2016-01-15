@@ -1,6 +1,5 @@
 {%  extends 'account/base.html' %}
-{% load crispy_forms_tags %}
-{% crispy formset helper %}
+
 
 
 {% block title %}Add New Users{% endblock %}
@@ -8,5 +7,20 @@
 
 {% block base_content %}
 <h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add Voluteers To {{ familyName }}</h2>
-   {% crispy formset formset.form.helper  %}
+
+    {% if message %}
+
+    {% endif %}
+
+    <div>
+    <form action="{% url 'addusertofamily' famid %}" method="POST">{%  csrf_token %}
+    {{ formset.management_form }}
+
+        {%  for form in formset %}
+        {{ form.as_p }}
+        {% endfor %}
+    <input type="submit" value="Add Users">
+    </form>
+    </div>
+
 {%  endblock %}

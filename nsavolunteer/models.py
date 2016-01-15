@@ -56,7 +56,7 @@ class VolunteerProfile(TimeStampedModel):
 
     def getFamilies(self):
         url = '' #add the url to the main family page
-        fams = FamilyProfile.objects.filter(volunteers = self.linkedUserAccount)
+        fams = FamilyProfile.objects.filter(famvolunteers = self.linkedUserAccount)
         if fams:
             famlist1 =[]
             for fam in fams:
