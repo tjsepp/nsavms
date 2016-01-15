@@ -240,7 +240,7 @@ class AddUsersToFamily(CreateView):
 def AddVolunteersToNewFamily(request,famid):
     family = FamilyProfile.objects.get(pk=famid)
     familyname = family.familyName
-    addVolunteerFormset = formset_factory(AddFamilyVolunteers, extra=1)
+    addVolunteerFormset = formset_factory(AddFamilyVolunteers, extra=2)
     if request.method =="POST":
         formset=addVolunteerFormset(request.POST)
 
