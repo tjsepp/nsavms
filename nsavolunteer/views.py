@@ -240,11 +240,10 @@ class AddUsersToFamily(CreateView):
 def AddVolunteersToNewFamily(request,famid):
     family = FamilyProfile.objects.get(pk=famid)
     familyname = family.familyName
-    addVolunteerFormset = formset_factory(AddFamilyVolunteers, extra=2)
+    addVolunteerFormset = formset_factory(AddFamilyVolunteers, extra=1)
+    formset=addVolunteerFormset(request.POST)
     if request.method =="POST":
-        formset=addVolunteerFormset(request.POST)
-
-        if(formset.is_valid()):
+        if formset.is_valid() :
             message="Thank You!"
             for form in formset:
                 form.save()
@@ -252,9 +251,8 @@ def AddVolunteersToNewFamily(request,famid):
                 family.save()
             return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
         else:
-            message = 'Something Went wrong'
-        return render_to_response('forms/addUsersToFamily.html',{'message':message},
-                                  context_instance=RequestContext(request))
+            form_errors = formset.errors
+            return render_to_response('forms/addUsersToFamily.html',{'formset':formset,'familyName':familyname,'famid':famid, 'form_errors':form_errors}, context_instance=RequestContext(request))
     else:
         return render_to_response('forms/addUsersToFamily.html',{'formset':addVolunteerFormset(),'familyName':familyname,'famid':famid},
                                   context_instance=RequestContext(request))

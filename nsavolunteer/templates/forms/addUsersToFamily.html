@@ -8,22 +8,57 @@
 {% block base_content %}
 <h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add Voluteers To {{ familyName }}</h2>
 
-    {% if message %}
-
-    {% endif %}
-
-    <div>
-    <form class ="form-inline" action="{% url 'addusertofamily' famid %}" method="POST">{%  csrf_token %}
+    <form class="form-horizontal" action="{% url 'addusertofamily' famid %}" method="post" style="margin: 5%">
+    {% csrf_token %}
     {{ formset.management_form }}
         {%  for form in formset %}
-     <div>
-     <div class ="form-group">
-        <label class="control-label col-xs-1" for="volunteerName">Name</label>
-        <div class="col-xs-9">{{ form.name }}</div>
-     </div>
+        <div class="col-md-12"><span style="color: red; width: 100%">{{ form.email.errors }}</span></div>
+
+        {%  if form.errors %}
+            <div class="form-group user-formset bg-danger" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+        {% else %}
+            <div class="form-group user-formset" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+        {% endif %}
+
+            <label class="col-md-1" style="margin-right: -4%">Name: </label>
+            <div class="col-md-2">
+                {{ form.name }}
+            </div>
+
+            <label class="col-md-1" style="margin-right: -4%">Email: </label>
+            <div class="col-md-2">
+
+                {{ form.email }}
+
+            </div>
+
+            <label class="col-md-1" style="margin-right: -2%">Password: </label>
+            <div class="col-md-2">
+                {{ form.password1 }}
+            </div>
+
+            <label class="col-md-1" style="margin-right: -2%">Confirm Password: </label>
+            <div class="col-md-2">
+                {{ form.password2 }}
+            </div>
+        </div>
+
         {% endfor %}
-    <input type="submit" class="btn btn-primary" value="Add Users">
+    <br>
+    <input type="submit" class="btn btn-primary" style="margin-top: 2%; margin-left: 45%" value="Add Users to {{ familyName  }}">
     </form>
-    </div>
 
 {%  endblock %}
+
+{% block extraJquery %}
+
+    <script src="{{STATIC_URL}}js/jquery.formset.js"></script>
+      <script>
+        $('.user-formset').formset({
+            addText:'Add Volunteer',
+            deleteText:'Remove'
+        })
+
+    </script>
+
+{% endblock %}

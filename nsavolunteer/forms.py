@@ -220,8 +220,9 @@ VolunteersFormSet = formset_factory(AddFamilyVolunteers, extra=3)
 '''
 class AddFamilyVolunteers(UserCreationForm):
     def __init__(self, *args, **kwargs):
-
         super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
         self.fields['password2'].help_text=None
         self.helper = FormHelper()
         self.helper.form_class='form-inline volunteerProfile'
@@ -232,7 +233,12 @@ class AddFamilyVolunteers(UserCreationForm):
             'password1',
             'password2',
             )
-
+    def clean_email(self):
+        try:
+            User.objects.get(email = self.cleaned_data['email'])
+        except User.DoesNotExist:
+            return self.cleaned_data['email']
+        raise forms.ValidationError('This email is already in use. Please check for existing user')
 
 
 

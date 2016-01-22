@@ -21,7 +21,7 @@
                 <div class="familyMembers" style="margin-bottom: 1%; margin-left: 2%; margin-top: -1%"> 
                     <span style="color: navy">Family Volunteers:</span> 
                         <ul>
-                            {% for mems in fam.volunteers.all %}
+                            {% for mems in fam.famvolunteers.all %}
 
                                 {% ifnotequal mems.id user.id %}
                                     <li>
