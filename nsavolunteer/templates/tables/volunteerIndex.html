@@ -45,6 +45,23 @@
         {% endfor %}
          </tbody>
 </table>
+
+            {% if page_obj %}
+        <div>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}{{ extra_query }}">Old</a> </li>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}{{ extra_query }}">New</a> </li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+
         </div>
 
 </div>

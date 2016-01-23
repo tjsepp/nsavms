@@ -23,6 +23,7 @@ def homeView(request):
 
 class VolunteerIndex(ListView):
     model = VolunteerProfile
+    paginate_by = 2
     queryset = VolunteerProfile.objects.all().order_by('lastName')
     context_object_name = "volunteerIndex"
     template_name = "tables/volunteerIndex.html"
