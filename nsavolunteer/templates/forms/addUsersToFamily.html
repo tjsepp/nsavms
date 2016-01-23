@@ -12,7 +12,11 @@
     {% csrf_token %}
     {{ formset.management_form }}
         {%  for form in formset %}
-        <div class="col-md-12"><span style="color: red; width: 100%">{{ form.email.errors }}</span></div>
+        {{ form.non_field_errors }}
+        <div class="col-md-12"><span style="color: red; width: 100%">{{form.email.errors}}</span></div>
+            <div class="col-md-12"><span style="color: red; width: 100%">{{form.password2.errors}}</span></div>
+
+
 
         {%  if form.errors %}
             <div class="form-group user-formset bg-danger" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">

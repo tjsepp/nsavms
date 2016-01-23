@@ -248,9 +248,13 @@ class AddUserEventForm(ModelForm):
         model = VolunteerHours
 
     def __init__(self, *args, **kwargs):
-
+        self.famcount = len(kwargs.pop('famcount'))
+        self.user= kwargs.pop('user')
         super(AddUserEventForm,self).__init__(*args, **kwargs)
+        self.fields['family'].queryset = FamilyProfile.objects.filter(famvolunteers = self.user)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        if self.famcount==1:
+            self.fields['family'].initial = FamilyProfile.objects.get(famvolunteers=self.user)
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'
@@ -258,14 +262,19 @@ class AddUserEventForm(ModelForm):
 
         self.helper.layout = Layout(
             'event',
-            'eventDate',
+            Field('eventDate', css_class='datepicker'),
             Field('volunteer',type='hidden'),
-            'family',
+            #Field('family', type='hidden'),
             'volunteerHours',
             Field('schoolYear',type='hidden'),
-        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
+        if self.famcount>1:
+            self.helper.layout.append(Field('family',css_id='LogHoursFamily'))
+
+        else:
+            self.helper.layout.append(Field('family',type='hidden'))
+        self.helper.layout.append(HTML('<div class="form-group"><div class="col-lg-5"></div>'))
 

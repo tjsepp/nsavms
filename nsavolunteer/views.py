@@ -69,6 +69,7 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
+    curUser = VolunteerProfile.objects.get(linkedUserAccount=request.user)
     rewardCardData = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).order_by('-refillDate')
     volhours = VolunteerHours.objects.filter(volunteer = request.user).filter(schoolYear=curYear).order_by('-eventDate')
     rewardCardSum = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
@@ -80,7 +81,7 @@ def userVolunteerData(request):
 
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
     response = render(request,'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
-        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours})
+        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours,'curUser':curUser})
     #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
     # Return the response
@@ -179,6 +180,8 @@ class logUserHours(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         # pass "user" keyword argument with the current user to your form
         kwargs = super(logUserHours, self).get_form_kwargs()
+        kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
+        kwargs['user'] = self.request.user
         return kwargs
 
 
