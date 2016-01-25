@@ -69,8 +69,8 @@ class VolunteerProfile(TimeStampedModel):
 
     def save(self, force_insert=False,force_update=False, using=None):
         if not self.volunteerProfileID:
-            self.firstName = self.linkedUserAccount.name.split()[0]
-            self.lastName = self.linkedUserAccount.name.split()[1]
+            self.firstName = self.linkedUserAccount.name.split(' ',1)[0]
+            self.lastName = self.linkedUserAccount.name.split(' ',1)[1]
         super(VolunteerProfile,self).save(force_insert, force_update)
 
     def create_user_profile(sender, instance, created, **kwargs):
@@ -175,7 +175,7 @@ class FamilyProfile(TimeStampedModel):
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     famvolunteers = models.ManyToManyField(User,verbose_name='Volunteers',db_table='familyVolunteers',blank=True,related_name='family')
     #volunteers = models.ManyToManyField(User,verbose_name='Volunteers',through='VolunteerToFamily', related_name='family')
-    students = models.ManyToManyField(Student,verbose_name='Students',through='StudentToFamily')
+    students = models.ManyToManyField(Student,verbose_name='Students',blank=True,through='StudentToFamily')
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
 

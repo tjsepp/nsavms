@@ -9,15 +9,18 @@
 
 {% endblock %}
 
+
+
 {% block base_content %}
 
     <div class="row">
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
 
-    <table id="volIndex" class="table table-striped table-bordered datatable" cellspacing="0" width="100%">
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
+                <th></th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Status</th>
@@ -35,6 +38,13 @@
             {%  else %}
                 <tr>
             {%  endif %}
+                <td align="center"><a href="#" class="glyphicon glyphicon-edit" data-toggle="popover"  data-trigger="focus"
+                                      title="Edit <b>{{ vol.linkedUserAccount.name }}</b>"
+                                      data-content="<ul style='list-style-type:none'>
+                                                    <li style='margin-left:-20%'><a href='{%  url 'home' %}'>Change Option 1</a></li>
+                                                    <li style='margin-left:-20%'><a href='#'>Change Option 2</a></li>
+                                                    <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
+                                                    </ul>"></a></td>
                 <td>{{ vol.firstName }}</td>
                 <td>{{ vol.lastName }}</td>
                 <td>{{ vol.volStatus }}</td>
@@ -46,24 +56,18 @@
          </tbody>
 </table>
 
-            {% if page_obj %}
-        <div>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}{{ extra_query }}">Old</a> </li>
-                {% endif %}
-
-                {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}{{ extra_query }}">New</a> </li>
-                {% endif %}
-            </ul>
-        </div>
-    {% endif %}
-
-
-
         </div>
 
 </div>
 
 {%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

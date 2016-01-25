@@ -23,7 +23,7 @@ def homeView(request):
 
 class VolunteerIndex(ListView):
     model = VolunteerProfile
-    paginate_by = 2
+    paginate_by = 100
     queryset = VolunteerProfile.objects.all().order_by('lastName')
     context_object_name = "volunteerIndex"
     template_name = "tables/volunteerIndex.html"
@@ -62,7 +62,7 @@ class ChangePassword(LoginRequiredMixin, FormView):
         update_session_auth_hash(self.request, form.user)
         return super(ChangePassword,self).form_valid(form)
 
-
+@login_required
 def userVolunteerData(request):
     '''
     This view will generate all data needed for all user data. This will include family,
@@ -130,8 +130,8 @@ class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateFamilyProfile, self).get_context_data(*args, **kwargs)
-        #context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famId']).familyName
-        context['familyName'] = 'Testing'
+        context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famId']).familyName
+        #context['familyName'] = 'Testing'
         return context
 
     def form_valid(self, form):
@@ -219,27 +219,6 @@ class CreateFamily(CreateView):
         self.famid = fam.familyProfileId
         return super(CreateFamily, self).form_valid(form)
 
-'''
-class AddUsersToFamily(CreateView):
-    form_class = AddFamilyVolunteers
-    template_name = 'forms/addUsersToFamily.html'
-
-    def get_success_url(self):
-        return reverse('userVolunteerData')
-
-    def get_context_data(self,*args, **kwargs):
-        context = super(AddUsersToFamily,self).get_context_data(*args, **kwargs)
-        context['familyName'] = FamilyProfile.objects.get(pk=self.kwargs['famid'])
-        return context
-
-    def form_valid(self, form):
-        fpk = self.kwargs['famid']
-        fam = FamilyProfile.objects.get(pk=fpk)
-        vol = form.save()
-        m = VolunteerToFamily(person=vol,group=fam)
-        m.save()
-        return super(AddUsersToFamily, self).form_valid(form)
-'''
 
 def AddVolunteersToNewFamily(request,famid):
     family = FamilyProfile.objects.get(pk=famid)

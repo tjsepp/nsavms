@@ -14,5 +14,10 @@
 {% block extraJquery %}
 
  <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
-
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
 {% endblock %}

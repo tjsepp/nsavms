@@ -29,7 +29,7 @@ class LoginForm(AuthenticationForm):
             ButtonHolder(
                 Submit('login', 'Sign in', css_class='btn-primary'),
               ),
-            HTML('<div class="col-md-12" style="margin-left:12%; margin-top:3%"><a href="#">Recover Password</a>|<a href="#">Register</a></div>')
+            HTML('<div class="col-md-12" style="margin-left:20%; margin-top:3%"><a href="#">Recover Password</a></div>')
         )
 
 
@@ -198,26 +198,6 @@ class AddNewFamily(ModelForm):
 
 
 
-
-'''
-class AddFamilyVolunteers(UserCreationForm):
-    def __init__(self, *args, **kwargs):
-        self.helper =FormHelper()
-        self.helper.form_class='form-inline'
-        self.form_method = 'post'
-        self.layout = Layout(
-            'name',
-            'email',
-            'password1',
-            'password2',
-        )
-        self.render_required_fields = True
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.render_required_fields = True
-        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
-VolunteersFormSet = formset_factory(AddFamilyVolunteers, extra=3)
-
-'''
 class AddFamilyVolunteers(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
