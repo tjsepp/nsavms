@@ -60,7 +60,7 @@ class VolunteerProfile(TimeStampedModel):
         if fams:
             famlist1 =[]
             for fam in fams:
-                link = "<a href='user_profile%s' target='_blank'>%s</a>" %(fam.familyProfileId,fam.familyName)
+                link = "<a href='familyprofile/%s' target='_blank'>%s</a>" %(fam.familyProfileId,fam.familyName)
                 famlist1.append(link)
             famList = '%s' % ",".join([famlink for famlink in famlist1])
         else:

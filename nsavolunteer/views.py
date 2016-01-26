@@ -17,7 +17,7 @@ from extra_views import FormSetView
 
 def homeView(request):
     news = VolunteerNews.objects.all()
-    response = render(request,'home.html')
+    response = render(request, 'home.html')
     return response
 
 
@@ -81,7 +81,7 @@ def userVolunteerData(request):
         volunteerHoursSum = 0
 
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
-    response = render(request,'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
+    response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
         'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours,'curUser':curUser})
     #response = TemplateResponse(request, 'news.html', {})
     # Register the callback
@@ -96,7 +96,7 @@ def userSettings(request):
     cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get(linkedUserAccount= request.user)
     userFamily = FamilyProfile.objects.filter(famvolunteers = request.user).all()
     rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
-    response = render(request,'userprofile/userProfile.html',{'cur_user':cur_user,'userFamily':userFamily,'rewardCards':rewardCards})
+    response = render(request, 'userprofile/userprofile.html',{'cur_user':cur_user,'userFamily':userFamily,'rewardCards':rewardCards})
     return response
 
 
@@ -115,6 +115,13 @@ class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
         context['interests'] = VolunteerInterests.objects.filter(active=True).all()
         context['profileInt'] = self.object.interest.all()
         return context
+
+def FamilyProfilePage(request, famid):
+    '''This takes an argument of a family ID and provides all family level information
+    '''
+    family = FamilyProfile.objects.prefetch_related('famvolunteers','famvolunteers__linkedUser').get(pk=famid)
+
+    return render_to_response('userprofile/familyProfile.html',{'family':family},context_instance=RequestContext(request))
 
 
 class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
