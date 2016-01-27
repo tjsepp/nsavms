@@ -1,0 +1,35 @@
+<div class="col-md-12">
+
+        <h4 style="color:navy"><b>Students</bcolor:navy></h4>
+        {%  if family.students.all %}
+            <table class="table table-hover table-bordered table-condensed">
+                 <thead>
+                    <tr>
+                    <th>Name</th>
+                    <th>Grade</th>
+                    <th>Teacher</th>
+                    <th>Status</th>
+                    </tr>
+                </thead>
+        <tbody>
+
+            {% for stu in family.students.all %}
+            <tr>
+                <td>{{ stu.getFullStudentName}}</td>
+                <td>{{ stu.grade}}</td>
+                <td>{{ stu.teacher}}</td>
+                <td> {% if stu.activeStatus == True %}
+                        <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+            </table>
+    {% else %}
+      <h5 style="color: red">No Students have been entered for the {{ family.familyName }}</h5>
+    {% endif %}
+</div>

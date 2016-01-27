@@ -71,21 +71,21 @@ def userVolunteerData(request):
 
     curYear = SchoolYear.objects.get(currentYear = 1)
     curUser = VolunteerProfile.objects.get(linkedUserAccount=request.user)
-    rewardCardData = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).order_by('-refillDate')
-    volhours = VolunteerHours.objects.filter(volunteer = request.user).filter(schoolYear=curYear).order_by('-eventDate')
-    rewardCardSum = RewardCardUsage.objects.filter(volunteerId = request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
-    volunteerHoursSum=VolunteerHours.objects.filter(volunteer = request.user).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    usr = curUser.linkedUserAccount_id
+    userFams = FamilyProfile.objects.filter(famvolunteers=usr)
+    rewardCardData = RewardCardUsage.objects.filter(volunteerId =usr).filter(schoolYear = curYear).order_by('-refillDate')
+    volhours = VolunteerHours.objects.filter(volunteer = usr).filter(schoolYear=curYear).order_by('-eventDate')
+    rewardCardSum = RewardCardUsage.objects.filter(volunteerId = usr).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    volunteerHoursSum=volhours.aggregate(Sum('volunteerHours')).values()[0]
     if rewardCardSum==None:
         rewardCardSum=0
     if volunteerHoursSum ==None:
         volunteerHoursSum = 0
-
+    familySums = VolunteerHours.objects.filter(family=userFams).values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
-        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours,'curUser':curUser})
-    #response = TemplateResponse(request, 'news.html', {})
-    # Register the callback
-    # Return the response
+        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours,'curUser':curUser,
+                                                                   'familySums':familySums,'userFams':userFams})
     return response
 
 

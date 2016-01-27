@@ -3,15 +3,22 @@
 
     <div class="container-fluid" style="padding: 7%">
     <h2 style="color:#C0C0C0; text-align: center; margin-bottom: 3%">User Dashboard - {{ curUser }}</h2>
-    Total Volunteer Hours:
-    <b>{{ totalVolunteerHoursUser }}</b>
-
+    <p>Total individual volunteer hours: <b>{{ totalVolunteerHoursUser }}</b></p>
+    Total volunteer hours for family:
+    {% for famx in familySums %}
+        <ul style="margin: 1%">
+    <li style="margin: -1%">{{famx.family__familyName}}: <b>{{ famx.total }}</b></li>
+        </ul>
+    {% endfor %}
 
     <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours</h4>
     {% if volHours %}
             <table class="table table-hover table-bordered table-condensed">
             <thead>
             <tr>
+                {% if userFams|length > 1 %}
+                <th>Family</th>
+                 {% endif %}
                 <th>Date</th>
                 <th>Event</th>
                 <th>Hours Volunteered</th>
@@ -19,6 +26,11 @@
             </thead>
                 {% for hrs in volHours %}
             <tr>
+            {% if userFams|length > 1 %}
+                <td>
+                    {{ hrs.family }}
+                </td>
+             {% endif %}
                 <td>
                     {{ hrs.eventDate }}
                 </td>

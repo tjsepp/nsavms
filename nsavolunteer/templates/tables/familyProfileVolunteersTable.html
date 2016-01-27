@@ -1,0 +1,39 @@
+<div class="col-md-12">
+            <h4 style="color:navy"><b>Volunteers</b></h4>
+            {%  if family.famvolunteers.all %}
+            <table class="table table-hover table-bordered table-condensed">
+                 <thead>
+                    <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Cell Phone</th>
+                    <th>Volunteer Type</th>
+                    <th>Volunteer Status</th>
+                    <th width="3%">Updated Interests</th>
+                    </tr>
+                </thead>
+        <tbody>
+
+            {% for vol in family.famvolunteers.all %}
+            <tr>
+                <td>{{ vol.name}}</td>
+                <td>{{ vol.email}}</td>
+                <td>{{ vol.linkedUser.cellPhone|default:""}}</td>
+                <td>{{ vol.linkedUser.volunteerType|default:" "}}</td>
+                <td>{{ vol.linkedUser.volStatus|default:" "}}</td>
+                <td> {% if vol.linkedUser.interest.all %}
+                        <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+            </table>
+        {% else %}
+      <h5 style="color: red">No Volunteers have been entered for the {{ family.familyName }}</h5>
+    {% endif %}
+
+</div>
