@@ -1,6 +1,6 @@
 from django.contrib import admin
 from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerProfile, RewardCardUsers,Student,\
-    FamilyProfile,VolunteerToFamily,StudentToFamily,RewardCardUsage,VolunteerHours
+    FamilyProfile,StudentToFamily,RewardCardUsage,VolunteerHours
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -15,7 +15,7 @@ class VolunteerProfileAdmin(SimpleHistoryAdmin):
     list_display = ('linkedUserAccount','firstName','lastName','volunteerType','cellPhone')
     raw_id_fields = ('linkedUserAccount',)
 
-
+"""
 class UserToFamilyForm(forms.ModelForm):
     '''This form is used in the UserToFamilyAdmin to help clean up the labels ex. change from organization to Family
     '''
@@ -23,13 +23,8 @@ class UserToFamilyForm(forms.ModelForm):
     class Meta:
         model = VolunteerToFamily
         fields = ('person', 'group')
+"""
 
-#class UserToFamilyAdmin(SimpleHistoryAdmin):
-#    '''
-#    Uses custom form to clean up labels
-#    '''
-#    model = VolunteerToFamily
-#    form = UserToFamilyForm
 
 class RewardCardInfoAdmin(admin.ModelAdmin):
     model = RewardCardUsers

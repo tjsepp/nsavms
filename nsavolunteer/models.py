@@ -6,6 +6,7 @@ from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers,SchoolYear
 from nsaEvents.models import NsaEvents
+from django.db.models import Sum
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
@@ -42,6 +43,7 @@ class VolunteerProfile(TimeStampedModel):
 
     def __unicode__(self):
         return self.linkedUserAccount.name
+
     '''
     def deleteUserProfile(sender, instance,using=None,**kwargs):
         recs = VolunteerProfile.history.filter(instance)
@@ -50,6 +52,7 @@ class VolunteerProfile(TimeStampedModel):
         VolunteerProfile.delete(instance)
     pre_delete.connect(deleteUserProfile, sender=User)
     '''
+
     def fullName(self):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
@@ -100,6 +103,7 @@ class VolunteerType(TimeStampedModel):
         verbose_name_plural='Volunteer Type'
         db_table = 'volunteerType'
         ordering = ['volunteerType']
+
 
 class VolunteerInterests(TimeStampedModel):
     '''
@@ -179,6 +183,37 @@ class FamilyProfile(TimeStampedModel):
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
 
+    @property
+    def listVolunteers(self):
+        vols = self.famvolunteers.all()
+        volList = '%s' % ",".join([vol.name for vol in vols])
+        return volList
+
+    @property
+    def listStudents(self):
+        stus = self.students.all()
+        stuList = '%s' % ",".join([stu.studentFirstName for stu in stus])
+        return stuList
+
+    @property
+    def totalCurrentVolunteerHours(self):
+      curYear = SchoolYear.objects.filter(currentYear=1)
+      hours = VolunteerHours.objects.filter(family=self.familyProfileId).filter(schoolYear=curYear) \
+          .aggregate(total=Sum('volunteerHours'))
+      return hours
+
+    @property
+    def totalCurrentRewardCardHours(self):
+      curYear = SchoolYear.objects.filter(currentYear=1)
+      hours = RewardCardUsage.objects.filter(customerCardNumber=self.rewardcardusers_set.values('customerCardNumber')).\
+          filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      return hours
+
+    @property
+    def totalCurrentHours(self):
+      hours =  self.totalCurrentVolunteerHours['total'] + self.totalCurrentRewardCardHours['total']
+      return hours
+
     def __unicode__(self):
         return self.familyName
 
@@ -188,6 +223,7 @@ class FamilyProfile(TimeStampedModel):
         db_table = 'familyProfile'
 
 
+'''
 class VolunteerToFamily(TimeStampedModel):
     person = models.ForeignKey(settings.AUTH_USER_MODEL)
     group = models.ForeignKey(FamilyProfile)
@@ -199,7 +235,7 @@ class VolunteerToFamily(TimeStampedModel):
 
     def __unicode__(self):
         return '%s (%s)' %(self.person.name,self.group)
-
+'''
 
 class VolunteerHoursManager(models.Manager):
     def current_year(self):
@@ -218,11 +254,8 @@ class VolunteerHours(TimeStampedModel):
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
     objects = VolunteerHoursManager()
 
-
     def __unicode__(self):
         return "%s's %s on %s" %(self.volunteer.name, self.event, self.eventDate)
-
-
 
     class Meta:
         verbose_name_plural = 'Volunteer Hours'
@@ -237,6 +270,7 @@ class RewardCardUsers(TimeStampedModel):
     '''
     RewardCardId = models.AutoField(primary_key=True,db_column='rewardCardId',verbose_name='Reward Card ID')
     linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True)
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
     history = HistoricalRecords()

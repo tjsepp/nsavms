@@ -1,0 +1,76 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Family Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h3>Family Index</h3>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Family Name</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>Zip</th>
+                <th>Volunteers</th>
+                <th>Students</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for fam in FamilyIndex %}
+                <tr>
+                <td align="center"><a href="#" class="glyphicon glyphicon-edit" data-toggle="popover"  data-trigger="focus"
+                                      title="Edit <b>{{ fam.familyName }}</b>"
+                                      data-content="<ul style='list-style-type:none'>
+                                                    <li style='margin-left:-20%'><a href='{%  url 'home' %}'>Change Option 1</a></li>
+                                                    <li style='margin-left:-20%'><a href='#'>Change Option 2</a></li>
+                                                    <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
+                                                    </ul>"></a></td>
+                <td>{{ fam.familyName }}</td>
+                <td>{{ fam.streetAddress }}</td>
+                <td>{{ fam.city }}</td>
+                <td>{{ fam.zip }}</td>
+                <td>{{ fam.listVolunteers }}</td>
+                <td>{{ fam.listStudents }}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

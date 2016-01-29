@@ -28,6 +28,14 @@ class VolunteerIndex(ListView):
     context_object_name = "volunteerIndex"
     template_name = "tables/volunteerIndex.html"
 
+class FamilyIndex(ListView):
+    model = FamilyProfile
+    paginate_by = 100
+    queryset = FamilyProfile.objects.all().order_by('familyName')
+    context_object_name = "FamilyIndex"
+    template_name = "tables/FamilyIndex.html"
+
+
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm

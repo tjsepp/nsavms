@@ -16,7 +16,7 @@
             <table class="table table-hover table-bordered table-condensed">
             <thead>
             <tr>
-                {% if userFams|length > 1 %}
+                {% if userFams.all > 1 %}
                 <th>Family</th>
                  {% endif %}
                 <th>Date</th>
@@ -26,7 +26,7 @@
             </thead>
                 {% for hrs in volHours %}
             <tr>
-            {% if userFams|length > 1 %}
+            {% if userFams.all > 1 %}
                 <td>
                     {{ hrs.family }}
                 </td>
