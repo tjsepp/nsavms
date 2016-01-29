@@ -48,7 +48,7 @@
                                                     <li style='margin-left:-20%'><a href='#'>Change Option 2</a></li>
                                                     <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
                                                     </ul>"></a></td>
-                <td>{{ fam.familyName }}</td>
+                <td><a href={% url 'familyprofile' fam.familyProfileId  %}>{{ fam.familyName }}</a></td>
                 <td>{{ fam.streetAddress }}</td>
                 <td>{{ fam.city }}</td>
                 <td>{{ fam.zip }}</td>
