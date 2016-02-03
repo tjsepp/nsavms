@@ -8,10 +8,13 @@ from nsaSchool.models import GradeLevel,Teachers,SchoolYear
 from nsaEvents.models import NsaEvents
 from django.db.models import Sum
 
+
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
 GRADELEVEL = (('0','Kindergarten'),('1','1st Grade'),('2','2nd Grade'),('3','3rd Grade'),('4','4th Grade'),
               ('5','5th Grade'),('6','6th Grade'),('7','7th Grade'),('8','8th Grade'))
+
+
 
 
 class TimeStampedModel(models.Model):
@@ -85,6 +88,10 @@ class VolunteerProfile(TimeStampedModel):
         verbose_name_plural='Volunteer Profile'
         db_table = 'volunteerProfile'
         ordering = ['linkedUserAccount__name']
+        permissions = (
+            ("is_avc", "Is AVC"),
+            ("is_volunteer_manager", "Is Volunteer Manager"),
+        )
 
 
 class VolunteerType(TimeStampedModel):

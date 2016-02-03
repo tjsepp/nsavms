@@ -2,7 +2,7 @@
 {% block base_content %}
 
     <div class="container-fluid" style="padding: 7%">
-    <h2 style="color:#C0C0C0; text-align: center; margin-bottom: 3%">User Dashboard - {{ curUser }}</h2>
+    <h2 style="color:#C0C0C0; text-align: center; margin-bottom: 3%">User Dashboard - {{ curUser.name }}</h2>
     <p>Total individual volunteer hours: <b>{{ totalVolunteerHoursUser }}</b></p>
     Total volunteer hours for family:
     {% for famx in familySums %}
@@ -11,7 +11,7 @@
         </ul>
     {% endfor %}
 
-    <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours</h4>
+    <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours for {{ curYear }} school year</h4>
     {% if volHours %}
             <table class="table table-hover table-bordered table-condensed">
             <thead>

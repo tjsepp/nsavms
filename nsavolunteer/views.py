@@ -13,7 +13,7 @@ from django.forms.formsets import formset_factory
 from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
-from extra_views import FormSetView
+
 
 def homeView(request):
     news = VolunteerNews.objects.all()
@@ -78,22 +78,21 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
-    curUser = VolunteerProfile.objects.get(linkedUserAccount=request.user)
-    usr = curUser.linkedUserAccount_id
-    userFams = FamilyProfile.objects.filter(famvolunteers=usr)
-    rewardCardData = RewardCardUsage.objects.filter(volunteerId =usr).filter(schoolYear = curYear).order_by('-refillDate')
-    volhours = VolunteerHours.objects.filter(volunteer = usr).filter(schoolYear=curYear).order_by('-eventDate')
-    rewardCardSum = RewardCardUsage.objects.filter(volunteerId = usr).filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family').get(pk=request.user.id)
+    rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
+    volhours = curUser.volunteerhours_set.select_related('event').filter(schoolYear=curYear).all().order_by('-eventDate')
+    rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     volunteerHoursSum=volhours.aggregate(Sum('volunteerHours')).values()[0]
     if rewardCardSum==None:
         rewardCardSum=0
     if volunteerHoursSum ==None:
         volunteerHoursSum = 0
-    familySums = VolunteerHours.objects.filter(family=userFams).values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
+    familySums = curUser.volunteerhours_set.values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
-        'totalVolunteerHoursUser':totalVolunteerHoursUser, 'volHours':volhours,'curUser':curUser,
-                                                                   'familySums':familySums,'userFams':userFams})
+         'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
+        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,
+        'curYear':curYear,'curUser':curUser})
     return response
 
 
