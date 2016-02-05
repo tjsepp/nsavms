@@ -87,11 +87,12 @@ def userVolunteerData(request):
         rewardCardSum=0
     if volunteerHoursSum ==None:
         volunteerHoursSum = 0
-    familySums = curUser.volunteerhours_set.values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
+    familySums = curUser.volunteerhours_set.filter(schoolYear=curYear).values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
+    histSums = curUser.volunteerhours_set.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
          'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
-        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,
+        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,'histSums':histSums,
         'curYear':curYear,'curUser':curUser})
     return response
 
