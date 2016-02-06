@@ -7,7 +7,8 @@ from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers,SchoolYear
 from nsaEvents.models import NsaEvents
 from django.db.models import Sum
-
+from collections import defaultdict
+from itertools import chain
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
@@ -47,15 +48,6 @@ class VolunteerProfile(TimeStampedModel):
     def __unicode__(self):
         return self.linkedUserAccount.name
 
-    '''
-    def deleteUserProfile(sender, instance,using=None,**kwargs):
-        recs = VolunteerProfile.history.filter(instance)
-        for rec in recs:
-            rec.delete()
-        VolunteerProfile.delete(instance)
-    pre_delete.connect(deleteUserProfile, sender=User)
-    '''
-
     def fullName(self):
         return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
@@ -83,6 +75,21 @@ class VolunteerProfile(TimeStampedModel):
         if created:
             VolunteerProfile.objects.create(linkedUserAccount=instance)
     post_save.connect(create_user_profile, sender=User)
+
+    @property
+    def historical_volunteer_data(self):
+        curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family').get(pk=self.linkedUserAccount.id)
+        rhh = curUser.rewardCardValue.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
+        vhh = curUser.volunteerhours_set.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
+        cb = chain(rhh,vhh)
+        io =[]
+        for x in cb:
+             io.append(x)
+        c = defaultdict(int)
+        for d in io:
+            c[d['schoolYear__schoolYear']] += d['total']
+        histHours =  [{'schoolYear': schoolYear__schoolYear, 'total': total} for schoolYear__schoolYear, total in c.items()]
+        return histHours
 
     class Meta:
         verbose_name_plural='Volunteer Profile'
@@ -206,19 +213,26 @@ class FamilyProfile(TimeStampedModel):
     def totalCurrentVolunteerHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
       hours = VolunteerHours.objects.filter(family=self.familyProfileId).filter(schoolYear=curYear) \
-          .aggregate(total=Sum('volunteerHours'))
-      return hours
+              .aggregate(total=Sum('volunteerHours'))
+      if hours['total']:
+          total = hours['total']
+      else:
+          total = 0
+      return total
 
     @property
     def totalCurrentRewardCardHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = RewardCardUsage.objects.filter(customerCardNumber=self.rewardcardusers_set.values('customerCardNumber')).\
-          filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
-      return hours
+      hours = RewardCardUsage.objects.filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      if hours['total']:
+          total = hours['total']
+      else:
+          total = 0
+      return total
 
     @property
     def totalCurrentHours(self):
-      hours =  self.totalCurrentVolunteerHours['total'] + self.totalCurrentRewardCardHours['total']
+      hours =  self.totalCurrentVolunteerHours + self.totalCurrentRewardCardHours
       return hours
 
     def __unicode__(self):
@@ -299,6 +313,7 @@ class RewardCardUsage(TimeStampedModel):
     rewardCardusageId= models.AutoField(primary_key=True,db_column='rewardCardUsageId',verbose_name='Reward Card Usage ID')
     customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number',blank=False,null=True)
     volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='rewardCardValue')
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='rewardCardFamilyLink')
     refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
     refillValue = models.DecimalField(db_column='refillValue',verbose_name='Refill Value',max_digits=8, decimal_places=2)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
@@ -318,6 +333,9 @@ class RewardCardUsage(TimeStampedModel):
             self.volunteerId = cardUser.linkedUser
         if not self.volunteerHours:
             self.volunteerHours = self.volunteer_Hours()
+        if not self.linkedFamily:
+            cardfamily = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
+            self.linkedFamily = cardUser.family
         super(RewardCardUsage,self).save(force_insert, force_update)
 
     class Meta:

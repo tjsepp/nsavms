@@ -7,7 +7,7 @@
     Total volunteer hours for family:
     {% for famx in familySums %}
         <ul style="margin: 1%">
-    <li style="margin: -1%">{{famx.family__familyName}}: <b>{{ famx.total }}</b></li>
+    <li style="margin: -1%">{{famx.familyName}}: <b>{{ famx.totalCurrentHours }}</b></li>
         </ul>
     {% endfor %}
 
@@ -47,14 +47,14 @@
         <h4 style="color: red">You have not logged any volunteers hours.</h4>
     {% endif %}
 
-    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Reward Cards</h4>
+    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Reward Cards for {{ curYear }} school year</h4>
     {% if rewardCardData %}
             <table class="table table-hover table-bordered table-condensed">
             <thead>
             <tr>
                 <th>Store</th>
                 <th>Refill Date</th>
-                <th>Refill Value</th>
+                <th>Volunteer Hours</th>
             </tr>
             </thead>
                 {% for storeData in rewardCardData %}
@@ -66,7 +66,7 @@
                     {{ storeData.refillDate }}
                 </td>
                 <td>
-                    ${{ storeData.refillValue }}
+                    {{ storeData.volunteerHours }}
                 </td>
             </tr>
                 {% endfor %}
@@ -77,8 +77,8 @@
 
 
 
- <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours By School Year</h4>
-    {% if histSums %}
+ <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours By School Year <i>(Individual)</i></h4>
+    {% if histHours %}
             <table class="table table-hover table-bordered table-condensed">
             <thead>
             <tr>
@@ -86,10 +86,10 @@
                 <th>Total Hours</th>
             </tr>
             </thead>
-                {% for yr in histSums %}
+                {% for yr in histHours %}
             <tr>
                 <td>
-                    {{ yr.schoolYear__schoolYear }}
+                    {{ yr.schoolYear }}
                 </td>
                 <td>
                     {{ yr.total }}

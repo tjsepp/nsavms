@@ -172,26 +172,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='HistoricalVolunteerToFamily',
-            fields=[
-                ('id', models.IntegerField(verbose_name='ID', db_index=True, auto_created=True, blank=True)),
-                ('dateCreated', models.DateTimeField(editable=False, blank=True)),
-                ('dateUpdated', models.DateTimeField(editable=False, blank=True)),
-                ('history_id', models.AutoField(serialize=False, primary_key=True)),
-                ('history_date', models.DateTimeField()),
-                ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
-                ('group', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to='nsavolunteer.FamilyProfile', null=True)),
-                ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
-                ('person', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_constraint=False, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-            ],
-            options={
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
-                'verbose_name': 'historical volunteer to family',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='HistoricalVolunteerType',
             fields=[
                 ('dateCreated', models.DateTimeField(editable=False, blank=True)),
@@ -339,20 +319,7 @@ class Migration(migrations.Migration):
                 'ordering': ['linkedUserAccount__name'],
                 'db_table': 'volunteerProfile',
                 'verbose_name_plural': 'Volunteer Profile',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='VolunteerToFamily',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('dateCreated', models.DateTimeField(auto_now_add=True)),
-                ('dateUpdated', models.DateTimeField(auto_now=True)),
-                ('group', models.ForeignKey(to='nsavolunteer.FamilyProfile')),
-                ('person', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name_plural': 'Volunteer To Family',
+                'permissions': (('is_avc', 'Is AVC'), ('is_volunteer_manager', 'Is Volunteer Manager')),
             },
             bases=(models.Model,),
         ),
@@ -371,10 +338,6 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Volunteer Type',
             },
             bases=(models.Model,),
-        ),
-        migrations.AlterUniqueTogether(
-            name='volunteertofamily',
-            unique_together=set([('person', 'group')]),
         ),
         migrations.AddField(
             model_name='volunteerprofile',

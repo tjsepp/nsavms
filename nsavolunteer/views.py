@@ -14,7 +14,6 @@ from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
 
-
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request, 'home.html')
@@ -87,12 +86,12 @@ def userVolunteerData(request):
         rewardCardSum=0
     if volunteerHoursSum ==None:
         volunteerHoursSum = 0
-    familySums = curUser.volunteerhours_set.filter(schoolYear=curYear).values('family__familyName').annotate(total=Sum('volunteerHours')).order_by('family')
-    histSums = curUser.volunteerhours_set.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
+    familySums = curUser.family.all()
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
+    histHours = curUser.linkedUser.historical_volunteer_data
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
          'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
-        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,'histSums':histSums,
+        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,'histHours':histHours,
         'curYear':curYear,'curUser':curUser})
     return response
 
