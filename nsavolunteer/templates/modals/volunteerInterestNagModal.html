@@ -1,0 +1,29 @@
+
+
+<!-- Modal -->
+
+
+<div class="modal fade" id="ProfileNagModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                 <h2 class="modal-title" id="memberModalLabel" style="color: #000059">Welcome Stranger!</h2>
+
+            </div>
+            <div class="modal-body">
+                <p><b style="color: #000059">Why are we calling you stranger and not {{ curUser.linkedUser.firstName }}?</b>
+                    <BR>You haven't added any interests to your profile and we don't know much about you. Adding intersts
+                to your profile allows us to match volunteer opportunities to interested volunteers. </p>
+                   <p>Please take a few moments to add some interests to your profile and we'll promise to stop bugging
+                       you with this window. </p>
+
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'updateProfile' %}" class="btn btnnavy">Update Profile</a>
+                <button type="button" class="btn btnnavy " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

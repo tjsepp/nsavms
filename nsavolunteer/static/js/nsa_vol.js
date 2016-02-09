@@ -20,3 +20,8 @@ $(document).ready(function() {
 } );
 
 
+$(document).ready(function () {
+    $('#ProfileNagModal').modal('show');
+});
+
+

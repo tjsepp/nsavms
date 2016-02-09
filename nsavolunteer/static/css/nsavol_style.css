@@ -99,12 +99,14 @@ margin-bottom: 50px;
     margin-bottom: 30px;
     border-radius: 10px;
     border-bottom: 3px solid #191970;
-    height: 150px;
+    height: 11em;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .faq-col .faq-item .question {
     margin-top: 0px;
     font-size: 16px;
-    font-weight:550;
+    font-weight:600;
     margin-bottom: 5px;
     font-family: American Typewriter;
 }
@@ -142,4 +144,16 @@ margin-bottom: 50px;
 #volunteerProfile{
        width: 900px;
        margin: 0 auto;
+}
+
+.btnnavy{
+    color:white;
+    background-color:#000059;
+}
+
+.btnnavy:hover
+{
+  background-color: gray;
+    color: white;
+    font-weight: 600;
 }
