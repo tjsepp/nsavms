@@ -88,10 +88,10 @@ def userVolunteerData(request):
         volunteerHoursSum = 0
     familySums = curUser.family.all()
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
-    histHours = curUser.linkedUser.historical_volunteer_data
+
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
          'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
-        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,'histHours':histHours,
+        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,
         'curYear':curYear,'curUser':curUser})
     return response
 

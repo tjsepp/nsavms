@@ -74,6 +74,7 @@ class Migration(migrations.Migration):
                 ('history_id', models.AutoField(serialize=False, primary_key=True)),
                 ('history_date', models.DateTimeField()),
                 ('history_type', models.CharField(max_length=1, choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')])),
+                ('family', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'family', db_constraint=False, blank=True, to='nsavolunteer.FamilyProfile', null=True)),
                 ('history_user', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, null=True)),
                 ('linkedUser', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.DO_NOTHING, db_column=b'linkedUser', db_constraint=False, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
@@ -220,6 +221,7 @@ class Migration(migrations.Migration):
                 ('RewardCardId', models.AutoField(serialize=False, verbose_name=b'Reward Card ID', primary_key=True, db_column=b'rewardCardId')),
                 ('storeName', models.CharField(max_length=25, null=True, verbose_name=b'Store', db_column=b'store', choices=[(b'King Soopers', b'King Soopers'), (b'Safeway', b'Safeway')])),
                 ('customerCardNumber', models.CharField(max_length=50, null=True, verbose_name=b'Card Number', db_column=b'cardNumber')),
+                ('family', models.ForeignKey(db_column=b'family', verbose_name=b'Family', to='nsavolunteer.FamilyProfile', null=True)),
                 ('linkedUser', models.ForeignKey(related_name='rewardCardUser', db_column=b'linkedUser', verbose_name=b'LinkedUser', to=settings.AUTH_USER_MODEL)),
             ],
             options={
