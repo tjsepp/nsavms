@@ -25,3 +25,8 @@ $(document).ready(function () {
 });
 
 
+$(document).ready(function () {
+    $('.select2It').select2({
+         placeholder: "Select an event"
+    });
+});
