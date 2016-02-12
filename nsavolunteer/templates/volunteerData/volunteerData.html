@@ -47,6 +47,36 @@
         <h4 style="color: red">You have not logged any volunteers hours.</h4>
     {% endif %}
 
+    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Traffic Duty for {{ curYear }} school year</h4>
+    {% if traffic %}
+            <table class="table table-hover table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Volunteer Hours</th>
+            </tr>
+            </thead>
+                {% for duty in traffic %}
+            <tr>
+                <td>
+                    {{ duty.trafficDutyDate }}
+                </td>
+                <td>
+                    {{ duty.get_trafficDutyType_display }}
+                </td>
+                <td>
+                    {{ duty.volunteerHours }}
+                </td>
+            </tr>
+                {% endfor %}
+            </table>
+    {% else %}
+            <h4 style="color: red">No Traffic duty to display</h4>
+    {% endif %}
+
+
+
     <h4 style="margin-top: 3%; font-weight: 600; color: navy">Reward Cards for {{ curYear }} school year</h4>
     {% if rewardCardData %}
             <table class="table table-hover table-bordered table-condensed">

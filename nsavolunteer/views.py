@@ -80,20 +80,24 @@ def userVolunteerData(request):
     curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family','linkedUser').get(pk=request.user.id)
     rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
     volhours = curUser.volunteerhours_set.select_related('event').filter(schoolYear=curYear).all().order_by('-eventDate')
+    traffic = curUser.trafficDutyUser.filter(schoolYear = curYear)
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     volunteerHoursSum=volhours.aggregate(Sum('volunteerHours')).values()[0]
     if rewardCardSum==None:
         rewardCardSum=0
     if volunteerHoursSum ==None:
         volunteerHoursSum = 0
+    if parkingDutySum==None:
+        parkingDutySum=0
     familySums = curUser.family.all()
-    totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum
+    totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum+parkingDutySum
     histHours = curUser.linkedUser.historical_volunteer_data
     hasInterests = curUser.linkedUser.interest.count()
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
          'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
         'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,
-        'curYear':curYear,'curUser':curUser,'histHours':histHours,'hasInterests':hasInterests})
+        'curYear':curYear,'curUser':curUser,'histHours':histHours,'hasInterests':hasInterests,'traffic':traffic})
     return response
 
 

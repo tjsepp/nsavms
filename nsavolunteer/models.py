@@ -15,7 +15,7 @@ VOLSTATUS = (('pending','Pending'),('approved','Approved'))
 GRADELEVEL = (('0','Kindergarten'),('1','1st Grade'),('2','2nd Grade'),('3','3rd Grade'),('4','4th Grade'),
               ('5','5th Grade'),('6','6th Grade'),('7','7th Grade'),('8','8th Grade'))
 
-
+TRAFFICDUTY = (('am','Drop-off'),('pm','Pick-up'))
 
 
 class TimeStampedModel(models.Model):
@@ -81,7 +81,8 @@ class VolunteerProfile(TimeStampedModel):
         curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family').get(pk=self.linkedUserAccount.id)
         rhh = curUser.rewardCardValue.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
         vhh = curUser.volunteerhours_set.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
-        cb = chain(rhh,vhh)
+        tdu = curUser.trafficDutyUser.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
+        cb = chain(rhh,vhh,tdu)
         io =[]
         for x in cb:
              io.append(x)
@@ -231,8 +232,18 @@ class FamilyProfile(TimeStampedModel):
       return total
 
     @property
+    def totalCurrentParkingDutyHours(self):
+      curYear = SchoolYear.objects.filter(currentYear=1)
+      hours = TrafficDuty.objects.select_related('family').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      if hours['total']:
+          total = hours['total']
+      else:
+          total = 0
+      return total
+
+    @property
     def totalCurrentHours(self):
-      hours =  self.totalCurrentVolunteerHours + self.totalCurrentRewardCardHours
+      hours =  self.totalCurrentVolunteerHours + self.totalCurrentRewardCardHours+self.totalCurrentParkingDutyHours
       return hours
 
     def __unicode__(self):
@@ -343,3 +354,32 @@ class RewardCardUsage(TimeStampedModel):
         db_table = 'rewardCardData'
         ordering = ['refillDate']
 
+
+class TrafficDuty(TimeStampedModel):
+    trafficDutyId= models.AutoField(primary_key=True,db_column='ParkingDutyId',verbose_name='Parking Duty ID')
+    trafficDutyDate = models.DateField(db_column='parkingDutyDate', verbose_name='Parking Duty Date', null=True, blank=True)
+    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
+    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDutyUser')
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='parkingDutyFamily')
+    trafficDutyType =models.CharField(max_length=25,db_column='store',verbose_name='Duty Type',null=True,blank=False,choices=TRAFFICDUTY)
+    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+
+    def __unicode__(self):
+        return '%s - %s' %(self.volunteerId.name,self.trafficDutyDate)
+
+
+    class Meta:
+        verbose_name_plural='Traffic Duty'
+        db_table = 'trafficDuty'
+        ordering = ['trafficDutyDate']
+
+    def save(self, force_insert=False,force_update=False, using=None):
+        if not self.volunteerHours:
+            if self.trafficDutyType == 'am':
+                volTime = 1
+            elif self.trafficDutyType =='pm':
+                volTime = 1.5
+            else:
+                volTime = 0
+            self.volunteerHours = volTime
+        super(TrafficDuty,self).save(force_insert, force_update)
