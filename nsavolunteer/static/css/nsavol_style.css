@@ -126,11 +126,7 @@ margin-bottom: 50px;
   opacity:0.8;
     }
 
-.panel > .panel-heading {
-    background-image: none;
-    background-color: white;
-    color: Navy;
-}
+
 
 .homeIcons{
     font-size:4em;
@@ -159,4 +155,12 @@ margin-bottom: 50px;
 }
 .select2It{
     height: 34px;
+}
+
+.user-data-panel{
+    margin-top: 4%;
+}
+.user-data-panel .panel-heading .panel-title{
+     font-weight: 600;
+     color:navy;
 }

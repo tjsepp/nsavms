@@ -11,125 +11,143 @@
         </ul>
     {% endfor %}
 
-    <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours for {{ curYear }} school year</h4>
-    {% if volHours %}
-            <table class="table table-hover table-bordered table-condensed">
-            <thead>
-            <tr>
+
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">Volunteer Hours for {{ curYear }} school year</h4>
+        </div>
+            {% if volHours %}
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    {% if userFams.all > 1 %}
+                    <th>Family</th>
+                     {% endif %}
+                    <th>Date</th>
+                    <th>Event</th>
+                    <th>Hours Volunteered</th>
+                </tr>
+                </thead>
+                    {% for hrs in volHours %}
+                <tr>
                 {% if userFams.all > 1 %}
-                <th>Family</th>
+                    <td>
+                        {{ hrs.family }}
+                    </td>
                  {% endif %}
-                <th>Date</th>
-                <th>Event</th>
-                <th>Hours Volunteered</th>
-            </tr>
-            </thead>
-                {% for hrs in volHours %}
-            <tr>
-            {% if userFams.all > 1 %}
-                <td>
-                    {{ hrs.family }}
-                </td>
-             {% endif %}
-                <td>
-                    {{ hrs.eventDate }}
-                </td>
-                <td>
-                    {{ hrs.event }}
-                </td>
-                <td>
-                    {{ hrs.volunteerHours }}
-                </td>
-            </tr>
-                {% endfor %}
-            </table>
-    {% else %}
-        <h4 style="color: red">You have not logged any volunteers hours.</h4>
-    {% endif %}
+                    <td>
+                        {{ hrs.eventDate }}
+                    </td>
+                    <td>
+                        {{ hrs.event }}
+                    </td>
+                    <td>
+                        {{ hrs.volunteerHours }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+            <h4 style="color: red; text-align: center">No volunteer hours reported</h4>
+        {% endif %}
 
-    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Traffic Duty for {{ curYear }} school year</h4>
-    {% if traffic %}
-            <table class="table table-hover table-bordered table-condensed">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Volunteer Hours</th>
-            </tr>
-            </thead>
-                {% for duty in traffic %}
-            <tr>
-                <td>
-                    {{ duty.trafficDutyDate }}
-                </td>
-                <td>
-                    {{ duty.get_trafficDutyType_display }}
-                </td>
-                <td>
-                    {{ duty.volunteerHours }}
-                </td>
-            </tr>
-                {% endfor %}
-            </table>
-    {% else %}
-            <h4 style="color: red">No Traffic duty to display</h4>
-    {% endif %}
+    </div>
 
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">Traffic Duty for {{ curYear }} school year</h4>
+        </div>
+     {% if traffic %}
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Volunteer Hours</th>
+                </tr>
+                </thead>
+                    {% for duty in traffic %}
+                <tr>
+                    <td>
+                        {{ duty.trafficDutyDate }}
+                    </td>
+                    <td>
+                        {{ duty.get_trafficDutyType_display }}
+                    </td>
+                    <td>
+                        {{ duty.volunteerHours }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+                <h4 style="color: red; text-align: center">No traffic duty reported</h4>
+        {% endif %}
 
+    </div>
 
-    <h4 style="margin-top: 3%; font-weight: 600; color: navy">Reward Cards for {{ curYear }} school year</h4>
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">Reward Cards for {{ curYear }} school year</h4>
+        </div>
     {% if rewardCardData %}
-            <table class="table table-hover table-bordered table-condensed">
-            <thead>
-            <tr>
-                <th>Store</th>
-                <th>Refill Date</th>
-                <th>Volunteer Hours</th>
-            </tr>
-            </thead>
-                {% for storeData in rewardCardData %}
-            <tr>
-                <td>
-                    {{ storeData.storeName }}
-                </td>
-                <td>
-                    {{ storeData.refillDate }}
-                </td>
-                <td>
-                    {{ storeData.volunteerHours }}
-                </td>
-            </tr>
-                {% endfor %}
-            </table>
-    {% else %}
-            <h4 style="color: red">You don't have any reward card purchases.</h4>
-    {% endif %}
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Refill Date</th>
+                    <th>Volunteer Hours</th>
+                </tr>
+                </thead>
+                    {% for storeData in rewardCardData %}
+                <tr>
+                    <td>
+                        {{ storeData.storeName }}
+                    </td>
+                    <td>
+                        {{ storeData.refillDate }}
+                    </td>
+                    <td>
+                        {{ storeData.volunteerHours }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+                <h4 style="color: red; text-align: center">No reward cart purchase data reported</h4>
+        {% endif %}
+
+    </div>
 
 
-
- <h4 style="margin-top: 3%; font-weight: 600; color:navy;">Volunteer Hours By School Year <i>(Individual)</i></h4>
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">Volunteer Hours By School Year <i>(Individual)</i></h4>
+        </div>
     {% if histHours %}
-            <table class="table table-hover table-bordered table-condensed">
-            <thead>
-            <tr>
-                <th>School Year</th>
-                <th>Total Hours</th>
-            </tr>
-            </thead>
-                {% for yr in histHours %}
-            <tr>
-                <td>
-                    {{ yr.schoolYear }}
-                </td>
-                <td>
-                    {{ yr.total }}
-                </td>
-            </tr>
-                {% endfor %}
-            </table>
-    {% else %}
-        <h4 style="color: red">You have not logged any data.</h4>
-    {% endif %}
+        
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th>School Year</th>
+                    <th>Total Hours</th>
+                </tr>
+                </thead>
+                    {% for yr in histHours %}
+                <tr>
+                    <td>
+                        {{ yr.schoolYear }}
+                    </td>
+                    <td>
+                        {{ yr.total }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+            <h4 style="color: red; text-align: center">No hours reported</h4>
+        {% endif %}
+    </div>
 
 
   {%  if hasInterests == 0 %}

@@ -48,7 +48,7 @@ class PasswordChangeFormExtra(PasswordChangeForm):
             PrependedText('new_password2',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Old Password"),
             HTML('<div class="form-group"><div class="col-md-4"> </div>'),
             ButtonHolder(
-                Submit('submit', 'Reset', css_class='btn-primary'),
+                Submit('submit', 'Reset', css_class='btn btnnavy'),
                 HTML('<a class="btn btn-default" href="/">Cancel</a>'),
               ),
         )
@@ -112,7 +112,7 @@ class UserProfileForm(ModelForm):
         Field('interest', type="hidden"),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
-        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
@@ -142,7 +142,7 @@ class FamilyProfileForm(ModelForm):
         Field('volunteers',type='hidden'),
          HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
-        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Submit('save', 'Save',css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
@@ -192,7 +192,7 @@ class AddNewFamily(ModelForm):
             'active',
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
-        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
@@ -248,7 +248,7 @@ class AddUserEventForm(ModelForm):
             'volunteerHours',
             Field('schoolYear',type='hidden'),
         ButtonHolder(
-        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
         if self.famcount>1:
