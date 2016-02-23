@@ -19,3 +19,11 @@
     </div>
 </div>
 {%  endblock %}
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}

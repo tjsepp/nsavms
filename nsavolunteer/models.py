@@ -281,7 +281,7 @@ class VolunteerHours(TimeStampedModel):
     event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=True, verbose_name='Event', related_name='volHours')
     eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=True, null=True)
     volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer')
-    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family')
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.")
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
     objects = VolunteerHoursManager()
