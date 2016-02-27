@@ -2,7 +2,7 @@
 {% block base_content %}
 
     <div class="container-fluid" style="padding: 7%">
-    <h2 style="color:#C0C0C0; text-align: center; margin-bottom: 3%">{{ curUser.name }}'s Dashboard</h2>
+    <h2 class="vmsHeader">{{ curUser.name }}'s Dashboard</h2>
     <p>Total individual volunteer hours: <b>{{ totalVolunteerHoursUser }}</b></p>
     Total volunteer hours for family:
     {% for famx in familySums %}
@@ -11,11 +11,14 @@
         </ul>
     {% endfor %}
 
+        <a href="{% url 'logUserHours' %}">
+                <button type="button" class="btn-default btn-lg center-block" style="margin-top: 2%; margin-bottom: -2%"><b>Log volunteer Hours</b></button>
+            </a>
+
 
     <div class="panel panel-default user-data-panel">
-        <div class="panel-heading clearfix" style="padding: -50px">
-            <h4 class="panel-title pull-left" style="margin-top:8px">Volunteer Hours for {{ curYear }} school year</h4>
-            <button type="button" class="btn btn-default btn-sm pull-right"><a href="{% url 'logUserHours' %}"><b>Log volunteer Hours</b></a></button>
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-top:8px">Volunteer Hours for {{ curYear }} school year</h4>
         </div>
             {% if volHours %}
                 <table class="table table-hover table-bordered table-condensed">
@@ -26,7 +29,7 @@
                      {% endif %}
                     <th>Date</th>
                     <th>Event</th>
-                    <th>Hours Volunteered</th>
+                    <th>Volunteer Hours</th>
                 </tr>
                 </thead>
                     {% for hrs in volHours %}
@@ -95,19 +98,21 @@
                 <table class="table table-hover table-bordered table-condensed">
                 <thead>
                 <tr>
-                    <th>Store</th>
                     <th>Refill Date</th>
+                    <th>Store</th>
                     <th>Volunteer Hours</th>
                 </tr>
                 </thead>
                     {% for storeData in rewardCardData %}
                 <tr>
                     <td>
-                        {{ storeData.storeName }}
-                    </td>
-                    <td>
                         {{ storeData.refillDate }}
                     </td>
+
+                    <td>
+                        {{ storeData.storeName }}
+                    </td>
+
                     <td>
                         {{ storeData.volunteerHours }}
                     </td>
