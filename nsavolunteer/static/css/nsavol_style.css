@@ -171,65 +171,33 @@ margin-bottom: 50px;
 }
 
 
-
-
-
 .logHours {
-  color: #ffffff;
-  background-color: #001C70;
-  border-color: #BABABA;
-   text-decoration: none;
-}
+	background-color:#0e0a73;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:15px;
+	border:1px solid #969696;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:17px;
+	font-weight:bold;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #090321;
 
-.logHours:hover,
-.logHours:focus,
-.logHours:active,
-.logHours.active,
-.open .dropdown-toggle.logHours {
-  color: #ffffff;
-  background-color: #C4C4C4;
-  border-color: #BABABA;
 }
-
-.logHours:active,
-.logHours.active,
-.open .dropdown-toggle.logHours {
-  background-image: none;
+.logHours:hover {
+	background-color:#c7c7f5;
     text-decoration: none;
-}
-
-.logHours.disabled,
-.logHours[disabled],
-fieldset[disabled] .logHours,
-.logHours.disabled:hover,
-.logHours[disabled]:hover,
-fieldset[disabled] .logHours:hover,
-.logHours.disabled:focus,
-.logHours[disabled]:focus,
-fieldset[disabled] .logHours:focus,
-.logHours.disabled:active,
-.logHours[disabled]:active,
-fieldset[disabled] .logHours:active,
-.logHours.disabled.active,
-.logHours[disabled].active,
-fieldset[disabled] .logHours.active {
-  background-color: #001C70;
-  border-color: #BABABA;
-}
-
-.logHours .badge {
-  color: #001C70;
-  background-color: #ffffff;
-      text-decoration: none;
-}
-.logHours a:link{
     color: white;
-      text-decoration: none;
 }
-.logHours a:visited{
-    color: white;
-    text-decoration: none;
+.logHours:active {
+	position:relative;
+	top:1px;
 }
-.logHours a:hover{
-    text-decoration: none;
+.btnLink:hover{
+text-decoration: none;
 }
+
+
+

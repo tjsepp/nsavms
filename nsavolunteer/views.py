@@ -206,6 +206,34 @@ class logUserHours(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+class updateUserHours(LoginRequiredMixin,UpdateView):
+    form_class = AddUserEventForm
+    template_name = 'forms/addVolunteerHours.html'
+
+    def get_object(self, queryset=None):
+        return VolunteerHours.objects.get(pk=self.kwargs['vhoursID'])
+
+    def form_valid(self, form):
+        form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
+        form.save()
+        return super(updateUserHours,self).form_valid(form)
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(updateUserHours,self).get_context_data(*args, **kwargs)
+        context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
+        return context
+
+    def get_form_kwargs(self):
+        # pass "user" keyword argument with the current user to your form
+        kwargs = super(updateUserHours, self).get_form_kwargs()
+        kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+    def get_success_url(self):
+        return reverse('userVolunteerData')
+
 
 def addInterestToProfile(request,Intid):
     profile = get_object_or_404(VolunteerProfile,linkedUserAccount=request.user)
