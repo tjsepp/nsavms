@@ -21,6 +21,7 @@
         </div>
     </div>
 
+
     <div class="panel panel-default user-data-panel"style="margin-top: 2%">
         <div class="panel-heading">
             <h4 class="panel-title" style="margin-top:8px">Volunteer Hours for {{ curYear }} school year</h4>
@@ -53,7 +54,8 @@
                         {{ hrs.event }}
                     </td>
                     <td>
-                        {{ hrs.volunteerHours }}
+                        {{ hrs.volunteerHours }} {% if not hrs.approved %}
+                        <i style="color: red;font-size: 12px;margin-left: 1%"> (Pending Approval)</i>{% endif %}
                     </td>
                 </tr>
                     {% endfor %}
@@ -166,6 +168,14 @@
   {%  if hasInterests == 0 %}
       {%  include 'modals/volunteerInterestNagModal.html' %}
  {%  endif %}
+
+
+
+
+
+
+
+
 
 
 

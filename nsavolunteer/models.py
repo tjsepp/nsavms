@@ -99,6 +99,7 @@ class VolunteerProfile(TimeStampedModel):
         permissions = (
             ("is_avc", "Is AVC"),
             ("is_volunteer_manager", "Is Volunteer Manager"),
+            ("is_traffic_manager", "Is Traffic Manager")
         )
 
 
@@ -284,10 +285,18 @@ class VolunteerHours(TimeStampedModel):
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.")
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+    approved = models.BooleanField(db_column='approved', default=False,verbose_name='Approved')
     objects = VolunteerHoursManager()
 
     def __unicode__(self):
         return "%s's %s on %s" %(self.volunteer.name, self.event, self.eventDate)
+
+
+    def save(self, force_insert=False,force_update=False, using=None):
+        if self.event.autoApprove==True:
+            self.approved = True
+        super(VolunteerHours,self).save(force_insert, force_update)
+
 
     class Meta:
         verbose_name_plural = 'Volunteer Hours'
