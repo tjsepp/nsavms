@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404, render_to_response
-from django.views.generic import FormView, CreateView, RedirectView, UpdateView, ListView
+from django.views.generic import FormView, CreateView, RedirectView, UpdateView, ListView, DeleteView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
@@ -83,7 +83,7 @@ def userVolunteerData(request):
     traffic = curUser.trafficDutyUser.filter(schoolYear = curYear)
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
-    volunteerHoursSum=volhours.aggregate(Sum('volunteerHours')).values()[0]
+    volunteerHoursSum=volhours.filter(approved=True).aggregate(Sum('volunteerHours')).values()[0]
     if rewardCardSum==None:
         rewardCardSum=0
     if volunteerHoursSum ==None:
@@ -206,6 +206,17 @@ class logUserHours(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+@login_required
+def deleteLoggedHours(request, vhoursID):
+    obj = VolunteerHours.objects.get(pk=vhoursID)
+    if not obj.volunteer == request.user:
+            return HttpResponseRedirect(reverse('userVolunteerData'))
+    obj.delete()
+    return HttpResponseRedirect(reverse('userVolunteerData'))
+
+
+
+
 class updateUserHours(LoginRequiredMixin,UpdateView):
     form_class = AddUserEventForm
     template_name = 'forms/addVolunteerHours.html'
@@ -233,6 +244,7 @@ class updateUserHours(LoginRequiredMixin,UpdateView):
 
     def get_success_url(self):
         return reverse('userVolunteerData')
+
 
 
 def addInterestToProfile(request,Intid):

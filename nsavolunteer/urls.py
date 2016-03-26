@@ -26,6 +26,7 @@ url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='
 url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
 url(r'^loghours',logUserHours.as_view(),name='logUserHours'),
+ url(r'^deleteloggedhours/(?P<vhoursID>\d+)',deleteLoggedHours,name='deleteUserHours'),
 url(r'^edithours/(?P<vhoursID>\d+)$',updateUserHours.as_view(),name='editUserHours'),
 url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToProfile'),
 url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),

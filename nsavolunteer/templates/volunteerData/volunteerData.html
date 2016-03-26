@@ -41,7 +41,12 @@
                 </thead>
                     {% for hrs in volHours %}
                 <tr>
-                <td align="center"><a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                <td align="center">
+                        <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
+                        <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
+                                          style="margin-left: 5%" title="Delete Event" data-toggle='modal'
+                                          data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
+                </td>
                     {% if curUser.family.all|length > 1 %}
                     <td>
                         {{ hrs.family }}
@@ -58,6 +63,7 @@
                         <i style="color: red;font-size: 12px;margin-left: 1%"> (Pending Approval)</i>{% endif %}
                     </td>
                 </tr>
+                        {%  include 'modals/deleteVolunteerHoursModal.html' %}
                     {% endfor %}
                 </table>
         {% else %}
@@ -132,7 +138,7 @@
                 <h4 style="color: red; text-align: center">No reward card purchase data reported</h4>
         {% endif %}
 
-    </div>Minor
+    </div>
 
 
     <div class="panel panel-default user-data-panel">

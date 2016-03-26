@@ -214,7 +214,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentVolunteerHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = VolunteerHours.objects.select_related('family').filter(family=self.familyProfileId).filter(schoolYear=curYear) \
+      hours = VolunteerHours.objects.select_related('family').filter(approved=True).filter(family=self.familyProfileId).filter(schoolYear=curYear) \
               .aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
@@ -387,7 +387,7 @@ class TrafficDuty(TimeStampedModel):
             if self.trafficDutyType == 'am':
                 volTime = 1
             elif self.trafficDutyType =='pm':
-                volTime = 1.5
+                volTime =2
             else:
                 volTime = 0
             self.volunteerHours = volTime
