@@ -31,7 +31,7 @@
                 <thead>
                 <tr>
                     <th></th>
-                    {% if curUser.family.all|length > 1 %}
+                    {% if multFam %}
                     <th>Family</th>
                      {% endif %}
                     <th>Date</th>
@@ -47,7 +47,7 @@
                                           style="margin-left: 5%" title="Delete Event" data-toggle='modal'
                                           data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
                 </td>
-                    {% if curUser.family.all|length > 1 %}
+                    {% if multFam %}
                     <td>
                         {{ hrs.family }}
                     </td>

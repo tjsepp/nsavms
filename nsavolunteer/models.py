@@ -225,7 +225,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentRewardCardHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = RewardCardUsage.objects.select_related('family').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      hours = RewardCardUsage.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
       else:
@@ -235,7 +235,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentParkingDutyHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = TrafficDuty.objects.select_related('family').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      hours = TrafficDuty.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
       else:
