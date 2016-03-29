@@ -1,0 +1,69 @@
+{%  extends 'account/base.html' %}
+
+
+
+{% block title %}Add New Users{% endblock %}
+
+
+{% block base_content %}
+<h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Traffic Duty</h2>
+
+    <form class="form-horizontal" action="#" method="post" style="margin: 5%">
+    {% csrf_token %}
+    {{ formset.management_form }}
+        {%  for form in formset %}
+        {{ form.non_field_errors }}
+
+        {{ form.errors }}
+
+
+        {%  if form.errors %}
+            <div class="form-group user-formset bg-danger" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+        {% else %}
+            <div class="form-group user-formset" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+        {% endif %}
+
+            <label class="col-md-1" style="margin-right: -4%">Volunteer: </label>
+            <div class="col-md-2">
+                {{ form.volunteerId }}
+            </div>
+
+            <label class="col-md-1" style="margin-right: -4%">Traffic Duty Date: </label>
+            <div class="col-md-2">
+
+                {{ form.trafficDutyDate }}
+
+            </div>
+
+            <label class="col-md-1" style="margin-right: -2%">Traffic Duty Type: </label>
+            <div class="col-md-2">
+                {{ form.trafficDutyType }}
+           </div>
+                        <label class="col-md-1" style="margin-right: -2%">School Year </label>
+            <div class="col-md-2">
+                {{ form.schoolYear}}
+           </div>
+
+        </div>
+
+
+
+        {% endfor %}
+    <br>
+    <input type="submit" class="btn btn-primary" style="margin-top: 2%; margin-left: 45%" value="Add Users to {{ familyName  }}">
+    </form>
+
+{%  endblock %}
+
+{% block extraJquery %}
+
+    <script src="{{STATIC_URL}}js/jquery.formset.js"></script>
+      <script>
+        $('.user-formset').formset({
+            addText:'Add Volunteer',
+            deleteText:'Remove'
+        })
+
+    </script>
+
+{% endblock %}

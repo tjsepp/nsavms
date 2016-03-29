@@ -32,6 +32,7 @@ url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToPro
 url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),
 url(r'^addfamily$',CreateFamily.as_view(),name='addfamily'),
 url(r'^adduserstofamily/(?P<famid>\d+)/$',AddVolunteersToNewFamily,name='addusertofamily'),
+url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
 url(r'^login/$',LoginView.as_view(),name='mainlogin'),

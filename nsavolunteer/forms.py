@@ -221,7 +221,24 @@ class AddFamilyVolunteers(UserCreationForm):
         raise forms.ValidationError('This email is already in use. Please check for existing user')
 
 
+class AddTrafficVolunteersForm(ModelForm):
+    class Meta:
+        model=TrafficDuty
 
+    def __init__(self, *args, **kwargs):
+        super(AddTrafficVolunteersForm, self).__init__(*args, **kwargs)
+        self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
+        self.helper = FormHelper()
+        self.helper.form_class='form-inline volunteerProfile'
+        self.helper.form_id='volunteerProfile'
+        self.helper.layout = Layout(
+            Field('volunteerId',css_class='select2It'),
+            Field('trafficDutyDate', css_class='datepicker',placeholder='Select Date'),
+            'trafficDutyType',
+            Field('schoolYear',type = 'hidden')
+            )
 
 class AddUserEventForm(ModelForm):
     class Meta:

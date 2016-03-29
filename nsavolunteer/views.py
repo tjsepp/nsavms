@@ -7,7 +7,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, upda
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers
+from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,AddTrafficVolunteersForm
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -304,4 +304,22 @@ def AddVolunteersToNewFamily(request,famid):
             return render_to_response('forms/addUsersToFamily.html',{'formset':formset,'familyName':familyname,'famid':famid, 'form_errors':form_errors}, context_instance=RequestContext(request))
     else:
         return render_to_response('forms/addUsersToFamily.html',{'formset':addVolunteerFormset(),'familyName':familyname,'famid':famid},
+                                  context_instance=RequestContext(request))
+
+def AddTrafficVolunteers(request):
+    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=1)
+    formset=addVolunteerFormset(request.POST)
+    if request.method =="POST":
+        if formset.is_valid() :
+            message="Thank You!"
+            for form in formset:
+                form.save(commit=False)
+                form.instance.linkedFamily = FamilyProfile.objects.filter(famvolunteers =form.instance.volunteerId)[0]
+                form.save()
+            return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
+        else:
+            form_errors = formset.errors
+            return render_to_response('forms/addTrafficVolunteers.html',{'formset':formset,'form_errors':form_errors}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('forms/addTrafficVolunteers.html',{'formset':addVolunteerFormset()},
                                   context_instance=RequestContext(request))
