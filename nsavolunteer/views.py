@@ -307,14 +307,15 @@ def AddVolunteersToNewFamily(request,famid):
                                   context_instance=RequestContext(request))
 
 def AddTrafficVolunteers(request):
-    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=1)
-    formset=addVolunteerFormset(request.POST)
+    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=10)
+    formset=addVolunteerFormset(request.POST )
     if request.method =="POST":
         if formset.is_valid() :
             message="Thank You!"
             for form in formset:
                 form.save(commit=False)
                 form.instance.linkedFamily = FamilyProfile.objects.filter(famvolunteers =form.instance.volunteerId)[0]
+                form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
                 form.save()
             return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
         else:

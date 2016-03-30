@@ -30,3 +30,9 @@ $(document).ready(function () {
          placeholder: "Select an event"
     });
 });
+
+$(document).ready(function () {
+    $('.select2It_volunteer').select2({
+         placeholder: "Select a volunteer"
+    });
+});

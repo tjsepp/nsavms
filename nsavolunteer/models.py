@@ -367,7 +367,7 @@ class RewardCardUsage(TimeStampedModel):
 class TrafficDuty(TimeStampedModel):
     trafficDutyId= models.AutoField(primary_key=True,db_column='ParkingDutyId',verbose_name='Parking Duty ID')
     trafficDutyDate = models.DateField(db_column='parkingDutyDate', verbose_name='Parking Duty Date', null=True, blank=True)
-    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
+    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=True)
     volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDutyUser')
     linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='parkingDutyFamily')
     trafficDutyType =models.CharField(max_length=25,db_column='store',verbose_name='Duty Type',null=True,blank=False,choices=TRAFFICDUTY)

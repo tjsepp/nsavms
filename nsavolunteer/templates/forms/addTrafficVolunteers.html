@@ -23,39 +23,38 @@
             <div class="form-group user-formset" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
         {% endif %}
 
-            <label class="col-md-1" style="margin-right: -4%">Volunteer: </label>
-            <div class="col-md-2">
+            <label class="col-md-1" style="margin-right: -2%">Volunteer: </label>
+            <div class="col-md-4">
                 {{ form.volunteerId }}
             </div>
 
-            <label class="col-md-1" style="margin-right: -4%">Traffic Duty Date: </label>
+            <label class="col-md-1" style="margin-right: -4%">Date: </label>
             <div class="col-md-2">
 
                 {{ form.trafficDutyDate }}
 
             </div>
 
-            <label class="col-md-1" style="margin-right: -2%">Traffic Duty Type: </label>
-            <div class="col-md-2">
+            <label class="col-md-1" style="margin-right: -4%">Type: </label>
+            <div class="col-md-2" style="margin-bottom: 1%">
                 {{ form.trafficDutyType }}
            </div>
-                        <label class="col-md-1" style="margin-right: -2%">School Year </label>
-            <div class="col-md-2">
-                {{ form.schoolYear}}
-           </div>
+
 
         </div>
 
 
 
         {% endfor %}
-    <br>
+
     <input type="submit" class="btn btn-primary" style="margin-top: 2%; margin-left: 45%" value="Add Users to {{ familyName  }}">
     </form>
 
 {%  endblock %}
 
 {% block extraJquery %}
+ <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
+
 
     <script src="{{STATIC_URL}}js/jquery.formset.js"></script>
       <script>
@@ -65,5 +64,12 @@
         })
 
     </script>
+
+    <script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
 
 {% endblock %}
