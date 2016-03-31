@@ -54,7 +54,10 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     filter_horizontal = ('famvolunteers',)
     list_display = ('familyName','streetAddress','city','homePhone',)
 
-
+class TrafficDataAdmin(admin.ModelAdmin):
+    models= TrafficDuty
+    list_display = ('volunteerId','trafficDutyDate','linkedFamily','schoolYear')
+    list_editable = ('linkedFamily',)
 
 
 
@@ -72,4 +75,4 @@ admin.site.register(StudentToFamily)
 admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
 admin.site.register(VolunteerHours)
-admin.site.register(TrafficDuty)
+admin.site.register(TrafficDuty,TrafficDataAdmin)

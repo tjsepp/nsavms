@@ -6,7 +6,7 @@ from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers,SchoolYear
 from nsaEvents.models import NsaEvents
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from collections import defaultdict
 from itertools import chain
 
@@ -192,6 +192,8 @@ class FamilyProfile(TimeStampedModel):
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
     homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
     specialInfo = models.TextField(verbose_name='Family Note', db_column='VolunteerNote', null=True, blank=True)
+    parkingRequirement = models.IntegerField(verbose_name='Parking Requirement', db_column='parkReq',null=True,blank=True,default=6)
+    volunteerRequirement = models.IntegerField(verbose_name='Volunteer Requirement', db_column='volunteerReq',null=True,blank=True,default=40)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     famvolunteers = models.ManyToManyField(User,verbose_name='Volunteers',db_table='familyVolunteers',blank=True,related_name='family')
     #volunteers = models.ManyToManyField(User,verbose_name='Volunteers',through='VolunteerToFamily', related_name='family')
@@ -246,6 +248,17 @@ class FamilyProfile(TimeStampedModel):
     def totalCurrentHours(self):
       hours =  self.totalCurrentVolunteerHours + self.totalCurrentRewardCardHours+self.totalCurrentParkingDutyHours
       return hours
+
+    @property
+    def totalCurrentParkingDutyCount(self):
+      curYear = SchoolYear.objects.filter(currentYear=1)
+      hours = TrafficDuty.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Count('trafficDutyId'))
+      if hours['total']:
+          total = hours['total']
+      else:
+          total = 0
+      return total
+
 
     def __unicode__(self):
         return self.familyName

@@ -1,5 +1,7 @@
-<div class="col-md-12">
-            <h4 style="color:navy"><b>Volunteers</b></h4>
+    <div class="panel panel-default user-data-panel"style="margin-top: 2%">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-top:8px"> Family Volunteers</h4>
+        </div>
             {%  if family.famvolunteers.all %}
             <table class="table table-hover table-bordered table-condensed">
                  <thead>
@@ -40,9 +42,9 @@
         </tbody>
             </table>
         {% else %}
-      <h5 style="color: red">No Volunteers have been entered for the {{ family.familyName }}</h5>
+      <h5 style="color: red; text-align: center">No Volunteers have been entered for the {{ family.familyName }}</h5>
     {% endif %}
-
+<div class="pull-right"><a class='fa fa-plus-circle' href="#" > Add Volunteer</a></div>
 </div>
 
 

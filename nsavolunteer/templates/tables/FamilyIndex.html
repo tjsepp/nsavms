@@ -34,6 +34,8 @@
                 <th>Zip</th>
                 <th>Volunteers</th>
                 <th>Students</th>
+                <th>Hours</th>
+                <th>Parking</th>
 
             </tr>
         </thead>
@@ -54,6 +56,13 @@
                 <td>{{ fam.zip }}</td>
                 <td>{{ fam.listVolunteers }}</td>
                 <td>{{ fam.listStudents }}</td>
+                <td>{{ fam.totalCurrentHours|floatformat:2 }}</td>
+                    {% ifequal fam.totalCurrentParkingDutyCount fam.parkingRequirement %}
+                    <td>{{ fam.totalCurrentParkingDutyCount }}/{{ fam.parkingRequirement }} <span class="glyphicon glyphicon-star" style="color: green; margin-left: 5%"></span></td>
+                    {% else %}
+                <td>{{ fam.totalCurrentParkingDutyCount }}/{{ fam.parkingRequirement }}</td>
+                    {% endifequal %}
+
             </tr>
         {% endfor %}
          </tbody>
