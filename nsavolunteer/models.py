@@ -192,7 +192,7 @@ class FamilyProfile(TimeStampedModel):
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
     homePhone = models.CharField(max_length=15,db_column='homePhone',verbose_name='Home Phone', null=True, blank=True, default=None)
     specialInfo = models.TextField(verbose_name='Family Note', db_column='VolunteerNote', null=True, blank=True)
-    parkingRequirement = models.IntegerField(verbose_name='Parking Requirement', db_column='parkReq',null=True,blank=True,default=6)
+    trafficRequirement = models.IntegerField(verbose_name='Traffic Requirement', db_column='trafficReq',null=True,blank=True,default=6)
     volunteerRequirement = models.IntegerField(verbose_name='Volunteer Requirement', db_column='volunteerReq',null=True,blank=True,default=40)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     famvolunteers = models.ManyToManyField(User,verbose_name='Volunteers',db_table='familyVolunteers',blank=True,related_name='family')
@@ -250,7 +250,7 @@ class FamilyProfile(TimeStampedModel):
       return hours
 
     @property
-    def totalCurrentParkingDutyCount(self):
+    def totalCurrentTrafficDutyCount(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
       hours = TrafficDuty.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Count('trafficDutyId'))
       if hours['total']:
