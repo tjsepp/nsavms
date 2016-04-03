@@ -221,6 +221,29 @@ class AddFamilyVolunteers(UserCreationForm):
         raise forms.ValidationError('This email is already in use. Please check for existing user')
 
 
+class AddNewVolunteersToFamily(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
+        self.fields['password2'].help_text=None
+        self.helper = FormHelper()
+        self.helper.form_class='form-inline volunteerProfile'
+        self.helper.form_id='volunteerProfile'
+        self.helper.layout = Layout(
+            'name',
+            'email',
+            'password1',
+            'password2',
+            )
+    def clean_email(self):
+        try:
+            User.objects.get(email = self.cleaned_data['email'])
+        except User.DoesNotExist:
+            return self.cleaned_data['email']
+        raise forms.ValidationError('This email is already in use. Please check for existing user')
+
+
 class AddTrafficVolunteersForm(ModelForm):
     class Meta:
         model=TrafficDuty
