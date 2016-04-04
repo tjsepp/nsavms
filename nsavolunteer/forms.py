@@ -199,6 +199,10 @@ class AddNewFamily(ModelForm):
 
 
 class AddFamilyVolunteers(UserCreationForm):
+    '''
+    This form is for the new family initialization process. This is used to build the
+    formset allowing the administrators to add several users at one time.
+    '''
     def __init__(self, *args, **kwargs):
         super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
         for field in iter(self.fields):
@@ -222,13 +226,16 @@ class AddFamilyVolunteers(UserCreationForm):
 
 
 class AddNewVolunteersToFamily(UserCreationForm):
+    '''
+    This form is for inputting users into existing Families.
+    '''
     def __init__(self, *args, **kwargs):
-        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+        super(AddNewVolunteersToFamily, self).__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({'class':'form-control'})
         self.fields['password2'].help_text=None
         self.helper = FormHelper()
-        self.helper.form_class='form-inline volunteerProfile'
+        self.helper.form_class='form-horizontal'
         self.helper.form_id='volunteerProfile'
         self.helper.layout = Layout(
             'name',
@@ -264,7 +271,6 @@ class AddTrafficVolunteersForm(ModelForm):
 class AddUserEventForm(ModelForm):
     class Meta:
         model = VolunteerHours
-
     def __init__(self, *args, **kwargs):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')

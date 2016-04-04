@@ -12,15 +12,41 @@
                  <h2 class="modal-title" id="memberModalLabel" style="color: #000059">Add User to Family</h2>
 
             </div>
+            <form action='{% url 'processContactToFamily' family.familyProfileId %}'>
             <div class="modal-body">
-                <p>This will look for existing email address (user inputed). If one exists, it will create the relationship. If not, it will prompt to
-                create a new user. when user is created, it will build relationship and send an email to the new users email address.</p>
+                <p>This will look for existing email address - If one exists, it will create the relationship between the family and the user. If not, it will prompt to
+                create a new user. when user is created, it will create the relationship and send an email to the new users email address.</p>
+
+				<div id='emailWarn' style="margin-top: -5px; color: red;display: none">Please enter a valid email address:</div>
+				<input type="text" class="form-control" id='emailAddy' name="emailaddress" placeholder="Enter Email Address">
 
             </div>
             <div class="modal-footer">
-                <a href="http://google.com" class="btn btnnavy">Search for user</a>
+                <button type="submit" id="submit" class="btn btnnavy">Submit</button>
                 <button type="button" class="btn btnnavy" data-dismiss="modal">Cancel</button>
-            </div>
+                </div>
+                </form>
+
         </div>
     </div>
+
 </div>
+
+{% block extraJquery %}
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script>
+$('input').blur(function() {
+    var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+    if (testEmail.test(this.value))
+    {
+    $('#submit').prop('disabled', false);
+    $('#emailWarn').hide()
+    }
+    else
+    {
+    $('#submit').prop('disabled', true);
+    $('#emailWarn').show()
+    }
+});
+</script>
+{%  endblock %}

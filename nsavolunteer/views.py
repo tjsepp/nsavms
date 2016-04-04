@@ -306,6 +306,28 @@ def AddVolunteersToNewFamily(request,famid):
         return render_to_response('forms/addUsersToFamily.html',{'formset':addVolunteerFormset(),'familyName':familyname,'famid':famid},
                                   context_instance=RequestContext(request))
 
+
+def AddContactToExistingFamily(request, famid):
+    family = FamilyProfile.objects.get(pk= famid)
+    contact = User.objects.filter(email=request.GET['emailaddress']).exists()
+    if contact:
+        family.famvolunteers.add(User.objects.get(email=request.GET['emailaddress']))
+        family.save()
+        return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+    else:
+
+        return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+
+
+def RemoveContactFromFamily(request,famid,volunteerid):
+    family = FamilyProfile.objects.get(pk= famid)
+    volunteer = User.objects.get(pk = volunteerid)
+    family.famvolunteers.remove(volunteer)
+    family.save()
+    return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+
+
+
 def AddTrafficVolunteers(request):
     addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=10)
     formset=addVolunteerFormset(request.POST )
