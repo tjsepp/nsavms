@@ -28,13 +28,14 @@
         <thead>
             <tr>
                 <th></th>
+                <th>Status</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Status</th>
                 <th>Type</th>
                 <th>Email</th>
                 <th>Family Membership</th>
-
+                <th>Interests</th>
             </tr>
         </thead>
 
@@ -52,12 +53,27 @@
                                                     <li style='margin-left:-20%'><a href='#'>Change Option 2</a></li>
                                                     <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
                                                     </ul>"></a></td>
+                <td>
+                    {% if vol.linkedUserAccount.is_active %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
                 <td>{{ vol.firstName }}</td>
                 <td>{{ vol.lastName }}</td>
                 <td>{{ vol.volStatus }}</td>
                 <td>{{ vol.volunteerType }}</td>
                 <td>{{ vol.linkedUserAccount.email }}</td>
                 <td>{{ vol.getFamilies|safe }}</td>
+                <td> {% if vol.interest.all %}
+                        <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
             </tr>
         {% endfor %}
          </tbody>

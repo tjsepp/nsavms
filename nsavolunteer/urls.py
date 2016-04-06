@@ -19,6 +19,7 @@ from .views import *
 
 urlpatterns = [
 url(r'^$',homeView,name='home'),
+url(r'^password_recovery/$', PasswordRecoveryView.as_view(),name='password_recovery'),
 url(r'^user_profile',userSettings,name='user_profile'),
 url(r'^volunteerindex',VolunteerIndex.as_view(),name='volunteerIndex'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
@@ -32,7 +33,8 @@ url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToPro
 url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),
 url(r'^addfamily$',CreateFamily.as_view(),name='addfamily'),
 url(r'^adduserstofamily/(?P<famid>\d+)/$',AddVolunteersToNewFamily,name='addusertofamily'),
-url(r'^addContacttofamily/(?P<famid>\d+)/$',AddContactToExistingFamily,name='processContactToFamily'),
+url(r'^processContacttofamily/(?P<famid>\d+)/$',ProcessContactToExistingFamily,name='processContactToFamily'),
+url(r'^addContacttofamily/(?P<famid>\d+)/$',addContactToExistingFamily,name='addContactToExistingFamily'),
 url(r'^removeContactFromFamily/(?P<famid>\d+)/(?P<volunteerid>\d+)/$',RemoveContactFromFamily,name='removeContactFromFamily'),
 url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),

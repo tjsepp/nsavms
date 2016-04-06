@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404, render_to_response
+from django.shortcuts import render,get_object_or_404, render_to_response, redirect
 from django.views.generic import FormView, CreateView, RedirectView, UpdateView, ListView, DeleteView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,9 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, upda
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
-from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,AddTrafficVolunteersForm
+from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
+    StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
+    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -20,19 +22,6 @@ def homeView(request):
     return response
 
 
-class VolunteerIndex(ListView):
-    model = VolunteerProfile
-    paginate_by = 100
-    queryset = VolunteerProfile.objects.all().order_by('lastName')
-    context_object_name = "volunteerIndex"
-    template_name = "tables/volunteerIndex.html"
-
-class FamilyIndex(ListView):
-    model = FamilyProfile
-    paginate_by = 100
-    queryset = FamilyProfile.objects.all().order_by('familyName')
-    context_object_name = "FamilyIndex"
-    template_name = "tables/FamilyIndex.html"
 
 
 class LoginView(FormView):
@@ -68,6 +57,33 @@ class ChangePassword(LoginRequiredMixin, FormView):
         form.save()
         update_session_auth_hash(self.request, form.user)
         return super(ChangePassword,self).form_valid(form)
+
+
+class PasswordRecoveryView(FormView):
+    template_name = 'account/password_recovery.html'
+    form_class = PasswordRecoveryForm
+    success_url = reverse_lazy('mainlogin')
+
+    def form_valid(self, form):
+        form.reset_email()
+        return super(PasswordRecoveryView,self).form_valid(form)
+
+
+
+class VolunteerIndex(ListView):
+    model = VolunteerProfile
+    paginate_by = 100
+    queryset = VolunteerProfile.objects.all().order_by('lastName')
+    context_object_name = "volunteerIndex"
+    template_name = "tables/volunteerIndex.html"
+
+class FamilyIndex(ListView):
+    model = FamilyProfile
+    paginate_by = 100
+    queryset = FamilyProfile.objects.all().order_by('familyName')
+    context_object_name = "FamilyIndex"
+    template_name = "tables/FamilyIndex.html"
+
 
 @login_required
 def userVolunteerData(request):
@@ -307,7 +323,12 @@ def AddVolunteersToNewFamily(request,famid):
                                   context_instance=RequestContext(request))
 
 
-def AddContactToExistingFamily(request, famid):
+def ProcessContactToExistingFamily(request, famid):
+    '''
+    This view takes a familyID and email address from modal dialog, searches to see
+    if user exists. If so, creates relationship between family and volunteer. If not, it will
+    create a new user and add them to the family.
+    '''
     family = FamilyProfile.objects.get(pk= famid)
     contact = User.objects.filter(email=request.GET['emailaddress']).exists()
     if contact:
@@ -315,8 +336,21 @@ def AddContactToExistingFamily(request, famid):
         family.save()
         return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
     else:
+        return redirect('addContactToExistingFamily', str(famid))
 
-        return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+
+def addContactToExistingFamily(request,famid):
+     family = FamilyProfile.objects.get(pk= famid)
+     if request.method=='POST':
+            form =AddNewVolunteersToFamily(data=request.POST)
+            if form.is_valid():
+                volunteer = form.save(commit=False)
+                form.save()
+                family.famvolunteers.add(volunteer)
+                return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+     else:
+        form = AddNewVolunteersToFamily()
+     return render_to_response('forms/addNewUserToFamily.html',{'form':form}, context_instance=RequestContext(request))
 
 
 def RemoveContactFromFamily(request,famid,volunteerid):

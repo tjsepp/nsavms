@@ -12,7 +12,7 @@ from tinymce.widgets import TinyMCE
 from django.forms.models import inlineformset_factory
 from authtools.forms import UserCreationForm
 from django.forms.formsets import BaseFormSet,formset_factory
-
+from django.core.mail import EmailMessage
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -27,9 +27,9 @@ class LoginForm(AuthenticationForm):
             PrependedText('password',"<span class='glyphicon glyphicon-asterisk'></span>",id="password-field", css_class="passwordfields", placeholder="password"),
             HTML('<div class="form-group"><div class="col-md-4"> </div>'),
             ButtonHolder(
-                Submit('login', 'Sign in', css_class='btn-primary'),
+                Submit('login', 'Sign in', css_class='btn btnnavy'),
               ),
-            HTML('<div class="col-md-12" style="margin-left:20%; margin-top:3%"><a href="#">Recover Password</a></div>')
+            HTML('<div class="col-md-12" style="margin-left:20%; margin-top:3%"><a href="{% url \'password_recovery\' %}">Recover Password</a></div>')
         )
 
 
@@ -52,24 +52,82 @@ class PasswordChangeFormExtra(PasswordChangeForm):
                 HTML('<a class="btn btn-default" href="/">Cancel</a>'),
               ),
         )
+'''
+class PasswordRecoveryForm(forms.Form):
+    email = forms.EmailField()
 
-class PasswordResetFormExtra(PasswordResetForm):
+    def clean_email(self):
+        try:
+            return User.objects.get(email=self.clean_email['email'])
+        except User.DoesNotExist:
+            raise forms.ValidationError("Can't find user based on email")
+        return self.cleaned_data['email']
+
+    def reset_email(self):
+        user = self.cleaned_data['email']
+
+        password = User.objects.make_random_password(8)
+        user.set_password(password)
+        user.save()
+
+        body = """
+        Sorry you are having issues with your account. Below is your username and new password:
+        Username:{username}
+        Password:{password}
+        You can login here:www.test.com
+        Change your password here:www.test.com/reset
+        """.format(username = user.email, password=password)
+
+        email = EmailMessage(
+            '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
+            [user.email])
+        email.send()
+'''
+class PasswordRecoveryForm(PasswordResetForm):
     def __init__(self, *args, **kw):
-        super(PasswordResetFormExtra, self).__init__(*args, **kw)
+        super(PasswordRecoveryForm, self).__init__(*args, **kw)
 
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-8'
+        self.helper.form_id = 'LoginForm'
+        #self.helper.label_class = 'col-lg-2'
+       # self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
             'email',
+        HTML('<div class="form-group"><div class="col-md-3"> </div>'),
             Div(
-               Submit('submit', 'Reset password', css_class='btn btn-default'),
-               HTML('<a class="btn btn-default" href="/">Cancel</a>'),
+               Submit('submit', 'Reset password', css_class='btn btnnavy'),
+               HTML('<a class="btn btn-default" href="{% url \'mainlogin\' %}">Cancel</a>'),
                css_class='text-left',
             )
-        )
 
+        )
+    def clean_email(self):
+        try:
+            return User.objects.get(email=self.cleaned_data['email'])
+        except User.DoesNotExist:
+            raise forms.ValidationError("Can't find user based on email")
+        return self.cleaned_data['email']
+
+    def reset_email(self):
+        user = self.cleaned_data['email']
+
+        password = User.objects.make_random_password(8)
+        user.set_password(password)
+        user.save()
+
+        body = """
+        Sorry you are having issues with your account. Below is your username and new password:
+        Username:{username}
+        Password:{password}
+        You can login here:www.test.com
+        Change your password here:www.test.com/reset
+        """.format(username = user.email, password=password)
+
+        email = EmailMessage(
+            '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
+            [user.email])
+        email.send()
 
 class AuthUserUpdateForm(ModelForm):
     class Meta:
@@ -243,6 +301,10 @@ class AddNewVolunteersToFamily(UserCreationForm):
             'password1',
             'password2',
             )
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        )
     def clean_email(self):
         try:
             User.objects.get(email = self.cleaned_data['email'])
