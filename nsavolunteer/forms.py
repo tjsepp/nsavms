@@ -52,37 +52,8 @@ class PasswordChangeFormExtra(PasswordChangeForm):
                 HTML('<a class="btn btn-default" href="/">Cancel</a>'),
               ),
         )
-'''
-class PasswordRecoveryForm(forms.Form):
-    email = forms.EmailField()
 
-    def clean_email(self):
-        try:
-            return User.objects.get(email=self.clean_email['email'])
-        except User.DoesNotExist:
-            raise forms.ValidationError("Can't find user based on email")
-        return self.cleaned_data['email']
 
-    def reset_email(self):
-        user = self.cleaned_data['email']
-
-        password = User.objects.make_random_password(8)
-        user.set_password(password)
-        user.save()
-
-        body = """
-        Sorry you are having issues with your account. Below is your username and new password:
-        Username:{username}
-        Password:{password}
-        You can login here:www.test.com
-        Change your password here:www.test.com/reset
-        """.format(username = user.email, password=password)
-
-        email = EmailMessage(
-            '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
-            [user.email])
-        email.send()
-'''
 class PasswordRecoveryForm(PasswordResetForm):
     def __init__(self, *args, **kw):
         super(PasswordRecoveryForm, self).__init__(*args, **kw)
@@ -347,11 +318,30 @@ class AddUserEventForm(ModelForm):
         self.helper.form_id='volunteerProfileForm'
 
         self.helper.layout = Layout(
-            Field('event',css_class='select2It'),
             Field('eventDate', css_class='datepicker',placeholder='Select Date'),
+            Field('event',css_class='select2It'),
             Field('volunteer',type='hidden'),
             #Field('family', type='hidden'),
             Field('volunteerHours',placeholder='Enter Number Of Hours'),
+                  HTML(
+                """
+                <div class="row timeEntry">
+                    <div class="col-lg-6">
+                        <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="timepicker1" type="text" class="form-control input-small" placeholder="Start Time">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-group bootstrap-timepicker timepicker-orient-bottom">
+                        <input id="timepicker2" type="text" class="form-control input-small" placeholder="End Time">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time" id='pickIcon2'></i></span>
+                    </div>
+                </div>
+                <div class='col-md-12' style='color:red; display: none; margin-bottom:2%' id='dataWarning'></div>
+                </div>
+            """
+            ),
             Field('schoolYear',type='hidden'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),

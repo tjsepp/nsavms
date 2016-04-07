@@ -199,5 +199,17 @@ margin-bottom: 50px;
 text-decoration: none;
 }
 
+ .ui-datepicker {
+     width: 17em;
+     padding: .2em .2em 0;
+     z-index: 10000;
+ }
 
+ .dateinput {
+     position: relative;
+     z-index:100;
+ }
 
+.timeEntry{
+    margin-bottom: 5%;
+}
