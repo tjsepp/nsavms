@@ -15,7 +15,7 @@
             <form action='{% url 'processContactToFamily' family.familyProfileId %}'>
             <div class="modal-body">
                 <p>This will look for existing email address - If one exists, it will create the relationship between the family and the user. If not, it will prompt to
-                create a new user. when user is created, it will create the relationship and send an email to the new users email address.</p>
+                create a new user. When user is created, it will create the relationship and send an email to the new user.</p>
 
 				<div id='emailWarn' style="margin-top: -5px; color: red;display: none">Please enter a valid email address:</div>
 				<input type="text" class="form-control" id='emailAddy' name="emailaddress" placeholder="Enter Email Address">

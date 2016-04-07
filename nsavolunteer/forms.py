@@ -12,7 +12,8 @@ from tinymce.widgets import TinyMCE
 from django.forms.models import inlineformset_factory
 from authtools.forms import UserCreationForm
 from django.forms.formsets import BaseFormSet,formset_factory
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
+
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -97,7 +98,7 @@ class PasswordRecoveryForm(PasswordResetForm):
 
         email = EmailMessage(
             '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
-            [user.email])
+            ['tjsepp@gmail.com'])
         email.send()
 
 class AuthUserUpdateForm(ModelForm):
