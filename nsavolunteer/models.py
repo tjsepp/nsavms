@@ -156,6 +156,16 @@ class Student(TimeStampedModel):
     def getFullStudentName(self):
         return '%s %s' %(self.studentFirstName, self.studentLastName)
 
+    def newYear(self):
+        newGrade = GradeLevel.objects.get(gradeOrder=self.grade.gradeOrder+1)
+        self.grade=newGrade
+        self.teacher=None
+        if newGrade.gradeOrder>=9:
+            self.activeStatus=False
+        self.save()
+
+
+
     def __unicode__(self):
         return self.getFullStudentName()
 
@@ -259,6 +269,13 @@ class FamilyProfile(TimeStampedModel):
           total = 0
       return total
 
+    def deactivateWholeFamily(self):
+        for vol in self.famvolunteers.all():
+            vol.is_active=False
+            vol.save()
+        for student in self.students.all():
+            student.activeStatus = False
+            student.save()
 
     def __unicode__(self):
         return self.familyName
@@ -292,12 +309,12 @@ class VolunteerHoursManager(models.Manager):
 
 class VolunteerHours(TimeStampedModel):
     volunteerHoursId = models.AutoField(primary_key=True,db_column='volunteerHoursId',verbose_name='Volunteer Hours Id')
-    event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=True, verbose_name='Event', related_name='volHours')
-    eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=True, null=True)
+    event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=False, verbose_name='Event', related_name='volHours')
+    eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=False, null=True)
     volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer')
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.")
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
-    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=False,verbose_name='Volunteer Hours')
     approved = models.BooleanField(db_column='approved', default=False,verbose_name='Approved')
     objects = VolunteerHoursManager()
 

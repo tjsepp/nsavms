@@ -59,8 +59,10 @@ class TrafficDataAdmin(admin.ModelAdmin):
     list_display = ('volunteerId','trafficDutyDate','linkedFamily','schoolYear')
     list_editable = ('linkedFamily',)
 
-
-
+class StudentAdmin(SimpleHistoryAdmin):
+    model = Student
+    list_display = ('getFullStudentName','activeStatus','grade','teacher')
+    list_editable = ('grade','teacher',)
 
 #admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 #admin.site.register(Volunteers,VolunteerAdmin)
@@ -70,7 +72,7 @@ admin.site.register(VolunteerType,SimpleHistoryAdmin)
 admin.site.register(FamilyProfile,FamilyProfileAdmin)
 #admin.site.register(VolunteerToFamily,UserToFamilyAdmin)
 #admin.site.register(FamilyProfileOwner)
-admin.site.register(Student)
+admin.site.register(Student,StudentAdmin)
 admin.site.register(StudentToFamily)
 admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)

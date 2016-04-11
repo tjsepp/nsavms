@@ -38,74 +38,81 @@
 </script>
 
 <script type="text/javascript">
-$('#timepicker2').timepicker().on('changeTime.timepicker', function(e) {
-    var stime = $('#timepicker1').val()
-    var diff = (new Date("1970-1-1 " + e.time.value) - new Date("1970-1-1 " + stime) ) / 1000 / 60 / 60;
-    $('#id_volunteerHours').val(diff.toFixed(2));
-    if (diff < 0){
-                    $('#dataWarning').text('Your total number of hours is negative. Please correct your input');
-                    $('#dataWarning').show();
-                    $('#submit-id-save').prop('disabled', true);
-                }
-                else{
-                    $('#dataWarning').hide()
-                    $('#submit-id-save').prop('disabled', false)
-                }
+$(document).ready(function(){
+    $('#timepicker2').timepicker().on('changeTime.timepicker', function(e) {
 
-                if (diff > 5){
-                    $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
-                    $('#dataWarning').show()
-                }
-  });
-</script>
-
-
-
-<script type="text/javascript">
-$('#timepicker1').timepicker().on('changeTime.timepicker', function(e) {
-    var stime = $('#timepicker2').val()
-    if (stime){
-        var diff = ( new Date("1970-1-1 " + stime) - new Date("1970-1-1 " + e.time.value) ) / 1000 / 60 / 60;
+        var stime = $('#timepicker1').val();
+        var diff = (new Date("1970/1/1 " + e.time.value) - new Date("1970/1/1 " + stime) ) / 1000 / 60 / 60;
         $('#id_volunteerHours').val(diff.toFixed(2));
-                if (diff < 0){
-                    $('#dataWarning').text('Your total number of hours is negative. Please correct your input')
-                    $('#dataWarning').show();
-                    $('#submit-id-save').prop('disabled', true);
-                }
-                else{
-                    $('#dataWarning').hide()
-                    $('#submit-id-save').prop('disabled', false)
-                }
+        if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input');
+                        $('#dataWarning').show();
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide();
+                        $('#submit-id-save').prop('disabled', false)
+                    }
 
-                if (diff > 5){
-                    $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
-                    $('#dataWarning').show()
-                }
-    }
-  });
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+      });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#timepicker1').timepicker().on('changeTime.timepicker', function(e) {
+        var stime = $('#timepicker2').val();
+        if (stime){
+            var diff = ( new Date("1970-1-1 " + stime) - new Date("1970-1-1 " + e.time.value) ) / 1000 / 60 / 60;
+            $('#id_volunteerHours').val(diff.toFixed(2));
+                    if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input');
+                        $('#dataWarning').show();
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide();
+                        $('#submit-id-save').prop('disabled', false)
+                    }
+
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+        }
+      });
+});
 </script>
 
 <script type="text/javascript">
-$('#id_volunteerHours').keyup(function(){
-        $('#timepicker1').val('')
-        $('#timepicker2').val('')
-        var diff = $('#id_volunteerHours').val();
-             if (diff < 0){
-                    $('#dataWarning').text('Your total number of hours is negative. Please correct your input')
-                    $('#dataWarning').show()
-                    $('#submit-id-save').prop('disabled', true);
-                }
-                else{
-                    $('#dataWarning').hide()
-                    $('#submit-id-save').prop('disabled', false)
-                }
+$(document).ready(function(){
+    $('#id_volunteerHours').keyup(function(){
+            $('#timepicker1').val('')
+            $('#timepicker2').val('')
+            var diff = $('#id_volunteerHours').val();
+                 if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input')
+                        $('#dataWarning').show()
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide()
+                        $('#submit-id-save').prop('disabled', false)
+                    }
 
-                if (diff > 5){
-                    $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
-                    $('#dataWarning').show()
-                }
-        }
-)
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+            }
+    )
+});
 </script>
 
 

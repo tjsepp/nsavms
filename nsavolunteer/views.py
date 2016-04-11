@@ -96,7 +96,7 @@ def userVolunteerData(request):
     curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family','linkedUser').get(pk=request.user.id)
     rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
     volhours = curUser.volunteerhours_set.select_related('event','family').filter(schoolYear=curYear).all().order_by('-eventDate')
-    traffic = curUser.trafficDutyUser.filter(schoolYear = curYear)
+    traffic = curUser.trafficDutyUser.filter(schoolYear = curYear).order_by('-trafficDutyDate')
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     volunteerHoursSum=volhours.filter(approved=True).aggregate(Sum('volunteerHours')).values()[0]
@@ -380,3 +380,20 @@ def AddTrafficVolunteers(request):
     else:
         return render_to_response('forms/addTrafficVolunteers.html',{'formset':addVolunteerFormset()},
                                   context_instance=RequestContext(request))
+
+def YearEndProcess(request):
+    '''
+    This process will update all volunteerProfiles and mark them as pending.
+    It will also increment all childrens grade one position up. The student update is done via methon
+    on the Student model
+    '''
+    VolunteerProfile.objects.update(volStatus='pending')
+    activeStudents = Student.objects.filter(activeStatus=True)
+    for t in activeStudents:
+        t.newYear()
+
+def deactivateFullFamily(request, famid):
+    pass
+
+
+
