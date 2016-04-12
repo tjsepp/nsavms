@@ -288,6 +288,7 @@ class AddNewVolunteersToFamily(UserCreationForm):
 class AddTrafficVolunteersForm(ModelForm):
     class Meta:
         model=TrafficDuty
+        fields = '__all__'
     def __init__(self, *args, **kwargs):
         super(AddTrafficVolunteersForm, self).__init__(*args, **kwargs)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
@@ -305,6 +306,7 @@ class AddTrafficVolunteersForm(ModelForm):
 class AddUserEventForm(ModelForm):
     class Meta:
         model = VolunteerHours
+        fields = '__all__'
     def __init__(self, *args, **kwargs):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')
@@ -321,6 +323,7 @@ class AddUserEventForm(ModelForm):
         self.helper.layout = Layout(
             Field('eventDate', css_class='datepicker',placeholder='Select Date'),
             Field('event',css_class='select2It'),
+            Field('task', css_id='task'),
             Field('volunteer',type='hidden'),
             #Field('family', type='hidden'),
             Field('volunteerHours',placeholder='Enter Number Of Hours'),

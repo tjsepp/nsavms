@@ -52,7 +52,7 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     model = FamilyProfile
     search_fields = ('familyName',)
     filter_horizontal = ('famvolunteers',)
-    list_display = ('familyName','streetAddress','city','homePhone',)
+    list_display = ('familyName','active','streetAddress','city','homePhone',)
 
 class TrafficDataAdmin(admin.ModelAdmin):
     models= TrafficDuty

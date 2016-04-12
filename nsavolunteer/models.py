@@ -310,6 +310,7 @@ class VolunteerHoursManager(models.Manager):
 class VolunteerHours(TimeStampedModel):
     volunteerHoursId = models.AutoField(primary_key=True,db_column='volunteerHoursId',verbose_name='Volunteer Hours Id')
     event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=False, verbose_name='Event', related_name='volHours')
+    task = models.CharField(max_length=100,db_column='task',null=True,blank=True,verbose_name='task')
     eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=False, null=True)
     volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer')
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.")

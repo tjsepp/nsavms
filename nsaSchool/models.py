@@ -83,6 +83,7 @@ class Teachers(TimeStampedModel):
     firstName = models.CharField(max_length=30, db_column='firstName',null=True, blank=True,verbose_name='First Name')
     lastName = models.CharField(max_length=30, db_column='lastName',null=True, blank=True,verbose_name='Last Name')
     gradeLevel = models.ForeignKey('GradeLevel',db_column='gradeLevel',null=True,blank=True, verbose_name='Grade Level')
+    activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
 
     def __unicode__(self):
         return '%s %s' %(self.firstName, self.lastName)

@@ -1,0 +1,64 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Traffic Duty
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Traffic Duty</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Volunteer Date</th>
+                <th>Volunteer</th>
+                <th>Family</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for duty in recentTraffic %}
+            <tr>
+                <td></td>
+                <td>{{duty.trafficDutyDate}}</td>
+                <td>{{ duty.volunteerId.name }}</td>
+                <td>{{ duty.linkedFamily }}</td>
+                <td>{{ duty.get_trafficDutyType_display }}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

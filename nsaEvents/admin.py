@@ -13,4 +13,5 @@ class NsaEventsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(NsaEvents,NsaEventsAdmin)
+admin.site.register(EventTasks)
 #admin.site.register(DaysOfWeek)

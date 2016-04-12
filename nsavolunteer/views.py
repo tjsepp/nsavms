@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404, render_to_response, redirect
-from django.views.generic import FormView, CreateView, RedirectView, UpdateView, ListView, DeleteView
+from django.views.generic import FormView, CreateView, RedirectView, UpdateView, \
+        ListView, DeleteView,TemplateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
@@ -373,7 +374,7 @@ def AddTrafficVolunteers(request):
                 form.instance.linkedFamily = FamilyProfile.objects.filter(famvolunteers =form.instance.volunteerId)[0]
                 form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
                 form.save()
-            return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
+            return HttpResponseRedirect(reverse_lazy('trafficReport'))
         else:
             form_errors = formset.errors
             return render_to_response('forms/addTrafficVolunteers.html',{'formset':formset,'form_errors':form_errors}, context_instance=RequestContext(request))
@@ -397,3 +398,11 @@ def deactivateFullFamily(request, famid):
 
 
 
+class TrafficReport(TemplateView):
+
+    template_name = "tables/trafficDuty.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TrafficReport, self).get_context_data(**kwargs)
+        context['recentTraffic'] = TrafficDuty.objects.all().order_by('-dateCreated')[:50]
+        return context

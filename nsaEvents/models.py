@@ -59,3 +59,18 @@ class NsaEvents(TimeStampedModel):
         verbose_name_plural = 'NSA Events'
         db_table = 'nsaEvents'
         ordering = ['eventName']
+
+
+class EventTasks(TimeStampedModel):
+    taskid =  models.AutoField(primary_key=True,db_column='taskId',verbose_name='Task ID')
+    taskName =models.CharField(max_length=100, db_column='taskName',verbose_name='Task Name', null=True,blank=False)
+    relatedEvent =models.ForeignKey(NsaEvents,db_column='linkedEvent',related_name='linkedEvent')
+    approved = models.BooleanField(db_column='recurringEvent',verbose_name='recurring Event', default=False)
+
+    def __unicode__(self):
+        return self.taskName
+
+    class Meta:
+        verbose_name_plural = 'NSA Event Tasks'
+        db_table = 'nsaEventtasks'
+        ordering = ['taskName']

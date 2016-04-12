@@ -29,6 +29,7 @@
             <tr>
                 <th></th>
                 <th>Family Name</th>
+                <th>Status</th>
                 <th>Street</th>
                 <th>City</th>
                 <th>Zip</th>
@@ -51,6 +52,14 @@
                                                     <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
                                                     </ul>"></a></td>
                 <td><a href={% url 'familyprofile' fam.familyProfileId  %}>{{ fam.familyName }}</a></td>
+                <td>
+                    {% if fam.active %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
                 <td>{{ fam.streetAddress }}</td>
                 <td>{{ fam.city }}</td>
                 <td>{{ fam.zip }}</td>
