@@ -220,6 +220,9 @@ class AddNewFamily(ModelForm):
             'specialInfo',
             'inactiveDate'
             'active',
+            Field('trafficRequirement', type='hidden'),
+            Field('volunteerRequirement', type='hidden'),
+            Field('active', type='hidden'),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),

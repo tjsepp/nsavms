@@ -286,25 +286,10 @@ class FamilyProfile(TimeStampedModel):
         db_table = 'familyProfile'
 
 
-'''
-class VolunteerToFamily(TimeStampedModel):
-    person = models.ForeignKey(settings.AUTH_USER_MODEL)
-    group = models.ForeignKey(FamilyProfile)
-    history = HistoricalRecords()
-
-    class Meta:
-        verbose_name_plural = 'Volunteer To Family'
-        unique_together = ("person", "group")
-
-    def __unicode__(self):
-        return '%s (%s)' %(self.person.name,self.group)
-'''
-
 class VolunteerHoursManager(models.Manager):
     def current_year(self):
         curYear = SchoolYear.objects.get(currentYear = 1)
         return self.get_queryset().filter(schoolYear = curYear)
-
 
 
 class VolunteerHours(TimeStampedModel):
