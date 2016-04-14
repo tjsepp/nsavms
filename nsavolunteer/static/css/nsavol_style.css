@@ -213,3 +213,7 @@ text-decoration: none;
 .timeEntry{
     margin-bottom: 5%;
 }
+
+.nowrap {
+  white-space: nowrap ;
+}

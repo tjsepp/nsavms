@@ -7,7 +7,7 @@
                 {% if forloop.first %}
                     <div class="row"  style="margin-bottom: 1%">{% endif %}
                         <div class="col-lg-4 col-md-4 col-xs-12" style="text-align: center">
-          <span style="margin-right: 8px"><b style="color:navy"><a href="#{{ int.interestId }}" data-toggle="modal">{{ int.interestName }}</a></b></span>
+          <span style="margin-right: 8px"><b style="color:navy"><a href="#{{ int.interestId }}" data-toggle="modal" >{{ int.interestName }}</a></b></span>
                 {% if int in profileInt %}
                 <a href="{% url 'deleteinterestFromProfile' int.interestId %}" class="fa fa-check-square-o" style="font-size: medium"></a>
                 {%  else %}
