@@ -14,17 +14,17 @@
       </div>
 
 
-      <div class="row">
-  <div class="col-md-offset-1 col-md-10">
-    <div class="panel panel-default user-data-panel" style="margin-top: -1%">
-              <div class="panel-heading">
-                <h4 class="panel-title">
-                    Profile Information
-                <a class='fa fa-edit pull-right' style="font-size: large"  href="{% url 'updateProfile' %}">  Edit Profile</a>
-                </h4>
-              </div>
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+            <div class="panel panel-default user-data-panel" style="margin-top: -1%">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Profile Information
+                        <a class='fa fa-edit pull-right' style="font-size: large"  href="{% url 'updateProfile' %}">  Edit Your Profile</a>
+                    </h4>
+                </div>
 
-              <div class="panel-body">
+            <div class="panel-body">
                 <div class="row">
                     <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Volunteer Type:</strong> {{cur_user.volunteerType }}</div>
                     <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Cell Phone:</strong> {{cur_user.cellPhone }}</div>
@@ -37,10 +37,14 @@
                     <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Last Update:</strong>{{cur_user.dateUpdated|date }}</div>
                 </div>
 
-              </div>
+             </div>
+            </div>
+        </div>
     </div>
-</div>
-</div>
 
+    {%  include  'userprofile/volunteerInterest.html' %}
 
+    {%  include  'userprofile/UserFamilyMembership.html' %}
+
+  </div>
 {%  endblock %}
