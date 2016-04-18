@@ -2,14 +2,17 @@
 {% block base_content %}
 
     <div class="container-fluid" style="padding: 7%">
-    <h2 class="vmsHeader">{{ curUser.name }}'s Dashboard</h2>
-
-
-
     <div class="row">
+    <h2 class="vmsHeader" id="startTour">
+        {{ curUser.name }}'s Dashboard
+    </h2>
+    </div>
+
+
+    <div class="row" id="one">
         <div class="col-lg-4">
-            <p>Total individual volunteer hours: <b>{{ totalVolunteerHoursUser }}</b></p>
-            Total volunteer hours for family:
+            <p>Total individual volunteer hours: <b id="userHours">{{ totalVolunteerHoursUser }}</b></p>
+            Total volunteer hours for family:<span  id="familyHours"></span>
             {% for famx in familySums %}
                 <ul style="margin: 1%">
             <li style="margin: -1%">{{famx.familyName}}: <b>{{ famx.totalCurrentHours }}</b></li>
@@ -17,14 +20,15 @@
             {% endfor %}
         </div>
         <div class="col-lg-4" style="margin-left: 7%">
-            <a href="{% url 'logUserHours' %}" class='btn logHours btn-lg' role="button"style="margin-top: 10%; margin-bottom: -2%">Log Volunteer Hours</a>
+            <a href="{% url 'logUserHours' %}" class='btn logHours btn-lg', id="logHrsBtn"
+               role="button"style="margin-top: 10%; margin-bottom: -2%">Log Volunteer Hours</a>
         </div>
     </div>
 
 
     <div class="panel panel-default user-data-panel"style="margin-top: 2%">
         <div class="panel-heading">
-            <h4 class="panel-title" style="margin-top:8px">Volunteer Hours for {{ curYear }} school year</h4>
+            <h4 class="panel-title" style="margin-top:8px"><span id="curYearRecords">Volunteer Hours for {{ curYear }} school year</span></h4>
         </div>
             {% if volHours %}
                 <table class="table table-hover table-bordered table-condensed">
@@ -41,7 +45,7 @@
                 </thead>
                     {% for hrs in volHours %}
                 <tr>
-                <td align="center">
+                <td align="center" id="editIcons">
                         <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
                         <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
                                           style="margin-left: 5%" title="Delete Event" data-toggle='modal'
@@ -74,7 +78,7 @@
 
     <div class="panel panel-default user-data-panel">
         <div class="panel-heading">
-            <h4 class="panel-title">Traffic Duty for {{ curYear }} school year</h4>
+            <h4 class="panel-title"><span id="trafficTable">Traffic Duty for {{ curYear }} school year</span></h4>
         </div>
      {% if traffic %}
                 <table class="table table-hover table-bordered table-condensed">
@@ -107,7 +111,7 @@
 
     <div class="panel panel-default user-data-panel">
         <div class="panel-heading">
-            <h4 class="panel-title">Reward Cards for {{ curYear }} school year</h4>
+            <h4 class="panel-title"><span id="rewardCardTable">Reward Cards for {{ curYear }} school year</span></h4>
         </div>
     {% if rewardCardData %}
                 <table class="table table-hover table-bordered table-condensed" id="rewardCard">
@@ -143,7 +147,7 @@
 
     <div class="panel panel-default user-data-panel">
         <div class="panel-heading">
-            <h4 class="panel-title">Volunteer Hours By School Year <i>(Individual)</i></h4>
+            <h4 class="panel-title"><span id ='histTable'>Volunteer Hours By School Year <i>(Individual)</i></span></h4>
         </div>
     {% if histHours %}
         
@@ -175,19 +179,77 @@
       {%  include 'modals/volunteerInterestNagModal.html' %}
  {%  endif %}
 
+</div>
 
 
 
+{%  endblock %}
 
-<a href="#" class="btn btn-block btn-primary" id="startTour">Start tour</a>
-<script type="text/javascript">
+    {% block extraJquery %}
+<script>
 $("#startTour").click(function(){
-    tour.restart();
-})
+    DashBoardTour.start();
+});
 </script>
 
 
+<script>
+// Instance the tour
+var DashBoardTour = new Tour({
+  debug: true,
+  storage: false,
+  steps: [
+  {
+    element: "#userHours",
+    title: "Your individual hours",
+    content: "This contains the total number of hours you as an individual have volunteered for in the current school year.",
+    placement: "right"
+  },
+  {
+    element: "#familyHours",
+    title: "Total hours by family",
+    content: "This contains the total number of hours you and other family members have volunteered for in the current year.",
+    placement:"right"
+  },
+  {
+    element: "#logHrsBtn",
+    title: "Log your hours",
+    content: "Clicking this button will take you to a new screen where you can log your hours.",
+    placement:"right"
+  },
+    {
+    element: "#curYearRecords",
+    title: "Volunteer Events Table",
+    content: "This table list all of the individual events you have volunteered for this year",
+    placement:"right"
+  },
+  {
+    element: "#editIcons",
+    title: "Edit Events",
+    content: "Use the edit & trash icons to manage the data you have entered.",
+    placement:"right"
+  },
+    {
+    element: "#trafficTable",
+    title: "Traffic Duty",
+    content: "This table lists your traffic duty for the current year. This data is entered & maintained by the traffic coordinator.",
+    placement:"right"
+  },
+      {
+    element: "#rewardCardTable",
+    title: "Reward Card Data",
+    content: "This table lists the hours you have accumulated through the use of the King Soopers & Safeway reward cards ",
+    placement:"right"
+  },
+      {
+    element: "#histTable",
+    title: "Your historical totals",
+    content: "This table lists the hours you volunteered for in the past. These are your volunteer hours and do not reflect your whole family",
+    placement:"right"
+  }
+]});
+DashBoardTour.init();
+</script>
 
 
-</div>
-{%  endblock %}
+        {% endblock %}

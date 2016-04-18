@@ -7,7 +7,7 @@
 
 
 {% block base_content %}
-<h2 class="vmsHeader" style="text-align: center; margin-top: 100px">Log Volunteer Hours</h2>
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours</h2>
     {%  crispy form %}
 
 {%  endblock %}
@@ -15,6 +15,11 @@
 
 
 {% block extraJquery %}
+    <script>
+$("#startTour").click(function(){
+    volunteerFormTour.start();
+});
+</script>
 
  <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
  <script src="{{STATIC_URL}}js/bootstrap-timepicker.min.js"></script>
@@ -157,5 +162,42 @@ $('#pickIcon2').click(function(){
         });
     }
 </script>
+
+
+<script>
+
+
+// Instance the tour
+var volunteerFormTour = new Tour({
+  debug: true,
+  storage: false,
+  steps: [
+  {
+    element: "#id_eventDate",
+    title: "Volunteer Date",
+    content: "Enter the date you volunteered",
+    placement: "left"
+  },
+    {
+    element: "#id_event",
+    title: "Event",
+    content: "Select the event you volunteered for. You can enter text to filter your selection ",
+    placement: "left"
+  },
+      {
+    element: "#id_volunteerHours",
+    title: "Volunteer time",
+    content: "You can either enter the total number of hours volunteered or you can enter the start & end time " +
+    "which will calculate the total hours for you.",
+    placement: "left"
+  },
+
+]});
+
+volunteerFormTour.init();
+</script>
+
+
+
 
 {% endblock %}

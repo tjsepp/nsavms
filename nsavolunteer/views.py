@@ -134,6 +134,7 @@ def userSettings(request):
     return response
 
 
+
 class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
     form_class = UserProfileForm
     template_name = 'forms/updateVolunteerProfile.html'
@@ -149,6 +150,7 @@ class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
         context['interests'] = VolunteerInterests.objects.filter(active=True).all()
         context['profileInt'] = self.object.interest.all()
         return context
+
 
 def FamilyProfilePage(request, famid):
     '''This takes an argument of a family ID and provides all family level information
@@ -291,7 +293,7 @@ deleteInterestFromProfile = login_required(deleteInterestFromProfile)
 
 class CreateFamily(CreateView):
     form_class = AddNewFamily
-    template_name = 'forms/addNewFamily.html'
+    template_name = 'forms/static/js/addNewFamily.html'
     famid = None
 
     def get_success_url(self):
