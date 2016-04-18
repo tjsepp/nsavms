@@ -110,7 +110,7 @@
             <h4 class="panel-title">Reward Cards for {{ curYear }} school year</h4>
         </div>
     {% if rewardCardData %}
-                <table class="table table-hover table-bordered table-condensed">
+                <table class="table table-hover table-bordered table-condensed" id="rewardCard">
                 <thead>
                 <tr>
                     <th>Refill Date</th>
@@ -179,8 +179,12 @@
 
 
 
-
-
+<a href="#" class="btn btn-block btn-primary" id="startTour">Start tour</a>
+<script type="text/javascript">
+$("#startTour").click(function(){
+    tour.restart();
+})
+</script>
 
 
 
