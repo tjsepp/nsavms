@@ -117,6 +117,7 @@ class UserProfileForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserProfileForm,self).__init__(*args, **kwargs)
         self.fields['interest'].queryset = VolunteerInterests.objects.filter(active=True).all()
+        self.fields['interest'].widget = forms.CheckboxSelectMultiple()
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'
@@ -137,9 +138,9 @@ class UserProfileForm(ModelForm):
             ),
 
         Field('linkedUserAccount', type="hidden"),
-        HTML('<h5><b>Volunteer Interests:</b></h5>'),
-        HTML("{% include 'forms/volunteerInterests.html' %}"),
-        Field('interest', type="hidden"),
+        #HTML('<h5><b>Volunteer Interests:</b></h5>'),
+        #HTML("{% include 'forms/volunteerInterests.html' %}"),
+        Field('interest'),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
