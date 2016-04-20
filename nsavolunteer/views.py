@@ -293,7 +293,7 @@ deleteInterestFromProfile = login_required(deleteInterestFromProfile)
 
 class CreateFamily(CreateView):
     form_class = AddNewFamily
-    template_name = 'forms/static/js/addNewFamily.html'
+    template_name = 'forms/addNewFamily.html'
     famid = None
 
     def get_success_url(self):
