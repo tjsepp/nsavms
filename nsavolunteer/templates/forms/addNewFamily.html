@@ -3,11 +3,11 @@
 {% crispy example_form example_form.helper %}
 
 
-{% block title %}Update Family Profile{% endblock %}
+{% block title %}Add New Family{% endblock %}
 
 
 {% block base_content %}
-<h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Update Family Profile - {{ familyName }}</h2>
+<h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add New Family</h2>
     {%  crispy form %}
-
+    {{ form.errors }}
 {%  endblock %}
