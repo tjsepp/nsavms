@@ -195,7 +195,7 @@ class StudentUpdateForm(ModelForm):
             'activeStatus',
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
-        self.helper.add_input(Submit('save', 'Save')),
+        self.helper.add_input(Submit('save', 'Save',css_class='btn btnnavy')),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 

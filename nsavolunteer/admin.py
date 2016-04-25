@@ -8,12 +8,21 @@ from django.db import models
 
 
 
+def mark_approved(modeladmin, request, queryset):
+    queryset.update(volStatus='approved')
+mark_approved.short_description = "Mark selected users as approved"
+
+def mark_pending(modeladmin, request, queryset):
+    queryset.update(volStatus='pending')
+mark_pending.short_description = "Mark selected users as pending"
+
 class VolunteerProfileAdmin(SimpleHistoryAdmin):
     model = VolunteerProfile
     search_fields = ('firstName','lastName')
     filter_horizontal = ('interest',)
     list_display = ('linkedUserAccount','firstName','lastName','volunteerType','cellPhone')
     raw_id_fields = ('linkedUserAccount',)
+    actions = [mark_approved,mark_pending]
 
 
 

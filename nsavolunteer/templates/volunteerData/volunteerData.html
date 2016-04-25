@@ -19,10 +19,21 @@
                 </ul>
             {% endfor %}
         </div>
+
+        {% if user.linkedUser.volStatus == 'approved' %}
         <div class="col-lg-4" style="margin-left: 7%">
-            <a href="{% url 'logUserHours' %}" class='btn logHours btn-lg', id="logHrsBtn"
-               role="button"style="margin-top: 10%; margin-bottom: -2%">Log Volunteer Hours</a>
+
+                <a href="{% url 'logUserHours' %}" class='btn logHours btn-lg', id="logHrsBtn"
+                   role="button"style="margin-top: 10%; margin-bottom: -2%">Log Volunteer Hours</a>
         </div>
+            {% else %}
+        <div class="col-lg-4" style="margin-left: 1%">
+               <i style="color: red;font-size: 15px">** Cannot log hours until approved for {{ curYear }} **</i>
+        </div>
+        {% endif %}
+
+
+
     </div>
 
 
@@ -34,7 +45,9 @@
                 <table class="table table-hover table-bordered table-condensed">
                 <thead>
                 <tr>
+                    {% if user.linkedUser.volStatus == 'approved' %}
                     <th></th>
+                    {% endif %}
                     {% if multFam %}
                     <th>Family</th>
                      {% endif %}
@@ -45,12 +58,16 @@
                 </thead>
                     {% for hrs in volHours %}
                 <tr>
+                {% if user.linkedUser.volStatus == 'approved' %}
                 <td align="center" id="editIcons">
+
                         <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
                         <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
                                           style="margin-left: 5%" title="Delete Event" data-toggle='modal'
                                           data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
+
                 </td>
+                {% endif %}
                     {% if multFam %}
                     <td>
                         {{ hrs.family }}
@@ -71,7 +88,7 @@
                     {% endfor %}
                 </table>
         {% else %}
-            <h4 style="color: red; text-align: center">No volunteer hours reported</h4>
+            <h4 style="color: red; text-align: center"><i>No volunteer hours reported</i></h4>
         {% endif %}
 
     </div>
@@ -104,7 +121,7 @@
                     {% endfor %}
                 </table>
         {% else %}
-                <h4 style="color: red; text-align: center">No traffic duty reported</h4>
+                <h4 style="color: red; text-align: center"><i>No traffic duty reported</i></h4>
         {% endif %}
 
     </div>
@@ -139,7 +156,7 @@
                     {% endfor %}
                 </table>
         {% else %}
-                <h4 style="color: red; text-align: center">No reward card purchase data reported</h4>
+                <h4 style="color: red; text-align: center"><i>No reward card purchase data reported</i></h4>
         {% endif %}
 
     </div>

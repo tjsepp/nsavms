@@ -148,7 +148,7 @@ class Student(TimeStampedModel):
     studentId = models.AutoField(primary_key=True,db_column='studentId',verbose_name='StudentId')
     studentFirstName = models.CharField(max_length=100,db_column='studentFirstName',verbose_name='Students First Name',null=True,blank=False)
     studentLastName = models.CharField(max_length=100,db_column='studentLastName',verbose_name='Students Last Name',null=True,blank=False)
-    activeStatus = models.BooleanField(verbose_name='Active Status',default=True,db_column='activeStatus')
+    activeStatus = models.BooleanField(verbose_name='Current Student',default=True,db_column='activeStatus')
     teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True,on_delete=models.SET_NULL)
     grade = models.ForeignKey(GradeLevel,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
@@ -330,6 +330,7 @@ class RewardCardUsers(TimeStampedModel):
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True)
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
+    active = models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
 
     def __unicode__(self):

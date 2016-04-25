@@ -60,7 +60,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome: {{user.name}}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-header"><b>{{ user.name }}'s information</b></li>
+                                    {% if user.linkedUser.volStatus == 'approved' %}
                                     <li class="navIndent"><a href="{% url 'logUserHours' %}">Log Hours</a></li>
+                                    {% endif %}
                                     <li class="navIndent"><a href="{% url 'userVolunteerData' %}">My Dashboard</a></li>
                                     <li class="navIndent"><a href="{%  url 'user_profile' %}">My Profile</a></li>
                                     <li class="navIndent"><a href="{% url 'changepassword' %}">Change Password</a></li>
