@@ -1,18 +1,20 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html>
     <head lang="en">
 
         <meta charset="UTF-8">
 
-        <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet">
-        <link href="{{STATIC_URL}}css/font-awesome.min.css" rel="stylesheet">
-        <link href="{{STATIC_URL}}css/select2.min.css" rel="stylesheet">
-        <link href="{{STATIC_URL}}css/nsavol_style.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}css/jquery-ui.min.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}css/jquery-ui.theme.min.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}css/bootstrap-timepicker.min.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}css/bootstrap-tour.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+        <link href="{% static "css/bootstrap.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/font-awesome.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/select2.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/nsavol_style.css"%}" rel="stylesheet">
+        <link href="{% static "css/jquery-ui.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/jquery-ui.theme.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/bootstrap-timepicker.min.css"%}" rel="stylesheet">
+        <link href="{% static "css/bootstrap-tour.min.css"%}" rel="stylesheet">
+        <link rel="shortcut icon" href="{% static " img/favicon.ico"%}" />
 
         {% block extra_head %}
 
@@ -44,15 +46,15 @@
 
 </html>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-	<script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
-    <script src="{{STATIC_URL}}js/bootstrap-multiselect.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.dataTables.min.js"></script>
-    <script src="{{STATIC_URL}}js/dataTables.bootstrap.min.js"></script>
-    <link href="{{STATIC_URL}}css/bootstrap-multiselect.css" rel="stylesheet">
-    <script src="{{STATIC_URL}}js/select2.min.js"></script>
-    <script src="{{ STATIC_URL }}js/bootstrap-tour.min.js"></script>
-    <script src="{{STATIC_URL}}js/nsa_vol.js"></script>
-    <script src="{{STATIC_URL}}js/vmsTour.js"></script>
+	<script src="{% static "js/bootstrap.min.js"%}"></script>
+    <script src="{% static "js/bootstrap-multiselect.js"%}"></script>
+    <script src="{% static "js/jquery.dataTables.min.js"%}"></script>
+    <script src="{% static "js/dataTables.bootstrap.min.js"%}"></script>
+    <link href="{% static "css/bootstrap-multiselect.css"%}" rel="stylesheet">
+    <script src="{% static "js/select2.min.js"%}"></script>
+    <script src="{% static "js/bootstrap-tour.min.js"%}"></script>
+    <script src="{% static "js/nsa_vol.js"%}"></script>
+    <script src="{% static "js/vmsTour.js"%}"></script>
 
 {% block extraJquery %}
 {% endblock %}

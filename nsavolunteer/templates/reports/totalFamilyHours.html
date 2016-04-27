@@ -1,0 +1,70 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Total Volunteer Hours
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Total Volunteer Hours</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Family Name</th>
+                <th>Volunteers</th>
+                <th>Students</th>
+                <th>Hours</th>
+                <th>Traffic</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for fam in FamilyIndex %}
+                <tr>
+                <td>{{ fam.familyName }}</td>
+                <td>{{ fam.listVolunteers }}</td>
+                <td>{{ fam.listStudents }}</td>
+                <td>{{ fam.totalCurrentHours|floatformat:2 }}</td>
+                    {% ifequal fam.totalCurrentTrafficDutyCount fam.trafficRequirement %}
+                    <td>{{ fam.totalCurrentTrafficDutyCount }}/{{ fam.trafficRequirement }} <span class="glyphicon glyphicon-star" style="color: green; margin-left: 5%"></span></td>
+                    {% else %}
+                <td>{{ fam.totalCurrentTrafficDutyCount }}/{{ fam.trafficRequirement }}</td>
+                    {% endifequal %}
+
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

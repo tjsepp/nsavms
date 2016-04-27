@@ -1,7 +1,7 @@
 {%  extends 'account/base.html' %}
 {% load crispy_forms_tags %}
 {% crispy example_form example_form.helper %}
-
+{% load staticfiles %}
 
 {% block title %}Log Volunteer Hours{% endblock %}
 
@@ -21,8 +21,8 @@ $("#startTour").click(function(){
 });
 </script>
 
- <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
- <script src="{{STATIC_URL}}js/bootstrap-timepicker.min.js"></script>
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
 <script>$(document).ready(function(){
     $(".datepicker").datepicker({
         showOptions: { direction: "down" }

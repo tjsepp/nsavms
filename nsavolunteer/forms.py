@@ -138,9 +138,9 @@ class UserProfileForm(ModelForm):
             ),
 
         Field('linkedUserAccount', type="hidden"),
-        #HTML('<h5><b>Volunteer Interests:</b></h5>'),
-        #HTML("{% include 'forms/volunteerInterests.html' %}"),
-        Field('interest'),
+        HTML('<h5><b>Volunteer Interests:</b></h5>'),
+        HTML("{% include 'forms/volunteerInterests.html' %}"),
+        Field('interest',type='hidden'),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),

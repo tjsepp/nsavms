@@ -1,5 +1,5 @@
 {%  extends 'account/base.html' %}
-
+{% load staticfiles %}
 
 
 {% block title %}Add New Users{% endblock %}
@@ -56,7 +56,7 @@
 
 {% block extraJquery %}
 
-    <script src="{{STATIC_URL}}js/jquery.formset.js"></script>
+    <script src="{% static "js/jquery.formset.js"%}"></script>
       <script>
         $('.user-formset').formset({
             addText:'Add Volunteer',

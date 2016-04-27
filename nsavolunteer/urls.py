@@ -44,5 +44,8 @@ url(r'^login/$',LoginView.as_view(),name='mainlogin'),
 url(r'^logout/$',LogoutView.as_view(),name='mainlogout'),
 url(r'^changePassword/$',ChangePassword.as_view(),name='changepassword'),
 
+##Reports
+url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
+
 ]
 

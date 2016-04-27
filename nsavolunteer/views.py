@@ -86,6 +86,14 @@ class FamilyIndex(ListView):
     template_name = "tables/FamilyIndex.html"
 
 
+class Report_Family_Hours_Current(ListView):
+    model = FamilyProfile
+    paginate_by = 100
+    queryset = FamilyProfile.objects.all().order_by('familyName')
+    context_object_name = "FamilyIndex"
+    template_name="reports/totalFamilyHours.html"
+
+
 @login_required
 def userVolunteerData(request):
     '''
@@ -408,3 +416,4 @@ class TrafficReport(TemplateView):
         context = super(TrafficReport, self).get_context_data(**kwargs)
         context['recentTraffic'] = TrafficDuty.objects.all().order_by('-dateCreated')[:50]
         return context
+
