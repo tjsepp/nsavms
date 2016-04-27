@@ -40,6 +40,7 @@ class NsaEvents(TimeStampedModel):
     internalComments= models.TextField(verbose_name='Internal Comments', db_column='internamComments', null=True, blank=True)
     recurring = models.BooleanField(db_column='recurringEvent',verbose_name='recurring Event', default=False)
     daysOfWeek = models.ManyToManyField(DaysOfWeek,verbose_name='Days of the Week',blank =True)
+    allowView = models.BooleanField(db_column='allowViewFlag',verbose_name='Allow Volunteers to view event', default=True)
     history = HistoricalRecords()
 
     def getDaysOfWeek(self):

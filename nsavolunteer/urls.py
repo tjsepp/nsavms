@@ -18,34 +18,36 @@ from django.contrib import admin
 from .views import *
 
 urlpatterns = [
+
+##Base files
 url(r'^$',homeView,name='home'),
+url(r'^login/$',LoginView.as_view(),name='mainlogin'),
+url(r'^logout/$',LogoutView.as_view(),name='mainlogout'),
 url(r'^password_recovery/$', PasswordRecoveryView.as_view(),name='password_recovery'),
+url(r'^changePassword/$',ChangePassword.as_view(),name='changepassword'),
+#user profile & user data
 url(r'^user_profile',userSettings,name='user_profile'),
-url(r'^volunteerindex',VolunteerIndex.as_view(),name='volunteerIndex'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
-url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
-url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),
-url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
-url(r'^loghours',logUserHours.as_view(),name='logUserHours'),
+##Admin templates
+url(r'^volunteerindex',VolunteerIndex.as_view(),name='volunteerIndex'),
+url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
+url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),
+url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
+url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
+url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
+##User and admin Forms
  url(r'^deleteloggedhours/(?P<vhoursID>\d+)',deleteLoggedHours,name='deleteUserHours'),
+url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),
+url(r'^loghours',logUserHours.as_view(),name='logUserHours'),
 url(r'^edithours/(?P<vhoursID>\d+)$',updateUserHours.as_view(),name='editUserHours'),
 url(r'^addinterest/(?P<Intid>\d+)/$',addInterestToProfile,name='addinterestToProfile'),
-url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),
 url(r'^addfamily$',CreateFamily.as_view(),name='addfamily'),
 url(r'^adduserstofamily/(?P<famid>\d+)/$',AddVolunteersToNewFamily,name='addusertofamily'),
 url(r'^processContacttofamily/(?P<famid>\d+)/$',ProcessContactToExistingFamily,name='processContactToFamily'),
 url(r'^addContacttofamily/(?P<famid>\d+)/$',addContactToExistingFamily,name='addContactToExistingFamily'),
 url(r'^removeContactFromFamily/(?P<famid>\d+)/(?P<volunteerid>\d+)/$',RemoveContactFromFamily,name='removeContactFromFamily'),
 url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers'),
-url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
-url(r'^login/$',LoginView.as_view(),name='mainlogin'),
-url(r'^logout/$',LogoutView.as_view(),name='mainlogout'),
-url(r'^changePassword/$',ChangePassword.as_view(),name='changepassword'),
-
-##Reports
-url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
-
 ]
 

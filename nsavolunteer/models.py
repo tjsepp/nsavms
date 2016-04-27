@@ -37,7 +37,7 @@ class VolunteerProfile(TimeStampedModel):
     volunteerProfileID =  models.AutoField(primary_key=True,db_column='volunteerProfileId',verbose_name='Volunteer Profile Id')
     firstName = models.CharField(db_column='firstName', max_length=200, null=True,blank=True,verbose_name='First Name')
     lastName = models.CharField(db_column='lastName', max_length=200, null=True,blank=True,verbose_name='Last Name')
-    linkedUserAccount = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='linkedUser')
+    linkedUserAccount = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='linkedUser',db_index=True)
     volunteerType = models.ForeignKey('VolunteerType',null=True,blank=True,db_column='volunteerType',verbose_name='Volunteer Type')
     cellPhone =models.CharField(max_length=15,db_column='cellPhone',verbose_name='cell Phone', null=True, blank=True, default=None)
     volStatus = models.CharField(max_length=15,db_column='volStatus',verbose_name='Volunteer Status',null=True,blank=True,choices=VOLSTATUS,default='pending')
@@ -78,7 +78,9 @@ class VolunteerProfile(TimeStampedModel):
 
     @property
     def historical_volunteer_data(self):
-        curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family').get(pk=self.linkedUserAccount.id)
+        curUser = User.objects.prefetch_related('linkedUser__linkedUserAccount__volunteerhours_set',
+                                                'linkedUser__linkedUserAccount__rewardCardValue',
+                                                'linkedUser__linkedUserAccount__family').get(pk=self.linkedUserAccount.id)
         rhh = curUser.rewardCardValue.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
         vhh = curUser.volunteerhours_set.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
         tdu = curUser.trafficDutyUser.values('schoolYear__schoolYear').annotate(total=Sum('volunteerHours')).order_by('-schoolYear')
@@ -91,6 +93,24 @@ class VolunteerProfile(TimeStampedModel):
             c[d['schoolYear__schoolYear']] += d['total']
         histHours =  [{'schoolYear': schoolYear__schoolYear, 'total': total} for schoolYear__schoolYear, total in c.items()]
         return histHours
+
+    @property
+    def currentVolunteerData(self):
+        volunteerEvents = VolunteerHours.objects.select_related('event','family','volunteer').filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
+            filter(volunteer = self.volunteerProfileID)
+        return volunteerEvents
+
+    @property
+    def currentTrafficDutyData(self):
+        trafficDuty = TrafficDuty.objects.filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
+            filter(volunteerId = self.volunteerProfileID)
+        return trafficDuty
+
+    @property
+    def currentRewardCardData(self):
+        rewardCard = RewardCardUsage.objects.filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
+            filter(volunteerId = self.volunteerProfileID)
+        return rewardCard
 
     class Meta:
         verbose_name_plural='Volunteer Profile'
@@ -196,7 +216,7 @@ class FamilyProfile(TimeStampedModel):
     roll up all data to a family level.
     '''
     familyProfileId = models.AutoField(primary_key=True,db_column='FamilyProfileId',verbose_name='Family Profile Id')
-    familyName =  models.CharField(max_length=50,db_column='familyName',verbose_name='Family Name', null=True, blank=False, default=None)
+    familyName =  models.CharField(max_length=50,db_column='familyName',verbose_name='Family Name', null=True, blank=False, default=None,db_index=True)
     streetAddress = models.CharField(db_column='streetAddress', max_length=200, null=True,blank=True,verbose_name='Street Address')
     city = models.CharField(db_column='city', max_length=50, null=True,blank=True,verbose_name='city')
     zip = models.CharField(db_column='zip', max_length=15, null=True,blank=True,verbose_name='zip')
@@ -296,9 +316,9 @@ class VolunteerHours(TimeStampedModel):
     volunteerHoursId = models.AutoField(primary_key=True,db_column='volunteerHoursId',verbose_name='Volunteer Hours Id')
     event = models.ForeignKey(NsaEvents,db_column='event',null=True, blank=False, verbose_name='Event', related_name='volHours')
     task = models.CharField(max_length=100,db_column='task',null=True,blank=True,verbose_name='task')
-    eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=False, null=True)
-    volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer')
-    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.")
+    eventDate = models.DateField(db_column='volunteerDate', verbose_name='Volunteer Date', blank=False, null=True,db_index=True)
+    volunteer = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer', verbose_name='volunteer',db_index=True)
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family',help_text="Select Family to log hours for.",db_index=True)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=False,verbose_name='Volunteer Hours')
     approved = models.BooleanField(db_column='approved', default=False,verbose_name='Approved')
@@ -326,8 +346,8 @@ class RewardCardUsers(TimeStampedModel):
     This will link values back to the user allowing the system to aggregate the information on the user level
     '''
     RewardCardId = models.AutoField(primary_key=True,db_column='rewardCardId',verbose_name='Reward Card ID')
-    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
-    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True)
+    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser',db_index=True)
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True,db_index=True)
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
     active = models.BooleanField(verbose_name='active',db_column='active',default=True)
@@ -348,9 +368,9 @@ class RewardCardUsage(TimeStampedModel):
     spent on reward refils/repurchases
     '''
     rewardCardusageId= models.AutoField(primary_key=True,db_column='rewardCardUsageId',verbose_name='Reward Card Usage ID')
-    customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number',blank=False,null=True)
-    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='rewardCardValue')
-    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='rewardCardFamilyLink')
+    customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number',blank=False,null=True,db_index=True)
+    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='rewardCardValue',db_index=True)
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='rewardCardFamilyLink',db_index=True)
     refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
     refillValue = models.DecimalField(db_column='refillValue',verbose_name='Refill Value',max_digits=8, decimal_places=2)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
@@ -383,10 +403,10 @@ class RewardCardUsage(TimeStampedModel):
 
 class TrafficDuty(TimeStampedModel):
     trafficDutyId= models.AutoField(primary_key=True,db_column='ParkingDutyId',verbose_name='Parking Duty ID')
-    trafficDutyDate = models.DateField(db_column='parkingDutyDate', verbose_name='Parking Duty Date', null=True, blank=True)
+    trafficDutyDate = models.DateField(db_column='parkingDutyDate', verbose_name='Parking Duty Date', null=True, blank=True,db_index=True)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=True)
-    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDutyUser')
-    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='parkingDutyFamily')
+    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDutyUser',db_index=True)
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='parkingDutyFamily',db_index=True)
     trafficDutyType =models.CharField(max_length=25,db_column='store',verbose_name='Duty Type',null=True,blank=False,choices=TRAFFICDUTY)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
 

@@ -13,7 +13,7 @@ from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFor
     AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm
 from .models import *
 from django.forms.formsets import formset_factory
-from django.db.models import Sum
+from django.db.models import Sum, Prefetch
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
 
@@ -21,8 +21,6 @@ def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request, 'home.html')
     return response
-
-
 
 
 class LoginView(FormView):
@@ -70,13 +68,13 @@ class PasswordRecoveryView(FormView):
         return super(PasswordRecoveryView,self).form_valid(form)
 
 
-
 class VolunteerIndex(ListView):
     model = VolunteerProfile
     paginate_by = 100
     queryset = VolunteerProfile.objects.all().order_by('lastName')
     context_object_name = "volunteerIndex"
     template_name = "tables/volunteerIndex.html"
+
 
 class FamilyIndex(ListView):
     model = FamilyProfile
@@ -102,9 +100,9 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
-    curUser = User.objects.select_related('volunteerhours_set','rewardCardValue','family','linkedUser').get(pk=request.user.id)
-    rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
-    volhours = curUser.volunteerhours_set.select_related('event','family').filter(schoolYear=curYear).all().order_by('-eventDate')
+    curUser = User.objects.select_related('linkedUser').get(pk=request.user.id)
+    rewardCardData = curUser.linkedUser.currentRewardCardData
+    volhours = curUser.linkedUser.currentVolunteerData
     traffic = curUser.trafficDutyUser.filter(schoolYear = curYear).order_by('-trafficDutyDate')
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
@@ -140,7 +138,6 @@ def userSettings(request):
     rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
     response = render(request, 'userprofile/userprofile.html',{'cur_user':cur_user,'userFamily':userFamily,'rewardCards':rewardCards})
     return response
-
 
 
 class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
@@ -247,8 +244,6 @@ def deleteLoggedHours(request, vhoursID):
     return HttpResponseRedirect(reverse('userVolunteerData'))
 
 
-
-
 class updateUserHours(LoginRequiredMixin,UpdateView):
     form_class = AddUserEventForm
     template_name = 'forms/addVolunteerHours.html'
@@ -276,7 +271,6 @@ class updateUserHours(LoginRequiredMixin,UpdateView):
 
     def get_success_url(self):
         return reverse('userVolunteerData')
-
 
 
 def addInterestToProfile(request,Intid):
@@ -372,7 +366,6 @@ def RemoveContactFromFamily(request,famid,volunteerid):
     return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
 
 
-
 def AddTrafficVolunteers(request):
     addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=10)
     formset=addVolunteerFormset(request.POST )
@@ -392,6 +385,7 @@ def AddTrafficVolunteers(request):
         return render_to_response('forms/addTrafficVolunteers.html',{'formset':addVolunteerFormset()},
                                   context_instance=RequestContext(request))
 
+
 def YearEndProcess(request):
     '''
     This process will update all volunteerProfiles and mark them as pending.
@@ -403,9 +397,9 @@ def YearEndProcess(request):
     for t in activeStudents:
         t.newYear()
 
+
 def deactivateFullFamily(request, famid):
     pass
-
 
 
 class TrafficReport(TemplateView):
@@ -416,4 +410,9 @@ class TrafficReport(TemplateView):
         context = super(TrafficReport, self).get_context_data(**kwargs)
         context['recentTraffic'] = TrafficDuty.objects.all().order_by('-dateCreated')[:50]
         return context
+
+
+
+
+
 
