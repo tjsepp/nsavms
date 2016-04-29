@@ -76,7 +76,7 @@ class VolunteerIndex(ListView):
     template_name = "tables/volunteerIndex.html"
 '''
 def VolunteerIndex(request):
-    volunteerIndex = VolunteerProfile.objects.select_related('User').prefetch_related('linkedUserAccount__family').all().order_by('lastName')
+    volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').prefetch_related('linkedUser__interest','family')
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 

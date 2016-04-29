@@ -14,7 +14,8 @@
 {% block base_content %}
 
 
-    <form action="" method="post" xmlns="http://www.w3.org/1999/html">{% csrf_token %}
+
+<form action="" method="post">{% csrf_token %}
     <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
@@ -23,23 +24,7 @@
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
 
-
-            <div class="col-sm-6">
-          <div class="input-group" style="margin-left: -3%; width: 40%">
-          <select id="formActionSelect" class="form-control">
-            <option value="">---Select Action---</option>
-            <option value="{% url 'markAsPending' %}">Mark Select Users as Pending</option>
-            <option value="{% url 'markAsApproved' %}">Mark Select Users as Approved</option>
-          </select>
-              <span class="input-group-btn">
-                  <button class="btn btnnavy" type="submit" id="formActionBtn"  formaction="" value="Go"/>Go</button>
-              </span>
-          </div>
-        </div>
-
-
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
-
         <thead>
             <tr>
                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
@@ -58,9 +43,9 @@
         {%  for vol in volunteerIndex %}
 
                 <tr>
-                <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.linkedUser.volunteerProfileID }}"></td>
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.volunteerProfileID }}"></td>
                 <td>
-                    {% if vol.is_active %}
+                    {% if vol.linkedUserAccount.is_active %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
                         <span class="glyphicon glyphicon-remove" style="color: red">
@@ -68,16 +53,12 @@
                         </span>
                 </td>
                 <td>{{ vol.linkedUser.firstName }}</td>
-                <td>{{ vol.linkedUser.lastName }}</td>
-                <td>{{ vol.linkedUser.get_volStatus_display }}</td>
-                <td>{{ vol.linkedUser.volunteerType }}</td>
-                <td>{{ vol.email }}</td>
-                <td>
-                    {% for fam in vol.family.all %}
-					    <a href='familyprofile/{{ fam.familyProfileId }}' target='_blank'>{{ fam.familyName }}</a>{%if not forloop.last %}, {% endif %}
-				    {% endfor %}
-                </td>
-                <td> {% if vol.linkedUser.interest|length >= 1 %}
+                <td>{{ vol.lastName }}</td>
+                <td>{{ vol.get_volStatus_display }}</td>
+                <td>{{ vol.volunteerType }}</td>
+                <td>{{ vol.linkedUserAccount.email }}</td>
+                <td>{{ vol.getFamilies|safe }}</td>
+                <td> {% if vol.interest.all %}
                         <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
                         <span class="glyphicon glyphicon-remove" style="color: red">
@@ -98,23 +79,19 @@
 
 
 </div>
-
+       <input type="submit" formaction="{%  url 'markAsApproved' %}" value="Approved" />
+      <input type="submit" formaction="{%  url 'markAsPending' %}" value="Pending" />
 </form>
 
 {%  endblock %}
 
 
 {% block extraJquery %}
-
 <script>
 $(document).ready(function(){
-    myVal = $('#formActionSelect').change(function(){
-        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
-    });
+    $('[data-toggle="popover"]').popover({html:true});
 });
 </script>
-
-
 
 <script>
 $("#checkToggle").change(function () {
