@@ -15,7 +15,7 @@
 
 
 
-
+<form action="" method="post">{% csrf_token %}
     <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
@@ -27,7 +27,7 @@
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th></th>
+                <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
                 <th>Status</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -41,18 +41,9 @@
 
         <tbody>
         {%  for vol in volunteerIndex %}
-            {% if vol.getFamilies == "Not tied to family" %}
-                <tr class="danger">
-            {%  else %}
+
                 <tr>
-            {%  endif %}
-                <td align="center"><a href="#" class="glyphicon glyphicon-edit" data-toggle="popover"  data-trigger="focus"
-                                      title="Edit <b>{{ vol.linkedUserAccount.name }}</b>"
-                                      data-content="<ul style='list-style-type:none'>
-                                                    <li style='margin-left:-20%'><a href='{%  url 'home' %}'>Change Option 1</a></li>
-                                                    <li style='margin-left:-20%'><a href='#'>Change Option 2</a></li>
-                                                    <li style='margin-left:-20%'><a href='#'>Change Option 3</a></li>
-                                                    </ul>"></a></td>
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.volunteerProfileID }}"></td>
                 <td>
                     {% if vol.linkedUserAccount.is_active %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>
@@ -79,9 +70,18 @@
          </tbody>
 </table>
 
+
+
+
+
         </div>
 
+
+
 </div>
+       <input type="submit" formaction="{%  url 'markAsApproved' %}" value="Approved" />
+      <input type="submit" formaction="{%  url 'markAsPending' %}" value="Pending" />
+</form>
 
 {%  endblock %}
 
@@ -92,5 +92,12 @@ $(document).ready(function(){
     $('[data-toggle="popover"]').popover({html:true});
 });
 </script>
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
 {% endblock %}
 

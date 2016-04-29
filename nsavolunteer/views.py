@@ -67,13 +67,18 @@ class PasswordRecoveryView(FormView):
         form.reset_email()
         return super(PasswordRecoveryView,self).form_valid(form)
 
-
+'''
 class VolunteerIndex(ListView):
     model = VolunteerProfile
     paginate_by = 100
-    queryset = VolunteerProfile.objects.all().order_by('lastName')
+    queryset = VolunteerProfile.objects.select_related('User','linkedUserAccount__family').all().order_by('lastName')
     context_object_name = "volunteerIndex"
     template_name = "tables/volunteerIndex.html"
+'''
+def VolunteerIndex(request):
+    volunteerIndex = VolunteerProfile.objects.select_related('User').prefetch_related('linkedUserAccount__family').all().order_by('lastName')
+    response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
+    return response
 
 
 class FamilyIndex(ListView):
@@ -92,7 +97,6 @@ class Report_Family_Hours_Current(ListView):
     template_name="reports/totalFamilyHours.html"
 
 
-@login_required
 def userVolunteerData(request):
     '''
     This view will generate all data needed for all user data. This will include family,
@@ -100,9 +104,10 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
-    curUser = User.objects.select_related('linkedUser').get(pk=request.user.id)
-    rewardCardData = curUser.linkedUser.currentRewardCardData
-    volhours = curUser.linkedUser.currentVolunteerData
+    curUser = User.objects.prefetch_related('linkedUser','linkedUser__linkedUserAccount__volunteerhours_set',
+                                            'linkedUser__linkedUserAccount__family','linkedUser__linkedUserAccount__rewardCardValue').get(pk=request.user.id)
+    rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
+    volhours = curUser.volunteerhours_set.select_related('event','family').filter(schoolYear=curYear).all().order_by('-eventDate')
     traffic = curUser.trafficDutyUser.filter(schoolYear = curYear).order_by('-trafficDutyDate')
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
     parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
@@ -129,11 +134,12 @@ def userVolunteerData(request):
     return response
 
 
+
 @login_required
 def userSettings(request):
     #profile = VolunteerProfile.objects.get_or_create(linkedUserAccount = request.user)
     #cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get_or_create(linkedUserAccount= auth)
-    cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType','interest').get(linkedUserAccount= request.user)
+    cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType').prefetch_related('interest').get(linkedUserAccount= request.user)
     userFamily = FamilyProfile.objects.filter(famvolunteers = request.user).all()
     rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
     response = render(request, 'userprofile/userprofile.html',{'cur_user':cur_user,'userFamily':userFamily,'rewardCards':rewardCards})
@@ -412,6 +418,21 @@ class TrafficReport(TemplateView):
         return context
 
 
+def markAsPending(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerProfile.objects.get(pk=vol)
+        ur.volStatus = 'pending'
+        ur.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def markAsApproved(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerProfile.objects.get(pk=vol)
+        ur.volStatus = 'approved'
+        ur.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 

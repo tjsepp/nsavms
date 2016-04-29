@@ -30,7 +30,7 @@ url(r'^user_profile',userSettings,name='user_profile'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
 ##Admin templates
-url(r'^volunteerindex',VolunteerIndex.as_view(),name='volunteerIndex'),
+url(r'^volunteerindex',VolunteerIndex,name='volunteerIndex'),
 url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
 url(r'^familyindex',FamilyIndex.as_view(),name='familyIndex'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
@@ -49,5 +49,7 @@ url(r'^addContacttofamily/(?P<famid>\d+)/$',addContactToExistingFamily,name='add
 url(r'^removeContactFromFamily/(?P<famid>\d+)/(?P<volunteerid>\d+)/$',RemoveContactFromFamily,name='removeContactFromFamily'),
 url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers'),
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
+url(r'^markpending$',markAsPending,name='markAsPending'),
+url(r'^markApproved$',markAsApproved,name='markAsApproved'),
 ]
 

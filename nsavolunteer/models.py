@@ -41,7 +41,7 @@ class VolunteerProfile(TimeStampedModel):
     volunteerType = models.ForeignKey('VolunteerType',null=True,blank=True,db_column='volunteerType',verbose_name='Volunteer Type')
     cellPhone =models.CharField(max_length=15,db_column='cellPhone',verbose_name='cell Phone', null=True, blank=True, default=None)
     volStatus = models.CharField(max_length=15,db_column='volStatus',verbose_name='Volunteer Status',null=True,blank=True,choices=VOLSTATUS,default='pending')
-    interest = models.ManyToManyField('nsavolunteer.VolunteerInterests',db_table ='profileToInterest',verbose_name='Volunteer Interests', null=True, blank =True, related_name='profile_interest')
+    interest = models.ManyToManyField('nsavolunteer.VolunteerInterests',db_table ='profileToInterest',verbose_name='Volunteer Interests', blank =True, related_name='profile_interest')
     doNotEmail = models.BooleanField(verbose_name='Do Not Email',db_column='emailOptOut',default=False)
     history = HistoricalRecords()
 
@@ -54,7 +54,7 @@ class VolunteerProfile(TimeStampedModel):
 
     def getFamilies(self):
         url = '' #add the url to the main family page
-        fams = FamilyProfile.objects.filter(famvolunteers = self.linkedUserAccount)
+        fams = FamilyProfile.objects.select_related('famvolunteers').filter(famvolunteers = self.linkedUserAccount)
         if fams:
             famlist1 =[]
             for fam in fams:
