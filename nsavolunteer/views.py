@@ -334,6 +334,7 @@ def AddVolunteersToNewFamily(request,famid):
                                   context_instance=RequestContext(request))
 
 
+
 def ProcessContactToExistingFamily(request, famid):
     '''
     This view takes a familyID and email address from modal dialog, searches to see
@@ -362,6 +363,19 @@ def addContactToExistingFamily(request,famid):
      else:
         form = AddNewVolunteersToFamily()
      return render_to_response('forms/addNewUserToFamily.html',{'form':form}, context_instance=RequestContext(request))
+
+def addVolunteer_woFamily(request):
+     if request.method=='POST':
+        form =AddNewVolunteersToFamily(data=request.POST)
+        if form.is_valid():
+            volunteer = form.save(commit=False)
+            form.save()
+            return HttpResponseRedirect(reverse('volunteerIndex'))
+     else:
+        form = AddNewVolunteersToFamily()
+     return render_to_response('forms/addNewUserToFamily.html',{'form':form}, context_instance=RequestContext(request))
+
+
 
 
 def RemoveContactFromFamily(request,famid,volunteerid):
@@ -430,10 +444,27 @@ def markAsApproved(request):
     selected_values = request.POST.getlist('UserRecs')
     for vol in selected_values:
         ur = VolunteerProfile.objects.get(pk=vol)
-        ur.volStatus = 'approved'
-        ur.save()
+        if ur.linkedUserAccount.is_active:
+            ur.volStatus = 'approved'
+            ur.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+def deactivateVolunteerAccount(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerProfile.objects.get(pk=vol)
+        if ur.linkedUserAccount.is_active==True:
+            if ur.linkedUserAccount.is_superuser == False:
+                ur.linkedUserAccount.is_active = False
+                ur.linkedUserAccount.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+def activateVolunteerAccount(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerProfile.objects.get(pk=vol)
+        if ur.linkedUserAccount.is_active==False:
+            ur.linkedUserAccount.is_active = True
+            ur.linkedUserAccount.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

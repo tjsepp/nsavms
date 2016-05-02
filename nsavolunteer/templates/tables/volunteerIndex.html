@@ -14,25 +14,29 @@
 {% block base_content %}
 
 
-    <form action="" method="post" xmlns="http://www.w3.org/1999/html">{% csrf_token %}
+    <form action="" id="volunteerIdx" method="post">{% csrf_token %}
     <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
-                    <h3>Volunteer Index</h3>
+                    <h3 class="vmsHeader">Volunteer Index</h3>
                 </div>
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
 
 
             <div class="col-sm-6">
-          <div class="input-group" style="margin-left: -3%; width: 40%">
+          <div class="input-group" style="margin-left: -2.5%; width: 70%">
           <select id="formActionSelect" class="form-control">
-            <option value="">---Select Action---</option>
-            <option value="{% url 'markAsPending' %}">Mark Select Users as Pending</option>
-            <option value="{% url 'markAsApproved' %}">Mark Select Users as Approved</option>
+            <option value="" data-toggle="">---Select Action---</option>
+            <option value="{% url 'markAsPending' %}">Mark selected users as pending</option>
+            <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>
+            <option value="{% url 'activateUserAccount' %}">Activate user account</option>
+            <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
           </select>
               <span class="input-group-btn">
-                  <button class="btn btnnavy" type="submit" id="formActionBtn"  formaction="" value="Go"/>Go</button>
+                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
+                  <button class="btn btn-default" type="submit" id="newUsr" formaction="{% url 'addVolunteer_woFamily' %}" value="Go" style="margin-left: 2%">New Volunteer</button>
+
               </span>
           </div>
         </div>
@@ -46,7 +50,7 @@
                 <th>Status</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Status</th>
+                 <th>Status</th>
                 <th>Type</th>
                 <th>Email</th>
                 <th>Family Membership</th>
@@ -70,14 +74,14 @@
                 <td>{{ vol.linkedUser.firstName }}</td>
                 <td>{{ vol.linkedUser.lastName }}</td>
                 <td>{{ vol.linkedUser.get_volStatus_display }}</td>
-                <td>{{ vol.linkedUser.volunteerType }}</td>
+                <td>{{ vol.linkedUser.volunteerType|default:"" }}</td>
                 <td>{{ vol.email }}</td>
                 <td>
                     {% for fam in vol.family.all %}
 					    <a href='familyprofile/{{ fam.familyProfileId }}' target='_blank'>{{ fam.familyName }}</a>{%if not forloop.last %}, {% endif %}
 				    {% endfor %}
                 </td>
-                <td> {% if vol.linkedUser.interest|length >= 1 %}
+                <td> {% if vol.linkedUser.interest.all|length >= 1 %}
                         <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
                         <span class="glyphicon glyphicon-remove" style="color: red">
@@ -87,19 +91,13 @@
             </tr>
         {% endfor %}
          </tbody>
+
 </table>
-
-
-
-
-
-        </div>
-
-
-
+    </div>
 </div>
 
-</form>
+    </form>
+
 
 {%  endblock %}
 
@@ -121,6 +119,17 @@ $("#checkToggle").change(function () {
     $("input:checkbox").prop('checked', $(this).prop("checked"));
 });
 </script>
+
+
+<script>
+$("#newUsr").click(function(){
+    $('#volunteerIdx').attr("method",'')
+
+})
+
+</script>
+
+
 
 {% endblock %}
 

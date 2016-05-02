@@ -51,5 +51,8 @@ url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers')
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
 url(r'^markpending$',markAsPending,name='markAsPending'),
 url(r'^markApproved$',markAsApproved,name='markAsApproved'),
+url(r'^deactivateuser$',deactivateVolunteerAccount,name='deactivateUserAccount'),
+ url(r'^activateuser$',activateVolunteerAccount,name='activateUserAccount'),
+ url(r'^addVolunteer_woFamily$',addVolunteer_woFamily,name='addVolunteer_woFamily'),
 ]
 

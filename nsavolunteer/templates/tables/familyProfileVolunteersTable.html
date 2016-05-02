@@ -41,7 +41,7 @@
                 <td>{{ vol.email}}</td>
                 <td>{{ vol.linkedUser.cellPhone|default:""}}</td>
                 <td>{{ vol.linkedUser.volunteerType|default:" "}}</td>
-                <td>{{ vol.linkedUser.volStatus|default:" "}}</td>
+                <td>{{ vol.linkedUser.get_volStatus_display|default:" "}}</td>
                 <td> {% if vol.linkedUser.interest.all %}
                         <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
