@@ -214,3 +214,8 @@ text-decoration: none;
     margin-bottom: 5%;
 }
 
+.popoverwide {
+      width: 600px;
+      max-width: 600px;
+      width: 600px;
+    }

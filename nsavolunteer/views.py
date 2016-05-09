@@ -81,13 +81,18 @@ def VolunteerIndex(request):
     return response
 
 
+def FamilyIndex(request):
+    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students')
+    response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
+    return response
+'''
 class FamilyIndex(ListView):
     model = FamilyProfile
     paginate_by = 100
-    queryset = FamilyProfile.objects.all().order_by('familyName')
+    queryset = FamilyProfile.objects.all().select_related('famvolunteers','students')
     context_object_name = "FamilyIndex"
     template_name = "tables/FamilyIndex.html"
-
+'''
 
 class Report_Family_Hours_Current(ListView):
     model = FamilyProfile

@@ -246,7 +246,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentVolunteerHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = VolunteerHours.objects.select_related('family').filter(approved=True).filter(family=self.familyProfileId).filter(schoolYear=curYear) \
+      hours = VolunteerHours.objects.select_related('famvolunteers','schoolYear','event','volunteer').filter(approved=True).filter(family=self).filter(schoolYear=curYear) \
               .aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
@@ -257,7 +257,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentRewardCardHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = RewardCardUsage.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      hours = RewardCardUsage.objects.select_related('linkedFamily','volunteerId','schoolYear').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
       else:
@@ -267,7 +267,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentParkingDutyHours(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = TrafficDuty.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
+      hours = TrafficDuty.objects.select_related('linkedFamily','schoolYear','volunteerId').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
       if hours['total']:
           total = hours['total']
       else:
@@ -282,7 +282,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def totalCurrentTrafficDutyCount(self):
       curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = TrafficDuty.objects.select_related('linkedFamily').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Count('trafficDutyId'))
+      hours = TrafficDuty.objects.select_related('linkedFamily','schoolYear','volunteerId').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Count('trafficDutyId'))
       if hours['total']:
           total = hours['total']
       else:
