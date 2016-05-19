@@ -22,5 +22,6 @@ urlpatterns = [
 ##Base files
 
 url(r'^addVolunteerEvent',addVolunteerEvent.as_view(),name='addVolunteerEvent'),
+url(r'^editVolunteerEvent/(?P<eventID>\d+)$',updateVolunteerEvent.as_view(),name='editVolunteerEvent'),
 ]
 

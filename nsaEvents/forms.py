@@ -11,7 +11,7 @@ from django.forms.models import inlineformset_factory
 from authtools.forms import UserCreationForm
 from django.forms.formsets import BaseFormSet,formset_factory
 from django.core.mail import EmailMessage, send_mail
-
+from django.db.models import Q
 
 class EventsForm(ModelForm):
     class Meta:
@@ -19,6 +19,7 @@ class EventsForm(ModelForm):
         fields='__all__'
     def __init__(self, *args, **kwargs):
         super(EventsForm,self).__init__(*args, **kwargs)
+        self.fields['eventLeader'].queryset = User.objects.filter(Q(groups__name='ACV')|Q(groups__name='VolunteerManager'))
         self.fields['daysOfWeek'].widget = forms.CheckboxSelectMultiple()
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
@@ -28,7 +29,7 @@ class EventsForm(ModelForm):
         #self.helper.field_class='col-md-5'
         self.helper.layout = Layout(
         'eventName',
-        'eventDate',
+        Field('eventDate', css_class='datepicker',placeholder='Select Date'),
         'eventLeader',
         'location',
         'autoApprove',

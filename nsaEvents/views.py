@@ -17,3 +17,17 @@ class addVolunteerEvent(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('home')
+
+class updateVolunteerEvent(LoginRequiredMixin,UpdateView):
+    form_class = EventsForm
+    template_name = 'forms/addEditEvent.html'
+
+    def get_object(self, queryset=None):
+        return NsaEvents.objects.get(pk=self.kwargs['eventID'])
+
+    def form_valid(self, form):
+        form.save()
+        return super(updateVolunteerEvent,self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('home')

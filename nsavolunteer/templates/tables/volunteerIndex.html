@@ -24,6 +24,8 @@
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
 
 
+
+
             <div class="col-sm-6">
           <div class="input-group" style="margin-left: -2.5%; width: 70%">
           <select id="formActionSelect" class="form-control">
@@ -32,6 +34,10 @@
             <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>
             <option value="{% url 'activateUserAccount' %}">Activate user account</option>
             <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
+            {% if perms.nsavolunteer.is_volunteer_manager%}
+                <option value="#">Mark as AVC</option>
+            {% endif %}
+
           </select>
               <span class="input-group-btn">
                   <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>

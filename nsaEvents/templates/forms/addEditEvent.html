@@ -7,6 +7,18 @@
 
 
 {% block base_content %}
-<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Event Details</h2>
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px">Event Details</h2>
     {%  crispy form %}
 {%  endblock %}
+
+
+{% block extraJquery %}
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
+{% endblock %}
