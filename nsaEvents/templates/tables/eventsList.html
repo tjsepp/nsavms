@@ -42,7 +42,6 @@
                           data-placement="bottom"
                           style="margin-left: 2%">Add Event
                   </button>
-
               </span>
           </div>
         </div>
@@ -66,9 +65,10 @@
 
         <tbody>
             {%  for event in EventIndex %}
+                {%  include 'modal/eventDescriptionModal.html' %}
                 <tr>
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ fam.familyProfileId }}"></td>
-                <td><a href={% url 'editVolunteerEvent' event.eventId %}>{{ event.eventName }}</a></td>
+                <td><a href={% url 'editVolunteerEvent' event.eventId %}>{{ event.eventName }}   <a class='fa fa-commenting-o' href="#{{ event.eventId }}" data-toggle="modal"></a></a></td>
                 <td>{{ event.eventLeader.name }}</td>
                 <td>{{ event.eventLeader.email }}</td>
                 <td>{{ event.eventDate|default:"" }}</td>
