@@ -36,3 +36,13 @@ def EventIndex(request):
     EventIndex = NsaEvents.objects.all().prefetch_related('eventLeader')
     response = render(request, 'tables/eventsList.html',{'EventIndex':EventIndex})
     return response
+
+
+def makeEventsViewable(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerProfile.objects.get(pk=vol)
+        if ur.linkedUserAccount.is_active==False:
+            ur.linkedUserAccount.is_active = True
+            ur.linkedUserAccount.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
