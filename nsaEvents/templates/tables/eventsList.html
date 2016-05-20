@@ -1,0 +1,123 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Events
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Events</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+    <div class="col-sm-6">
+          <div class="input-group" style="margin-left: -2.5%; width: 70%">
+          <select id="formActionSelect" class="form-control">
+            <option value="" data-toggle="">---Select Action---</option>
+            <option value="#">Future EventAction 1</option>
+            <option value="#">Future Event Action 2</option>
+            <option value="#">Future Event Action 3</option>
+            <option value="#">Future Event Action 4</option>
+          </select>
+              <span class="input-group-btn">
+                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
+                   <button class="btn btn-default" type="submit" id="blankMeth" formaction="{% url 'addVolunteerEvent' %}" data-toggle="popover"
+                          value="Go" title="Add New Event"
+                          data-content="This will take you through the process of adding a new event to the database"
+                          data-placement="bottom"
+                          style="margin-left: 2%">Add Event
+                  </button>
+
+              </span>
+          </div>
+        </div>
+
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                <th>Event Name</th>
+                <th>Event Leader</th>
+                <th>Contact Email</th>
+                <th>Event Date</th>
+                <th>Event Details</th>
+                <th>location</th>
+                <th>Auto Approve</th>
+                <th>Viewable</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for event in EventIndex %}
+                <tr>
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ fam.familyProfileId }}"></td>
+                <td><a href={% url 'editVolunteerEvent' event.eventId %}>{{ event.eventName }}</a></td>
+                <td>{{ event.eventLeader.name }}</td>
+                <td>{{ event.eventLeader.email }}</td>
+                <td>{{ event.eventDate|default:"" }}</td>
+                <td>{{ event.eventDetailsDisplay|default:"" }}</td>
+                <td>{{ event.location}}</td>
+                <td>
+                    {% if event.autoApprove %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+                <td>
+                    {% if event.allowView %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+
+            </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+    $("#blankMeth").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+

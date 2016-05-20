@@ -16,7 +16,7 @@ class addVolunteerEvent(LoginRequiredMixin, CreateView):
     template_name = 'forms/addEditEvent.html'
 
     def get_success_url(self):
-        return reverse('home')
+        return reverse('eventIndex')
 
 class updateVolunteerEvent(LoginRequiredMixin,UpdateView):
     form_class = EventsForm
@@ -30,4 +30,9 @@ class updateVolunteerEvent(LoginRequiredMixin,UpdateView):
         return super(updateVolunteerEvent,self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('home')
+        return reverse('eventIndex')
+
+def EventIndex(request):
+    EventIndex = NsaEvents.objects.all().prefetch_related('eventLeader')
+    response = render(request, 'tables/eventsList.html',{'EventIndex':EventIndex})
+    return response

@@ -67,14 +67,7 @@ class PasswordRecoveryView(FormView):
         form.reset_email()
         return super(PasswordRecoveryView,self).form_valid(form)
 
-'''
-class VolunteerIndex(ListView):
-    model = VolunteerProfile
-    paginate_by = 100
-    queryset = VolunteerProfile.objects.select_related('User','linkedUserAccount__family').all().order_by('lastName')
-    context_object_name = "volunteerIndex"
-    template_name = "tables/volunteerIndex.html"
-'''
+
 def VolunteerIndex(request):
     volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').prefetch_related('linkedUser__interest','family')
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
@@ -85,14 +78,7 @@ def FamilyIndex(request):
     FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
-'''
-class FamilyIndex(ListView):
-    model = FamilyProfile
-    paginate_by = 100
-    queryset = FamilyProfile.objects.all().select_related('famvolunteers','students')
-    context_object_name = "FamilyIndex"
-    template_name = "tables/FamilyIndex.html"
-'''
+
 
 class Report_Family_Hours_Current(ListView):
     model = FamilyProfile
