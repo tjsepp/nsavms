@@ -65,9 +65,7 @@ class NsaEvents(TimeStampedModel):
 class EventTasks(TimeStampedModel):
     taskid =  models.AutoField(primary_key=True,db_column='taskId',verbose_name='Task ID')
     taskName =models.CharField(max_length=100, db_column='taskName',verbose_name='Task Name', null=True,blank=False)
-    relatedEvent =models.ForeignKey(NsaEvents,db_column='linkedEvent',related_name='linkedEvent')
-    approved = models.BooleanField(db_column='recurringEvent',verbose_name='recurring Event', default=False)
-
+    allowView = models.BooleanField(db_column='allowViewFlag',verbose_name='Allow Volunteers to view task', default=True)
     def __unicode__(self):
         return self.taskName
 
