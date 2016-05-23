@@ -19,7 +19,7 @@ class EventsForm(ModelForm):
         fields='__all__'
     def __init__(self, *args, **kwargs):
         super(EventsForm,self).__init__(*args, **kwargs)
-        self.fields['eventLeader'].queryset = User.objects.filter(Q(groups__name='ACV')|Q(groups__name='VolunteerManager'))
+        self.fields['eventLeader'].queryset = User.objects.filter(Q(groups__name='AVC')|Q(groups__name='VolunteerManager'))
         self.fields['daysOfWeek'].widget = forms.CheckboxSelectMultiple()
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'

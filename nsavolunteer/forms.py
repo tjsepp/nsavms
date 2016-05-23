@@ -13,6 +13,7 @@ from django.forms.models import inlineformset_factory
 from authtools.forms import UserCreationForm
 from django.forms.formsets import BaseFormSet,formset_factory
 from django.core.mail import EmailMessage, send_mail
+from nsaEvents.models import EventTasks
 
 
 class LoginForm(AuthenticationForm):
@@ -311,6 +312,8 @@ class AddUserEventForm(ModelForm):
     class Meta:
         model = VolunteerHours
         fields = '__all__'
+
+
     def __init__(self, *args, **kwargs):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')

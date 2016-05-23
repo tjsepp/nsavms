@@ -16,6 +16,10 @@ from django.forms.formsets import formset_factory
 from django.db.models import Sum, Prefetch
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
+from nsaEvents.models import EventTasks
+
+
+
 
 def homeView(request):
     news = VolunteerNews.objects.all()
@@ -223,6 +227,7 @@ class logUserHours(LoginRequiredMixin, CreateView):
     def get_context_data(self,*args, **kwargs):
         context = super(logUserHours,self).get_context_data(*args, **kwargs)
         context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
+        context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
         return context
 
     def get_form_kwargs(self):

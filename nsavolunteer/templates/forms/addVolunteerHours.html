@@ -9,7 +9,6 @@
 {% block base_content %}
 <h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours</h2>
     {%  crispy form %}
-
 {%  endblock %}
 
 
@@ -132,35 +131,6 @@ $('#pickIcon2').click(function(){
             }
 }
 )
-</script>
-
-
-<script>
-    $(document).ready(function() {
-        BindControls();
-    });
-
-    function BindControls() {
-        var Countries = ['Classroom - Nelson',
-            'Classroom - Brna',
-            'Classroom - Garcia',
-            'Classroom - Teacher3',
-            'Classroom - Ostreko',
-            'Classroom - Brennan',
-            'Classroom - Crawford ',
-            'Classroom - Egan',
-            'Classroom - Bass',
-            'Classroom - Christensen'
-        ];
-
-        $('#id_task').autocomplete({
-            source: Countries,
-            minLength: 0,
-            scroll: true
-        }).focus(function() {
-            $(this).autocomplete("search", "");
-        });
-    }
 </script>
 
 

@@ -54,7 +54,6 @@
                  <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
                 <th>Event Name</th>
                 <th>Event Leader</th>
-                <th>Contact Email</th>
                 <th>Event Date</th>
                 <th>Event Details</th>
                 <th>location</th>
@@ -69,8 +68,10 @@
                 <tr>
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ fam.familyProfileId }}"></td>
                 <td><a href={% url 'editVolunteerEvent' event.eventId %}>{{ event.eventName }}   <a class='fa fa-commenting-o' href="#{{ event.eventId }}" data-toggle="modal"></a></a></td>
-                <td>{{ event.eventLeader.name }}</td>
-                <td>{{ event.eventLeader.email }}</td>
+
+                <td>
+                    <a href="mailto:{{ event.eventLeader.email }}" target="_top">{{ event.eventLeader.name }}</a>
+                </td>
                 <td>{{ event.eventDate|default:"" }}</td>
                 <td>{{ event.eventDetailsDisplay|default:"" }}</td>
                 <td>{{ event.location}}</td>
