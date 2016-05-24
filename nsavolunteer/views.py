@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404, render_to_response, redirect
+from django.http import HttpResponse
 from django.views.generic import FormView, CreateView, RedirectView, UpdateView, \
         ListView, DeleteView,TemplateView
 from django.http import HttpResponseRedirect
@@ -17,7 +18,7 @@ from django.db.models import Sum, Prefetch
 from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
 from nsaEvents.models import EventTasks
-
+import json
 
 
 
@@ -464,3 +465,18 @@ def activateVolunteerAccount(request):
             ur.linkedUserAccount.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+def get_tasks(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        tasks = EventTasks.objects.filter(taskName__icontains = q )[:20]
+        results = []
+        for task in tasks:
+            task_json = {}
+            task_json['id'] = task.taskid
+            task_json['label'] = task.taskName
+            task_json['value'] = task.taskName
+            results.append(task_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    return HttpResponse(data, content_type="application/json")

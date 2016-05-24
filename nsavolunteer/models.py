@@ -5,10 +5,11 @@ from simple_history.models import HistoricalRecords
 from authtools.models import User
 from django.db.models.signals import post_save,pre_delete
 from nsaSchool.models import GradeLevel,Teachers,SchoolYear
-from nsaEvents.models import NsaEvents
+from nsaEvents.models import NsaEvents, EventTasks
 from django.db.models import Sum, Count
 from collections import defaultdict
 from itertools import chain
+
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
 VOLSTATUS = (('pending','Pending'),('approved','Approved'))
@@ -429,3 +430,5 @@ class TrafficDuty(TimeStampedModel):
                 volTime = 0
             self.volunteerHours = volTime
         super(TrafficDuty,self).save(force_insert, force_update)
+
+

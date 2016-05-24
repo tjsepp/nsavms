@@ -29,6 +29,19 @@ $("#startTour").click(function(){
 })
 </script>
 
+
+
+<script>
+        $('#id_task').autocomplete({
+            source: "/get_tasks/",
+            minLength: 0,
+            scroll: true
+        }).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+
+</script>
+
 <script type="text/javascript">
             $('#timepicker1').timepicker({
                     defaultTime: false,

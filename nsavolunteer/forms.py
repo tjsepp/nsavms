@@ -331,7 +331,7 @@ class AddUserEventForm(ModelForm):
         self.helper.layout = Layout(
             Field('eventDate', css_class='datepicker',placeholder='Select Date'),
             Field('event',css_class='select2It'),
-            Field('task', css_id='task'),
+            Field('task', css_id='task', css_class='typeahead'),
             Field('volunteer',type='hidden'),
             #Field('family', type='hidden'),
             Field('volunteerHours',placeholder='Enter Number Of Hours'),
