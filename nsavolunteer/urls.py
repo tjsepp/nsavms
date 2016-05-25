@@ -53,6 +53,7 @@ url(r'^markpending$',markAsPending,name='markAsPending'),
 url(r'^markApproved$',markAsApproved,name='markAsApproved'),
 url(r'^deactivateuser$',deactivateVolunteerAccount,name='deactivateUserAccount'),
 url(r'^activateuser$',activateVolunteerAccount,name='activateUserAccount'),
+url(r'^make_avc$',markAsAvc,name='markAsAvc'),
 url(r'^addVolunteer_woFamily$',addVolunteer_woFamily,name='addVolunteer_woFamily'),
 url(r'^get_tasks/', 'nsavolunteer.views.get_tasks', name='get_tasks'),
 ]

@@ -19,6 +19,7 @@ from nsaSchool.models import VolunteerNews, SchoolYear
 from authtools.forms import UserCreationForm
 from nsaEvents.models import EventTasks
 import json
+from django.contrib.auth.models import Group
 
 
 
@@ -464,6 +465,18 @@ def activateVolunteerAccount(request):
             ur.linkedUserAccount.is_active = True
             ur.linkedUserAccount.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def markAsAvc(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        volunteer = User.objects.get(pk = VolunteerProfile.objects.get(pk=vol).linkedUserAccount_id)
+        g = Group.objects.get(name='AVC')
+        g.user_set.add(volunteer)
+        g.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 
 def get_tasks(request):
     if request.is_ajax():
