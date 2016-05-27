@@ -75,7 +75,20 @@ class PasswordRecoveryView(FormView):
 
 
 def VolunteerIndex(request):
-    volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').prefetch_related('linkedUser__interest','family')
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').\
+        prefetch_related('linkedUser__interest','family','groups').filter(is_active=True)
+    response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
+    return response
+
+def InactiveVolunteerIndex(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').\
+        prefetch_related('linkedUser__interest','family','groups')
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 
@@ -323,7 +336,10 @@ def AddVolunteersToNewFamily(request,famid):
                 form.save()
                 family.famvolunteers.add(form.instance)
                 family.save()
-            return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
+            if request.POST.get('saveFamily'):
+                return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
+            elif request.POST.get('saveAndAdd'):
+                return HttpResponseRedirect(reverse_lazy('addfamily'))
         else:
             form_errors = formset.errors
             return render_to_response('forms/addUsersToFamily.html',{'formset':formset,'familyName':familyname,'famid':famid, 'form_errors':form_errors}, context_instance=RequestContext(request))
@@ -474,7 +490,16 @@ def markAsAvc(request):
         g = Group.objects.get(name='AVC')
         g.user_set.add(volunteer)
         g.save()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def removeFromAvc(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        volunteer = User.objects.get(pk = VolunteerProfile.objects.get(pk=vol).linkedUserAccount_id)
+        g = Group.objects.get(name='AVC')
+        g.user_set.remove(volunteer)
+        g.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 

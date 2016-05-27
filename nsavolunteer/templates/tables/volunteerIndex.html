@@ -1,5 +1,5 @@
 {%  extends 'account/base.html' %}
-
+{% load appFilters %}
 
 {% block title %}
     Volunteer Index
@@ -29,15 +29,20 @@
             <div class="col-sm-6">
           <div class="input-group" style="margin-left: -2.5%; width: 70%">
           <select id="formActionSelect" class="form-control">
-            <option value="" data-toggle="">---Select Action---</option>
-            <option value="{% url 'markAsPending' %}">Mark selected users as pending</option>
-            <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>
-            <option value="{% url 'activateUserAccount' %}">Activate user account</option>
-            <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
-
-                <option value="{% url 'markAsAvc' %}">Mark as AVC</option>
-
-
+            <option value="" disabled="disabled" selected="selected">---Select Action---</option>
+              <optgroup label="Approval Options">
+                  <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>
+                  <option value="{% url 'markAsPending' %}">Mark selected users as pending</option>
+              </optgroup>
+              <optgroup label="AVC Permission Options">
+                    <option value="{% url 'markAsAvc' %}">Set as AVC</option>
+                    <option value="{% url 'removeAsAvc' %}">Remove AVC</option>
+              </optgroup>
+              <optgroup label="System Access Options">
+                <option value="{% url 'InactiveVolunteerIndex' %}">Show active & inactive users</option>
+                <option value="{% url 'activateUserAccount' %}">Activate user account</option>
+                <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
+              </optgroup>
           </select>
               <span class="input-group-btn">
                   <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
@@ -61,6 +66,7 @@
             <tr>
                 {% if perms.nsavolunteer.is_volunteer_manager%}
                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                    <th>AVC</th>
                 {% endif %}
                 <th>Status</th>
                 <th>First Name</th>
@@ -79,6 +85,8 @@
                 <tr>
                 {% if perms.nsavolunteer.is_volunteer_manager%}
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.linkedUser.volunteerProfileID }}"></td>
+                <td>{{ vol.groups.all|is_avc|default:''|safe}}</td>
+
                 {% endif%}
                 <td>
                     {% if vol.is_active %}
