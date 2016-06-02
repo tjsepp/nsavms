@@ -236,7 +236,7 @@ class logUserHours(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
-        form.save()
+        #form.save()
         return super(logUserHours,self).form_valid(form)
 
     def get_context_data(self,*args, **kwargs):
@@ -268,9 +268,10 @@ class updateUserHours(LoginRequiredMixin,UpdateView):
     def get_object(self, queryset=None):
         return VolunteerHours.objects.get(pk=self.kwargs['vhoursID'])
 
+
     def form_valid(self, form):
         form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
-        form.save()
+        #form.save()
         return super(updateUserHours,self).form_valid(form)
 
     def get_context_data(self,*args, **kwargs):

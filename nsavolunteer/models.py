@@ -328,12 +328,74 @@ class VolunteerHours(TimeStampedModel):
     def __unicode__(self):
         return "%s's %s on %s" %(self.volunteer.name, self.event, self.eventDate)
 
-
-    def save(self, force_insert=False,force_update=False, using=None):
+    def save(self, *args, **kwargs):
         if self.event.autoApprove==True:
             self.approved = True
-        super(VolunteerHours,self).save(force_insert, force_update)
 
+        if self.pk:
+            #if the volunteerHours record already exists
+            #get saved record
+            origRecord = VolunteerHours.objects.get(pk=self.pk)
+            #get hours and approval saved from original volunteerHours save
+            origHours = origRecord.volunteerHours
+            hourChange = origHours != self.volunteerHours #this is the test to see if the hours changed from the last save
+            origapproval = origRecord.approved
+            approvalChange = origapproval !=self.approved #This is the test to see if the approval changed from the last save
+        else:
+            origRecord = None
+            origHours = None
+            origapproval = None
+            hourChange = False
+            approvalChange = False
+
+        if not origapproval: #if the original record was never approved, make it a zero as to not effect the calculations below
+            origHours = 0
+
+        #get or create new record
+        p, created = FamilyAggHours.objects.get_or_create(family = self.family, schoolYear = self.schoolYear)
+
+        if not created: #if a new family agg record wasn't created
+            summed_hours = p.totalVolHours #assign the summed_hours variable
+
+            if hourChange and approvalChange: #check if both the hours and approval changed
+                if not origRecord.approved:
+                    #if the saved record wasn't approved, theres no need to back out data
+                    summed_hours = p.totalVolHours
+                else:
+                    summed_hours = p.totalVolHours - origHours #backs out the original hours
+                if self.approved: #if the new/updated record is approved, add it to the sum.
+                    summed_hours = summed_hours + self.volunteerHours
+
+            elif hourChange:
+                if self.approved:
+                    summed_hours = summed_hours - origHours + self.volunteerHours
+                else:
+                    summed_hours = summed_hours - origHours
+
+            elif approvalChange:
+                if not self.approved:
+                    summed_hours = summed_hours - origHours
+                else:
+                    summed_hours = summed_hours - origHours + self.volunteerHours
+            else:
+                if self.approved:
+                    summed_hours = summed_hours + self.volunteerHours
+            p.totalVolHours = summed_hours
+            p.save()
+
+        if created: #if a new family Sum record is created then just add the hours.
+            if self.approved:
+                p.totalVolHours = self.volunteerHours
+            p.save()
+        super(VolunteerHours, self).save(*args, **kwargs)
+
+
+    def delete(self, *args, **kwargs):
+        p = FamilyAggHours.objects.get(family = self.family, schoolYear = self.schoolYear)
+        hoursToRemove = p.totalVolHours - self.volunteerHours
+        p.totalVolHours = hoursToRemove
+        p.save()
+        super(VolunteerHours, self).delete(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Volunteer Hours'
@@ -432,3 +494,34 @@ class TrafficDuty(TimeStampedModel):
         super(TrafficDuty,self).save(force_insert, force_update)
 
 
+class FamilyAggHours(TimeStampedModel):
+    familySumId = models.AutoField(primary_key=True,db_column='FamilySumId',verbose_name='Family Sum ID')
+    family = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name="Family",null=True,blank=False)
+    schoolYear = models.ForeignKey(SchoolYear,db_column='schoolYear',verbose_name=SchoolYear,null=True,blank=False)
+    totalVolHours = models.DecimalField(db_column='totalVolunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Volunteer Hours', default=0)
+    trafficDutyCount = models.IntegerField(db_column='trafficDutyCount',verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
+
+    def __unicode__(self):
+        return '%s - %s' %(self.family.familyName,self.schoolYear.schoolYear)
+
+    '''
+    def add_volunteer_hours(sender, instance, created, **kwargs):
+        if created:
+            if FamilyAggHours.objects.get_or_create(family=instance.family,schoolYear=instance.schoolYear):
+                famRec = FamilyAggHours.objects.get(family=instance.family,schoolYear=instance.schoolYear)
+                famRec.totalVolHours = famRec.totalVolHours+instance.volunteerHours
+                famRec.save()
+            else:
+                FamilyAggHours.objects.create(family=instance.family,schoolYear=instance.schoolYear
+                                          ,totalVolHours = instance.volunteerHours)
+        else:
+            famRec = FamilyAggHours.objects.get(family=instance.family,schoolYear=instance.schoolYear)
+            famRec.totalVolHours = famRec.totalVolHours+instance.volunteerHours
+            famRec.save()
+
+    post_save.connect(add_volunteer_hours, sender=VolunteerHours)
+    '''
+    class Meta:
+        verbose_name_plural='Family Sums'
+        db_table = 'familyAggregate'
+        ordering = ['family']
