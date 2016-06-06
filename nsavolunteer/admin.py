@@ -57,13 +57,23 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
 class TrafficDataAdmin(admin.ModelAdmin):
     models= TrafficDuty
     list_display = ('volunteerId','trafficDutyDate','linkedFamily','schoolYear')
-    list_editable = ('linkedFamily',)
 
 
 class StudentAdmin(SimpleHistoryAdmin):
     model = Student
     list_display = ('getFullStudentName','activeStatus','grade','teacher')
     list_editable = ('grade','teacher',)
+
+class VolunteerHoursAdmin(SimpleHistoryAdmin):
+    model = VolunteerHours
+    list_display = ('volunteer','family','event','eventDate','volunteerHours','approved')
+
+
+class FamilyAggHoursAdmin(SimpleHistoryAdmin):
+    model = VolunteerHours
+    list_display = ('family','schoolYear','totalVolHours','trafficDutyCount')
+
+
 
 #admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 #admin.site.register(Volunteers,VolunteerAdmin)
@@ -77,6 +87,6 @@ admin.site.register(Student,StudentAdmin)
 admin.site.register(StudentToFamily)
 admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
-admin.site.register(VolunteerHours)
-admin.site.register(FamilyAggHours)
+admin.site.register(VolunteerHours,VolunteerHoursAdmin)
+admin.site.register(FamilyAggHours,FamilyAggHoursAdmin)
 admin.site.register(TrafficDuty,TrafficDataAdmin)

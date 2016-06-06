@@ -1,0 +1,2 @@
+Sum & group by event name (current year):
+    VolunteerHours.objects.filter(schoolYear = 2).filter(approved = True).values('event__eventName').annotate(total=Sum('volunteerHours')).order_by('-event')

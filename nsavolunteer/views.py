@@ -102,7 +102,7 @@ def FamilyIndex(request):
 class Report_Family_Hours_Current(ListView):
     model = FamilyProfile
     paginate_by = 100
-    queryset = FamilyProfile.objects.all().order_by('familyName')
+    queryset = FamilyProfile.objects.prefetch_related('famvolunteers','students','familyAgg','familyAgg__schoolYear').order_by('familyName')
     context_object_name = "FamilyIndex"
     template_name="reports/totalFamilyHours.html"
 
@@ -519,3 +519,4 @@ def get_tasks(request):
     else:
         data = 'fail'
     return HttpResponse(data, content_type="application/json")
+

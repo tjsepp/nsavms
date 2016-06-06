@@ -42,13 +42,26 @@
                 <td>{{ fam.familyName }}</td>
                 <td>{{ fam.listVolunteers }}</td>
                 <td>{{ fam.listStudents }}</td>
-                <td>{{ fam.totalCurrentHours|floatformat:2 }}</td>
-                    {% ifequal fam.totalCurrentTrafficDutyCount fam.trafficRequirement %}
-                    <td>{{ fam.totalCurrentTrafficDutyCount }}/{{ fam.trafficRequirement }} <span class="glyphicon glyphicon-star" style="color: green; margin-left: 5%"></span></td>
-                    {% else %}
-                <td>{{ fam.totalCurrentTrafficDutyCount }}/{{ fam.trafficRequirement }}</td>
-                    {% endifequal %}
-
+                <td>{% if fam.familyAgg.all %}
+                        {% for aggData in fam.familyAgg.all %}
+                            {%  if aggData.schoolYear.currentYear %}
+                                {{ aggData.totalVolHours}}
+                            {% endif %}
+                        {% endfor %}
+                     {% else %}
+                    0
+                    {% endif %}
+                </td>
+                <td>{% if fam.familyAgg.all %}
+                        {% for aggData in fam.familyAgg.all %}
+                            {%  if aggData.schoolYear.currentYear %}
+                                {{ aggData.trafficDutyCount  }}
+                            {% endif %}
+                        {% endfor %}
+                     {% else %}
+                    0
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
          </tbody>
