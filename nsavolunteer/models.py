@@ -341,6 +341,8 @@ class VolunteerHours(TimeStampedModel):
             hourChange = origHours != self.volunteerHours #this is the test to see if the hours changed from the last save
             origapproval = origRecord.approved
             approvalChange = origapproval !=self.approved #This is the test to see if the approval changed from the last save
+            familyChange = origRecord.family !=self.family
+            print familyChange
 
 
             if not origapproval: #if the original record was never approved, make it a zero as to not effect the calculations below
@@ -372,16 +374,32 @@ class VolunteerHours(TimeStampedModel):
                         summed_hours = summed_hours - origHours
                     else:
                         summed_hours = summed_hours - origHours + self.volunteerHours
+
                 else:
                     if self.approved:
                         summed_hours = summed_hours
+
                 p.totalVolHours = summed_hours
                 p.save()
+
+                if familyChange: #if there is a change in families - remove hours from old family and add to the new family
+                    oldFam = FamilyAggHours.objects.get(family=origRecord.family, schoolYear=origRecord.schoolYear)
+                    oldFam.totalVolHours = oldFam.totalVolHours - self.volunteerHours
+                    oldFam.save()
+                    #add hours to new family
+                    p.totalVolHours = summed_hours + self.volunteerHours
+                    p.save()
 
             if created: #if a new family Sum record is created then just add the hours.
                 if self.approved:
                     p.totalVolHours = self.volunteerHours
                 p.save()
+
+                #if there is a change in family, back out data from old family
+                if familyChange: #if there is a change in families - remove hours from old family and add to the new family
+                    oldFam = FamilyAggHours.objects.get(family=origRecord.family, schoolYear=origRecord.schoolYear)
+                    oldFam.totalVolHours = oldFam.totalVolHours - self.volunteerHours
+                    oldFam.save()
         else:
             p, created = FamilyAggHours.objects.get_or_create(family = self.family, schoolYear = self.schoolYear)
             if self.approved:

@@ -226,8 +226,13 @@ class logUserHours(LoginRequiredMixin, CreateView):
     form_class = AddUserEventForm
     template_name = 'forms/addVolunteerHours.html'
 
+
     def get_success_url(self):
-        return reverse('userVolunteerData')
+        if self.request.POST.get('save'):
+             retPage = 'userVolunteerData'
+        elif self.request.POST.get('saveAndAdd'):
+             retPage = 'logUserHours'
+        return reverse(retPage)
 
     def get_initial(self):
         return {
