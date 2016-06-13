@@ -530,3 +530,8 @@ def hoursToApprove(request):
     response = render(request, 'tables/hoursToApprove.html',{'hours_to_approve':hours_to_approve})
     return response
 
+def approvedHours(request,vhId):
+    rec = VolunteerHours.objects.get(pk=vhId)
+    rec.approved =True
+    rec.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

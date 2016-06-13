@@ -46,7 +46,6 @@ INSTALLED_APPS = (
     'nsavolunteer',
     'nsaSchool',
     'nsaEvents',
-
 )
 
 MIDDLEWARE_CLASSES = (
