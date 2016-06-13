@@ -1,0 +1,65 @@
+{%  extends 'account/base.html' %}
+{% load appFilters %}
+
+{% block title %}
+    Unapproved Hours
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+<div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h3 class="vmsHeader">Unapproved Volunteer Hours</h3>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Volunteer</th>
+                <th>Family</th>
+                <th>Event</th>
+                <th>Task</th>
+                <th>Date</th>
+                <th>Hours</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {%  for rec in hours_to_approve %}
+
+                <tr>
+                <td>Action</td>
+                <td>{{ rec.volunteer.name }}</td>
+                <td>{{ rec.family.familyName }}</td>
+                <td>{{ rec.event.eventName }}</td>
+                <td>{{ rec.task }}</td>
+                <td>{{ rec.eventDate }}</td>
+                <td>{{ rec.volunteerHours }}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+    </div>
+</div>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+{% endblock %}
+
+
+
+

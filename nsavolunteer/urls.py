@@ -37,6 +37,7 @@ url(r'^familyindex',FamilyIndex,name='familyIndex'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
 url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
+ url(r'^approveHours',hoursToApprove,name='approveHours'),
 ##User and admin Forms
  url(r'^deleteloggedhours/(?P<vhoursID>\d+)',deleteLoggedHours,name='deleteUserHours'),
 url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),

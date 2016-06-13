@@ -525,3 +525,8 @@ def get_tasks(request):
         data = 'fail'
     return HttpResponse(data, content_type="application/json")
 
+def hoursToApprove(request):
+    hours_to_approve = VolunteerHours.objects.prefetch_related('volunteer','family','event').filter(approved=False)
+    response = render(request, 'tables/hoursToApprove.html',{'hours_to_approve':hours_to_approve})
+    return response
+
