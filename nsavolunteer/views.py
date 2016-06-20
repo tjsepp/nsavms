@@ -337,14 +337,13 @@ def AddVolunteersToNewFamily(request,famid):
     formset=addVolunteerFormset(request.POST)
     if request.method =="POST":
         if formset.is_valid() :
-            message="Thank You!"
             for form in formset:
                 form.save()
                 family.famvolunteers.add(form.instance)
                 family.save()
-            if request.POST.get('saveFamily'):
-                return HttpResponseRedirect(reverse_lazy('volunteerIndex'))
-            elif request.POST.get('saveAndAdd'):
+            if 'saveFamily' in request.POST:
+                return HttpResponseRedirect(reverse_lazy('familyIndex'))
+            elif 'saveAndAdd' in request.POST:
                 return HttpResponseRedirect(reverse_lazy('addfamily'))
         else:
             form_errors = formset.errors
