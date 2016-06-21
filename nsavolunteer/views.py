@@ -535,3 +535,25 @@ def approvedHours(request,vhId):
     rec.approved =True
     rec.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+import django_filters
+class VolunteerFilter(django_filters.FilterSet):
+    '''
+    price__gt = django_filters.NumberFilter(name='price', lookup_expr='gt')
+    price__lt = django_filters.NumberFilter(name='price', lookup_expr='lt')
+
+    release_year = django_filters.NumberFilter(name='release_date', lookup_expr='year')
+    release_year__gt = django_filters.NumberFilter(name='release_date', lookup_expr='year__gt')
+    release_year__lt = django_filters.NumberFilter(name='release_date', lookup_expr='year__lt')
+
+    manufacturer__name = django_filters.CharFilter(lookup_expr='icontains')
+    '''
+    class Meta:
+        model = VolunteerProfile
+        fields = ['interest']
+
+def filterVolunteer_list(request):
+    f = VolunteerFilter(request.GET, queryset=VolunteerProfile.objects.all())
+    return render(request, 'tables/testFilter.html', {'filter': f})

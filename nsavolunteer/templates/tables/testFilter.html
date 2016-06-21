@@ -1,0 +1,45 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Family Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+<br><br><br><br><br><br><br><br>
+
+<form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    {% for obj in filter %}
+        {{ obj.firstName }} {{ obj.lastName }}<br />
+    {% endfor %}
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+

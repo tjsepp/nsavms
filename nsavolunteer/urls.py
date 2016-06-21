@@ -60,5 +60,5 @@ url(r'^make_avc$',markAsAvc,name='markAsAvc'),
 url(r'^remove_avc$',removeFromAvc,name='removeAsAvc'),
 url(r'^addVolunteer_woFamily$',addVolunteer_woFamily,name='addVolunteer_woFamily'),
 url(r'^get_tasks/', 'nsavolunteer.views.get_tasks', name='get_tasks'),
+url(r'^filterTest/', filterVolunteer_list),
 ]
-
