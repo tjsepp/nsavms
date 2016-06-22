@@ -39,6 +39,7 @@ url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptF
 url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
  url(r'^approveHours',hoursToApprove,name='approveHours'),
 ##User and admin Forms
+url(r'^hoursApproved/(?P<vhId>\d+)/$',approvedHours,name='hoursApproved'),
  url(r'^deleteloggedhours/(?P<vhoursID>\d+)',deleteLoggedHours,name='deleteUserHours'),
 url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),
 url(r'^loghours',logUserHours.as_view(),name='logUserHours'),
@@ -59,5 +60,5 @@ url(r'^make_avc$',markAsAvc,name='markAsAvc'),
 url(r'^remove_avc$',removeFromAvc,name='removeAsAvc'),
 url(r'^addVolunteer_woFamily$',addVolunteer_woFamily,name='addVolunteer_woFamily'),
 url(r'^get_tasks/', 'nsavolunteer.views.get_tasks', name='get_tasks'),
+url(r'^filterTest/', filterVolunteer_list),
 ]
-

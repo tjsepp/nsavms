@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'nsavolunteer',
     'nsaSchool',
     'nsaEvents',
-
+    'django_filters'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -15,7 +15,7 @@
 <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
-                    <h3 class="vmsHeader">Unapproved Volunteer Hours</h3>
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Unapproved Volunteer Hours</h2>
                 </div>
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
@@ -25,7 +25,7 @@
 
         <thead>
             <tr>
-                <th>Action</th>
+                <th style="text-align: center">Action</th>
                 <th>Volunteer</th>
                 <th>Family</th>
                 <th>Event</th>
@@ -37,9 +37,10 @@
 
         <tbody>
         {%  for rec in hours_to_approve %}
-
-                <tr>
-                <td>Action</td>
+                <td style="white-space: nowrap; width: 5%">
+                    <a href="{% url 'hoursApproved' rec.volunteerHoursId %}"><button type="button" class="btn btn-primary btn-xs">Approve</button></a>
+                    <button type="button" class="btn btn-danger btn-xs">Decline</button>
+                </td>
                 <td>{{ rec.volunteer.name }}</td>
                 <td>{{ rec.family.familyName }}</td>
                 <td>{{ rec.event.eventName }}</td>
