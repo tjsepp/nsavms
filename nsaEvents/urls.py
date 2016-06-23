@@ -24,5 +24,6 @@ urlpatterns = [
 url(r'^addVolunteerEvent',addVolunteerEvent.as_view(),name='addVolunteerEvent'),
 url(r'^editVolunteerEvent/(?P<eventID>\d+)$',updateVolunteerEvent.as_view(),name='editVolunteerEvent'),
 url(r'^eventIndex',EventIndex,name='eventIndex'),
+url(r'^log_hours_from_event/(?P<eventId>\d+)$',LogHoursFromEvent.as_view(),name='log_hours_from_event'),
 ]
 

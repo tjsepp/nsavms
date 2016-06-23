@@ -83,6 +83,7 @@ def VolunteerIndex(request):
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 
+
 def InactiveVolunteerIndex(request):
     '''
     This view populates the volunteerIndex table with all active users
@@ -210,7 +211,6 @@ class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-
 class UpdateStudent(LoginRequiredMixin,UpdateView):
     form_class = StudentUpdateForm
     template_name = 'forms/studentUpdate.html'
@@ -256,6 +256,7 @@ class logUserHours(LoginRequiredMixin, CreateView):
         kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
         kwargs['user'] = self.request.user
         return kwargs
+
 
 @login_required
 def deleteLoggedHours(request, vhoursID):
@@ -353,7 +354,6 @@ def AddVolunteersToNewFamily(request,famid):
                                   context_instance=RequestContext(request))
 
 
-
 def ProcessContactToExistingFamily(request, famid):
     '''
     This view takes a familyID and email address from modal dialog, searches to see
@@ -383,6 +383,7 @@ def addContactToExistingFamily(request,famid):
         form = AddNewVolunteersToFamily()
      return render_to_response('forms/addNewUserToFamily.html',{'form':form}, context_instance=RequestContext(request))
 
+
 def addVolunteer_woFamily(request):
      if request.method=='POST':
         form =AddNewVolunteersToFamily(data=request.POST)
@@ -393,8 +394,6 @@ def addVolunteer_woFamily(request):
      else:
         form = AddNewVolunteersToFamily()
      return render_to_response('forms/addNewUserToFamily.html',{'form':form}, context_instance=RequestContext(request))
-
-
 
 
 def RemoveContactFromFamily(request,famid,volunteerid):
@@ -459,6 +458,7 @@ def markAsPending(request):
         ur.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
 def markAsApproved(request):
     selected_values = request.POST.getlist('UserRecs')
     for vol in selected_values:
@@ -467,6 +467,7 @@ def markAsApproved(request):
             ur.volStatus = 'approved'
             ur.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def deactivateVolunteerAccount(request):
     selected_values = request.POST.getlist('UserRecs')
@@ -477,6 +478,7 @@ def deactivateVolunteerAccount(request):
                 ur.linkedUserAccount.is_active = False
                 ur.linkedUserAccount.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def activateVolunteerAccount(request):
     selected_values = request.POST.getlist('UserRecs')
@@ -497,6 +499,7 @@ def markAsAvc(request):
         g.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
 def removeFromAvc(request):
     selected_values = request.POST.getlist('UserRecs')
     for vol in selected_values:
@@ -505,7 +508,6 @@ def removeFromAvc(request):
         g.user_set.remove(volunteer)
         g.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
 
 
 def get_tasks(request):
@@ -524,10 +526,12 @@ def get_tasks(request):
         data = 'fail'
     return HttpResponse(data, content_type="application/json")
 
+
 def hoursToApprove(request):
     hours_to_approve = VolunteerHours.objects.prefetch_related('volunteer','family','event').filter(approved=False)
     response = render(request, 'tables/hoursToApprove.html',{'hours_to_approve':hours_to_approve})
     return response
+
 
 def approvedHours(request,vhId):
     rec = VolunteerHours.objects.get(pk=vhId)
@@ -536,7 +540,7 @@ def approvedHours(request,vhId):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-
+"""
 import django_filters
 class VolunteerFilter(django_filters.FilterSet):
     '''
@@ -556,3 +560,4 @@ class VolunteerFilter(django_filters.FilterSet):
 def filterVolunteer_list(request):
     f = VolunteerFilter(request.GET, queryset=VolunteerProfile.objects.all())
     return render(request, 'tables/testFilter.html', {'filter': f})
+"""

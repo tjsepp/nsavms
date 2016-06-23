@@ -31,7 +31,11 @@ $(document).ready(function () {
     });
 });
 
-
+$(document).ready(function () {
+    $('.selectVol').select2({
+         placeholder: "enter a volunteer"
+    });
+});
 
 
 

@@ -52,6 +52,7 @@
         <thead>
             <tr>
                  <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                <th></th>
                 <th>Event Name</th>
                 <th>Event Leader</th>
                 <th>Event Date</th>
@@ -67,6 +68,9 @@
                 {%  include 'modal/eventDescriptionModal.html' %}
                 <tr>
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ fam.familyProfileId }}"></td>
+                                <td style="white-space: nowrap; width: 5%">
+                    <a href="{% url 'log_hours_from_event' event.eventId %}"><button type="button" class="btn btn-primary btn-xs">Log Hours</button></a>
+                </td>
                 <td><a href={% url 'editVolunteerEvent' event.eventId %}>{{ event.eventName }}   <a class='fa fa-commenting-o' href="#{{ event.eventId }}" data-toggle="modal"></a></a></td>
 
                 <td>

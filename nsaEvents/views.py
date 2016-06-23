@@ -38,11 +38,52 @@ def EventIndex(request):
     return response
 
 
-def makeEventsViewable(request):
-    selected_values = request.POST.getlist('UserRecs')
-    for vol in selected_values:
-        ur = VolunteerProfile.objects.get(pk=vol)
-        if ur.linkedUserAccount.is_active==False:
-            ur.linkedUserAccount.is_active = True
-            ur.linkedUserAccount.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+#def makeEventsViewable(request):
+#    selected_values = request.POST.getlist('UserRecs')
+#    for vol in selected_values:
+#        ur = VolunteerProfile.objects.get(pk=vol)
+#        if ur.linkedUserAccount.is_active==False:
+#            ur.linkedUserAccount.is_active = True
+#            ur.linkedUserAccount.save()
+#    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+
+class LogHoursFromEvent(LoginRequiredMixin, CreateView):
+    form_class = LogHoursFromEventForm
+    template_name = 'forms/LogHoursFromEvent.html'
+
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+             retPage = 'home'
+        elif self.request.POST.get('saveAndAdd'):
+             retPage = "'log_hours_from_event',kwargs={'eventId': %s}" % (str(self.kwargs['eventId']))
+        return reverse('log_hours_from_event', kwargs={'eventId':self.kwargs['eventId']})
+        #return reverse(retPage)
+
+    def get_initial(self):
+        return {
+            'event':self.kwargs['eventId']
+
+        }
+
+    def form_valid(self, form):
+        form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
+        form.instance.eventId=self.kwargs['eventId']
+        #form.save()
+        return super(LogHoursFromEvent,self).form_valid(form)
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(LogHoursFromEvent,self).get_context_data(*args, **kwargs)
+        context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
+        context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
+        return context
+
+    def get_form_kwargs(self):
+        # pass "user" keyword argument with the current user to your form
+        kwargs = super(LogHoursFromEvent, self).get_form_kwargs()
+        kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
+        kwargs['user'] = self.request.user
+        return kwargs

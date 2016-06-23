@@ -1,0 +1,154 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+{% load staticfiles %}
+
+{% block title %}Log Volunteer Hours{% endblock %}
+
+
+{% block base_content %}
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours</h2>
+    {%  crispy form %}
+{%  endblock %}
+
+
+
+{% block extraJquery %}
+    <script>
+$("#startTour").click(function(){
+    volunteerFormTour.start();
+});
+</script>
+
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
+
+
+
+<script>
+        $('#id_task').autocomplete({
+            source: "/get_tasks/",
+            minLength: 0,
+            scroll: true
+        }).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+
+</script>
+
+<script type="text/javascript">
+            $('#timepicker1').timepicker({
+                    defaultTime: false,
+            });
+        </script>
+
+<script type="text/javascript">
+            $('#timepicker2').timepicker({
+                    defaultTime: false
+            });
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#timepicker2').timepicker().on('changeTime.timepicker', function(e) {
+
+        var stime = $('#timepicker1').val();
+        var diff = (new Date("1970/1/1 " + e.time.value) - new Date("1970/1/1 " + stime) ) / 1000 / 60 / 60;
+        $('#id_volunteerHours').val(diff.toFixed(2));
+        if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input');
+                        $('#dataWarning').show();
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide();
+                        $('#submit-id-save').prop('disabled', false)
+                    }
+
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+      });
+});
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#timepicker1').timepicker().on('changeTime.timepicker', function(e) {
+        var stime = $('#timepicker2').val();
+        if (stime){
+            var diff = ( new Date("1970-1-1 " + stime) - new Date("1970-1-1 " + e.time.value) ) / 1000 / 60 / 60;
+            $('#id_volunteerHours').val(diff.toFixed(2));
+                    if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input');
+                        $('#dataWarning').show();
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide();
+                        $('#submit-id-save').prop('disabled', false)
+                    }
+
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+        }
+      });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#id_volunteerHours').keyup(function(){
+            $('#timepicker1').val('')
+            $('#timepicker2').val('')
+            var diff = $('#id_volunteerHours').val();
+                 if (diff < 0){
+                        $('#dataWarning').text('Your total number of hours is negative. Please correct your input')
+                        $('#dataWarning').show()
+                        $('#submit-id-save').prop('disabled', true);
+                    }
+                    else{
+                        $('#dataWarning').hide()
+                        $('#submit-id-save').prop('disabled', false)
+                    }
+
+                    if (diff > 5){
+                        $('#dataWarning').text('Wow! This seems like a lot of time. Are you sure you want to enter '+diff+' hours?')
+                        $('#dataWarning').show()
+                    }
+            }
+    )
+});
+</script>
+
+
+
+<script>
+
+$('#pickIcon2').click(function(){
+            var stime = $('#timepicker1').val();
+            var etime = $('#timepicker2').val();
+            if (etime==''){
+                $('#timepicker2').timepicker('setTime', stime);
+            }
+}
+)
+</script>
+
+
+
+
+
+
+{% endblock %}
