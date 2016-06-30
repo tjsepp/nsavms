@@ -32,6 +32,13 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
+    $('.select2It2').select2({
+         placeholder: "Select an event"
+    });
+});
+
+
+$(document).ready(function () {
     $('.selectVol').select2({
          placeholder: "enter a volunteer"
     });

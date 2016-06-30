@@ -60,23 +60,19 @@ class LogHoursFromEventForm(ModelForm):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')
         super(LogHoursFromEventForm,self).__init__(*args, **kwargs)
-        self.fields['family'].queryset = FamilyProfile.objects.filter(famvolunteers = self.user)
         self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
-        #self.fields['volunteer'].queryset = VolunteerProfile.objects.filter(linkedUserAccount__is_active=True)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
-        if self.famcount==1:
-            self.fields['family'].initial = FamilyProfile.objects.get(famvolunteers=self.user)
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'
         self.helper.form_id='volunteerProfileForm'
 
         self.helper.layout = Layout(
-            Field('volunteer',css_class='selectVol'),
+            Field('volunteer', css_id ='volunteerSelect'),
             Field('eventDate', css_class='datepicker',placeholder='Select Date'),
-            Field('event',css_class='select2It', type='hidden'),
+            Field('event', type='hidden'),
             Field('task', css_id='task', css_class='typeahead'),
-            #Field('family', type='hidden'),
+            Field('family', css_id='familySelect'),
             Field('volunteerHours',placeholder='Enter Number Of Hours'),
                   HTML(
                 """
@@ -103,10 +99,6 @@ class LogHoursFromEventForm(ModelForm):
         self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
-        if self.famcount>1:
-            self.helper.layout.append(Field('family',css_id='LogHoursFamily'))
 
-        else:
-            self.helper.layout.append(Field('family',type='hidden'))
         self.helper.layout.append(HTML('<div class="form-group"><div class="col-lg-5"></div>'))
 

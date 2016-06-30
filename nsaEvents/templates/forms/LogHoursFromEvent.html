@@ -7,7 +7,7 @@
 
 
 {% block base_content %}
-<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours</h2>
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours for {{ eventName }}</h2>
     {%  crispy form %}
 {%  endblock %}
 
@@ -150,5 +150,32 @@ $('#pickIcon2').click(function(){
 
 
 
+<script>
+$(document).ready(function(){
+    $("#hint_id_family").hide();
+    $("#id_family").empty();
+    $('#id_volunteer').change(function(){
+        $("#id_family").empty();
+        usid = this.value;
+        request_url = '/get_related_families/' + usid + '/';
 
+            $.ajax({
+                url:request_url,
+                success: function (data) {
+
+
+
+                    $.each(data, function(key, value){
+                        $.each(value, function(key, value){
+                            $("#id_family").append($("<option></option>")
+                                        .attr("value",key)
+                                        .text(value));
+                        });
+                    });
+                }
+            })
+        })
+    })
+</script>
 {% endblock %}
+

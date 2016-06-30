@@ -1,7 +1,8 @@
 from django.shortcuts import render,get_object_or_404, render_to_response, redirect
 from django.views.generic import FormView, CreateView, RedirectView, UpdateView, \
         ListView, DeleteView,TemplateView
-from django.http import HttpResponseRedirect
+import json
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.template import RequestContext
@@ -78,6 +79,7 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
     def get_context_data(self,*args, **kwargs):
         context = super(LogHoursFromEvent,self).get_context_data(*args, **kwargs)
         context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
+        context['eventName']=NsaEvents.objects.get(pk=self.kwargs['eventId']).eventName
         context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
         return context
 
@@ -87,3 +89,18 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
         kwargs['user'] = self.request.user
         return kwargs
+
+def get_related_families(request,usid):
+    relatedUser = usid
+    print 'ajax user name',relatedUser
+
+    result_set=[]
+    all_families =[]
+    #relatedFamilies = str(relatedUser[1:-1])
+    selected_user=FamilyProfile.objects.filter(famvolunteers=relatedUser)
+    print 'selected user', relatedUser
+    all_families = selected_user.all()
+    for family in all_families:
+        result_set.append({family.familyProfileId:family.familyName})
+    return HttpResponse(json.dumps(result_set), content_type='application/json')
+
