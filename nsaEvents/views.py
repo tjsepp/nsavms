@@ -92,13 +92,13 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
 
 def get_related_families(request,usid):
     relatedUser = usid
-    print 'ajax user name',relatedUser
+    #print 'ajax user name',relatedUser
 
     result_set=[]
     all_families =[]
     #relatedFamilies = str(relatedUser[1:-1])
     selected_user=FamilyProfile.objects.filter(famvolunteers=relatedUser)
-    print 'selected user', relatedUser
+    #print 'selected user', relatedUser
     all_families = selected_user.all()
     for family in all_families:
         result_set.append({family.familyProfileId:family.familyName})
