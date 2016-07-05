@@ -17,7 +17,10 @@ class addVolunteerEvent(LoginRequiredMixin, CreateView):
     template_name = 'forms/addEditEvent.html'
 
     def get_success_url(self):
-        return reverse('eventIndex')
+        if self.request.POST.get('save'):
+            return reverse('eventIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('addVolunteerEvent')
 
 class updateVolunteerEvent(LoginRequiredMixin,UpdateView):
     form_class = EventsForm
@@ -58,10 +61,11 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         if self.request.POST.get('save'):
-             retPage = 'home'
+            retPage = 'home'
+            return reverse('log_hours_from_event', kwargs={'eventId':self.kwargs['eventId']})
         elif self.request.POST.get('saveAndAdd'):
-             retPage = "'log_hours_from_event',kwargs={'eventId': %s}" % (str(self.kwargs['eventId']))
-        return reverse('log_hours_from_event', kwargs={'eventId':self.kwargs['eventId']})
+            retPage = "'log_hours_from_event',kwargs={'eventId': %s}" % (str(self.kwargs['eventId']))
+            return reverse('log_hours_from_event', kwargs={'eventId':self.kwargs['eventId']})
         #return reverse(retPage)
 
     def get_initial(self):

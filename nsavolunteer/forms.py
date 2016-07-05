@@ -276,6 +276,7 @@ class AddNewVolunteersToFamily(UserCreationForm):
         self.helper.layout = Layout(
             'name',
             'email',
+
             'password1',
             'password2',
             )
