@@ -1,0 +1,27 @@
+{% if results %}
+
+               <table id="search-results" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+                   <div id="results_listing">
+
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Grade</th>
+            <th>Teacher</th>
+            <th style="text-align: center">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in results %}
+            <tr>
+            <td>{{ c }}</td>
+            <td>{{ c.grade }}</td>
+            <td>{{ c.teacher }}</td>
+            <td align="center"><a href="{% url 'addStudentToFamily' c.studentId family.familyProfileId %}"><button type="button" class="btn btnnavy btn-xs">Add Student</button></a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+</div>
+                    </table>
+{% endif %}

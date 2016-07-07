@@ -26,7 +26,7 @@
                 <td align="center"><a href="#" class="glyphicon glyphicon-edit" data-toggle="popover"  data-trigger="focus"
                                       title="Edit: <b>{{ vol.name }}</b>"
                                       data-content="<ul style='list-style-type:none'>
-                                                    <li style='margin-left:-20%'><a href='{%  url 'home' %}'>Edit {{ vol.linkedUser.firstName }}'s information</a></li>
+                                                    <li style='margin-left:-20%'><a href='{%  url 'updateVolunteerProfile' vol.linkedUser.volunteerProfileID  family.familyProfileId %}'>Edit {{ vol.linkedUser.firstName }}'s information</a></li>
                                                     <li style='margin-left:-20%'><a href='{%  url 'removeContactFromFamily' family.familyProfileId vol.id %}'>Remove {{ vol.linkedUser.firstName }} from {{ family.familyName}}</a></li>
                                                     </ul>"></a></td>
                 <td>

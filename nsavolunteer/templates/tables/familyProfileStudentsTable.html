@@ -23,7 +23,7 @@
                                       title="Edit Student: <b>{{ stu.getFullStudentName }}</b>"
                                       data-content="<ul style='list-style-type:none'>
                                                     <li style='margin-left:-20%'><a href='{% url 'updatestudent' stu.studentId %}'>Edit {{ stu.studentFirstName }}'s information</a></li>
-                                                    <li style='margin-left:-20%'><a href='{%  url 'home' %}'>Remove {{ stu.studentFirstName }} from {{ family.familyName}}</a></li>
+                                                    <li style='margin-left:-20%'><a href='{%  url 'removeStudentFromFamily' family.familyProfileId stu.studentId %}'>Remove {{ stu.studentFirstName }} from {{ family.familyName}}</a></li>
                                                     </ul>"></a></td>
                 <td>{{ stu.getFullStudentName}}</td>
                 <td>{{ stu.grade}}</td>

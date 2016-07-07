@@ -22,7 +22,6 @@ import json
 from django.contrib.auth.models import Group
 
 
-
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request, 'home.html')
@@ -162,10 +161,16 @@ class UpdateVolunteerProfile(LoginRequiredMixin,UpdateView):
     template_name = 'forms/updateVolunteerProfile.html'
 
     def get_object(self):
-        return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
+        if 'volid' in self.kwargs:
+            return VolunteerProfile.objects.get(linkedUserAccount=self.kwargs['volid'])
+        else:
+            return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
 
     def get_success_url(self):
-        return reverse('user_profile')
+        if 'famid' in self.kwargs:
+            return reverse('familyprofile', kwargs={'famid':self.kwargs['famid']})
+        else:
+            return reverse('user_profile')
 
     def get_context_data(self, **kwargs):
         context = super(UpdateVolunteerProfile, self).get_context_data(**kwargs)
@@ -294,7 +299,11 @@ class updateUserHours(LoginRequiredMixin,UpdateView):
 
 
     def get_success_url(self):
-        return reverse('userVolunteerData')
+        if self.request.POST.get('save'):
+            retPage = 'userVolunteerData'
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = 'logUserHours'
+        return reverse(retPage)
 
 
 def addInterestToProfile(request,Intid):
@@ -405,7 +414,7 @@ def RemoveContactFromFamily(request,famid,volunteerid):
 
 
 def AddTrafficVolunteers(request):
-    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=10)
+    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=1)
     formset=addVolunteerFormset(request.POST )
     if request.method =="POST":
         if formset.is_valid() :
@@ -540,24 +549,23 @@ def approvedHours(request,vhId):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-"""
-import django_filters
-class VolunteerFilter(django_filters.FilterSet):
-    '''
-    price__gt = django_filters.NumberFilter(name='price', lookup_expr='gt')
-    price__lt = django_filters.NumberFilter(name='price', lookup_expr='lt')
+def get_students(request, famid):
+    if request.is_ajax():
+        q = request.GET.get('search_text', '')
+        students = Student.objects.filter(studentLastName__icontains = q).filter(activeStatus=True)
+        family = FamilyProfile.objects.get(pk=famid)
+    return render_to_response('forms/addStudentSubTemplate.html',{'results':students,'family':family})
 
-    release_year = django_filters.NumberFilter(name='release_date', lookup_expr='year')
-    release_year__gt = django_filters.NumberFilter(name='release_date', lookup_expr='year__gt')
-    release_year__lt = django_filters.NumberFilter(name='release_date', lookup_expr='year__lt')
 
-    manufacturer__name = django_filters.CharFilter(lookup_expr='icontains')
-    '''
-    class Meta:
-        model = VolunteerProfile
-        fields = ['interest']
+def addStudentToFamily(request,stuid,famid):
+     fam = FamilyProfile.objects.get(pk= famid)
+     stu = Student.objects.get(pk=stuid)
+     newRec = StudentToFamily.objects.get_or_create(student=stu,group=fam)
+     return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid':famid}))
 
-def filterVolunteer_list(request):
-    f = VolunteerFilter(request.GET, queryset=VolunteerProfile.objects.all())
-    return render(request, 'tables/testFilter.html', {'filter': f})
-"""
+
+def RemoveStudentFromFamily(request,famid,stuid):
+    fam= FamilyProfile.objects.get(pk= famid)
+    stu = Student.objects.get(pk = stuid)
+    stuToFam = StudentToFamily.objects.get(student=stu,group = fam).delete()
+    return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))

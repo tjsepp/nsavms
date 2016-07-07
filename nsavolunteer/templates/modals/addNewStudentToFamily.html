@@ -7,19 +7,67 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                 <h2 class="modal-title" id="memberModalLabel" style="color: #000059">Add Student to Family</h2>
+                 <h2 class="modal-title" id="memberModalLabel" style="color: #000059">Add student to Family</h2>
 
             </div>
+
             <div class="modal-body">
-                <p>Add student to family - this will check for existing name/teacher combo. If one exists it will establish relationship.
-                Otherwise, the user will look up students last name which will bring back a list of students (if exists) and allow to select. If student doesnt exist,
-                it will prompt for user to add new student.</p>
+                <p>This will look for students with the same last name. If any exist, it will prompt you to select one.  If not, it will prompt to
+                create a new student. When a student is created, it will create the relationship to the family.</p>
+                {% csrf_token %}
+				<input type="text" class="form-control" id='studentName' name="studentsLastName" placeholder="Enter Students Last Name">
+
+
+                <div style="margin-top: 3%" id="studentResults">
+
+                    {% include "forms/addStudentSubTemplate.html" %}
+
+                </div>
+
+
 
             </div>
             <div class="modal-footer">
-                <a href="http://google.com" class="btn btnnavy">Search for student</a>
+                <button type="submit" id="submit" class="btn btnnavy">Submit</button>
                 <button type="button" class="btn btnnavy" data-dismiss="modal">Cancel</button>
-            </div>
+                </div>
+
+
         </div>
     </div>
+
 </div>
+
+{% block extraJquery %}
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+
+    <script>
+    $(function(){
+        $("#studentName").keyup(function(){
+            if($(this).val().length >0) {
+                famid = {{ family.familyProfileId|safe }}
+                        $.ajax({
+                            url: "/get_students/" + famid,
+                            data: {
+                                'search_text': $('#studentName').val(),
+                                'csrfmiddlewaretoken': $("input[name=crsfmiddlewaretoken]").val()
+                            },
+                            success: searchSuccess,
+                            dataType: 'html'
+                        })
+
+
+            }
+             else {$('#studentResults').html('')}
+
+        })
+    });
+
+    function searchSuccess(data,textStatus, jqXHR)
+    {
+        $('#studentResults').html(data)
+    }
+    </script>
+
+{%  endblock %}
