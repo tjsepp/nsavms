@@ -22,6 +22,7 @@ import json
 from django.contrib.auth.models import Group
 
 
+
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request, 'home.html')
@@ -225,6 +226,8 @@ class UpdateStudent(LoginRequiredMixin,UpdateView):
 
     def get_success_url(self):
         return reverse('user_profile')
+
+
 
 
 class logUserHours(LoginRequiredMixin, CreateView):
@@ -552,7 +555,9 @@ def approvedHours(request,vhId):
 def get_students(request, famid):
     if request.is_ajax():
         q = request.GET.get('search_text', '')
-        students = Student.objects.filter(studentLastName__icontains = q).filter(activeStatus=True)
+        existing = FamilyProfile.objects.get(pk=famid)
+        students = Student.objects.filter(studentLastName__icontains = q).filter(activeStatus=True).exclude(studentId__in=existing.students.all().values('studentId'))
+        #students = Student.objects.filter(studentLastName__icontains = q).filter(activeStatus=True)
         family = FamilyProfile.objects.get(pk=famid)
     return render_to_response('forms/addStudentSubTemplate.html',{'results':students,'family':family})
 
@@ -569,3 +574,24 @@ def RemoveStudentFromFamily(request,famid,stuid):
     stu = Student.objects.get(pk = stuid)
     stuToFam = StudentToFamily.objects.get(student=stu,group = fam).delete()
     return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
+
+
+class addNewStudent(LoginRequiredMixin, CreateView):
+    form_class = StudentUpdateForm
+    template_name = 'forms/addStudent.html'
+
+
+    def get_success_url(self):
+        famid=self.kwargs['famid']
+        print famid
+        return reverse('familyprofile', kwargs={'famid': famid})
+
+    def form_valid(self, form):
+        stu = form.save()
+        fam = FamilyProfile.objects.get(pk=self.kwargs['famid'])
+        famRelate = StudentToFamily.objects.create(student=stu, group=fam)
+        famRelate.save()
+        return super(addNewStudent,self).form_valid(form)
+
+
+

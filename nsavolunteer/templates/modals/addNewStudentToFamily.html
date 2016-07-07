@@ -12,8 +12,9 @@
             </div>
 
             <div class="modal-body">
-                <p>This will look for students with the same last name. If any exist, it will prompt you to select one.  If not, it will prompt to
-                create a new student. When a student is created, it will create the relationship to the family.</p>
+                <p>This will look for students with the same last name. If any exist, you will see a list of matching names. If the student already exists,
+                    click on the 'Add Student' button next to their name. If the student doesn't exist, click on the 'Add New Student' button at the bottom of the
+                window.</p>
                 {% csrf_token %}
 				<input type="text" class="form-control" id='studentName' name="studentsLastName" placeholder="Enter Students Last Name">
 
@@ -28,7 +29,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="submit" id="submit" class="btn btnnavy">Submit</button>
+                <td align="center"><a href="{% url 'addNewStudent' family.familyProfileId %}"><button type="button" class="btn btnnavy">Add New Student</button></a></td>
                 <button type="button" class="btn btnnavy" data-dismiss="modal">Cancel</button>
                 </div>
 
