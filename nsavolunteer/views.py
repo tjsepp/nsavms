@@ -99,6 +99,11 @@ def FamilyIndex(request):
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
 
+def InterestIndex(request):
+    interestIndex = VolunteerInterests.objects.all()
+    response = render(request, 'tables/interestIndex.html',{'interestIndex':interestIndex})
+    return response
+
 
 class Report_Family_Hours_Current(ListView):
     model = FamilyProfile
@@ -598,9 +603,45 @@ class addNewInterest(LoginRequiredMixin, CreateView):
     form_class = AddInterestForm
     template_name = 'forms/addInterests.html'
 
-
     def get_success_url(self):
-        return reverse('home')
+        if self.request.POST.get('save'):
+            retPage = 'interestIndex'
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = 'addNewInterest'
+        return reverse(retPage)
 
     def form_valid(self, form):
         return super(addNewInterest,self).form_valid(form)
+
+class UpdateInterest(LoginRequiredMixin,UpdateView):
+    form_class = AddInterestForm
+    template_name = 'forms/addInterests.html'
+
+    def get_object(self):
+        return VolunteerInterests.objects.get(interestId=self.kwargs['volid'])
+
+    def get_success_url(self):
+        return reverse('interestIndex')
+
+
+def markInterestAsInactive(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerInterests.objects.get(pk=vol)
+        ur.active = False
+        ur.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def markInterestAsActive(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerInterests.objects.get(pk=vol)
+        ur.active = True
+        ur.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def deleteInterest(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        ur = VolunteerInterests.objects.get(pk=vol).delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
