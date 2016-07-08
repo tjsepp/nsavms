@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
-    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm
+    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum, Prefetch
@@ -594,4 +594,13 @@ class addNewStudent(LoginRequiredMixin, CreateView):
         return super(addNewStudent,self).form_valid(form)
 
 
+class addNewInterest(LoginRequiredMixin, CreateView):
+    form_class = AddInterestForm
+    template_name = 'forms/addInterests.html'
 
+
+    def get_success_url(self):
+        return reverse('home')
+
+    def form_valid(self, form):
+        return super(addNewInterest,self).form_valid(form)

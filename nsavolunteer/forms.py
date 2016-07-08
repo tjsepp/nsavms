@@ -369,3 +369,24 @@ class AddUserEventForm(ModelForm):
             self.helper.layout.append(Field('family',type='hidden'))
         self.helper.layout.append(HTML('<div class="form-group"><div class="col-lg-5"></div>'))
 
+
+class AddInterestForm(ModelForm):
+    class Meta:
+        model=VolunteerInterests
+
+    def __init__(self, *args, **kwargs):
+        super(AddInterestForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            'interestName',
+            'description',
+            'active',
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))

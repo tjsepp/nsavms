@@ -12,8 +12,8 @@
             </div>
 
             <div class="modal-body">
-                <p>This will look for students with the same last name. If any exist, you will see a list of matching names. If the student already exists,
-                    click on the 'Add Student' button next to their name. If the student doesn't exist, click on the 'Add New Student' button at the bottom of the
+                <p>This tool searches for students with the same last name. If any exist, you will see a list of matching names. If the student you're seeking is already listed,
+                    click on the 'Add Student' button next to his or her name. If the student you're seeking is not listed, click on the 'Create New Student' button at the bottom of the
                 window.</p>
                 {% csrf_token %}
 				<input type="text" class="form-control" id='studentName' name="studentsLastName" placeholder="Enter Students Last Name">
@@ -29,7 +29,7 @@
 
             </div>
             <div class="modal-footer">
-                <td align="center"><a href="{% url 'addNewStudent' family.familyProfileId %}"><button type="button" class="btn btnnavy">Add New Student</button></a></td>
+                <td align="center"><a href="{% url 'addNewStudent' family.familyProfileId %}"><button type="button" class="btn btnnavy">Create New Student</button></a></td>
                 <button type="button" class="btn btnnavy" data-dismiss="modal">Cancel</button>
                 </div>
 

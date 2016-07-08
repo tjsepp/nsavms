@@ -65,5 +65,6 @@ url(r'^get_students/(?P<famid>\d+)/',get_students, name='get_students'),
 url(r'^add_student_to_family/(?P<stuid>\d+)/(?P<famid>\d+)',addStudentToFamily, name='addStudentToFamily'),
 url(r'^removeStudentFromFamily/(?P<famid>\d+)/(?P<stuid>\d+)/$',RemoveStudentFromFamily,name='removeStudentFromFamily'),
 url(r'^add_new_student/(?P<famid>\d+)',addNewStudent.as_view(), name='addNewStudent'),
+ url(r'^addNewInterest$',addNewInterest.as_view(), name='addNewInterest'),
 #url(r'^filterTest/', filterVolunteer_list),
 ]
