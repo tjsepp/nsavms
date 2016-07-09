@@ -1,0 +1,123 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+   Interest Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Interest Index</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+    <div class="col-sm-6">
+          <div class="input-group" style="margin-left: -2.0%; width: 70%">
+          <select id="formActionSelect" class="form-control">
+            <option value="" data-toggle="">---Select Action---</option>
+            <optgroup label="Interest Status">
+            <option value="{% url 'activeInterest' %}">Set selected interests as active</option>
+            <option value="{% url 'inactiveInterest' %}">Set selected interests as inactive</option>
+            </optgroup>
+            <optgroup label="Remove Interests">
+            <option value="{% url 'deleteInterest' %}">Delete selected interests</option>
+            </optgroup>
+          </select>
+              <span class="input-group-btn">
+                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
+                   <button class="btn btnnavy" type="submit" id="newFam" formaction="{% url 'addNewInterest' %}" data-toggle="popover"
+                          value="Go" title="Add New Interest"
+                          data-content="This will allow you to add a new Interest"
+                          data-placement="bottom"
+                          style="margin-left: 2%">Add Interest
+                  </button>
+
+              </span>
+          </div>
+        </div>
+
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                <th>Active</th>
+                <th>Interest Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for int in interestIndex %}
+                <tr>
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ int.interestId }}"></td>
+                <td>
+                    {% if int.active %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+                 <td><a href="{% url 'editInterests' int.interestId %}">{{ int.interestName }}</a></td>
+                <td>{{ int.description|truncatechars:200 }}</td>
+
+           </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+$(document).ready(function(){
+    myVal = $('#formActionSelect').change(function(){
+        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
+    });
+});
+</script>
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+
