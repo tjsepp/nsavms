@@ -57,7 +57,7 @@
                 <th>Event Leader</th>
                 <th>Event Date</th>
                 <th>Event Details</th>
-                <th>location</th>
+                <th>Location</th>
                 <th>Auto Approve</th>
                 <th>Viewable</th>
             </tr>
@@ -79,7 +79,7 @@
                 <td>{{ event.eventDate|default:"" }}</td>
                 <td>{{ event.eventDetailsDisplay|default:"" }}</td>
                 <td>{{ event.location}}</td>
-                <td>
+                <td style="text-align: center">
                     {% if event.autoApprove %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
@@ -87,7 +87,7 @@
                       {% endif %}
                         </span>
                 </td>
-                <td>
+                <td style="text-align: center">
                     {% if event.allowView %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}

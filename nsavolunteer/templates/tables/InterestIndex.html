@@ -34,7 +34,7 @@
             <option value="{% url 'inactiveInterest' %}">Set selected interests as inactive</option>
             </optgroup>
             <optgroup label="Remove Interests">
-            <option value="{% url 'deleteInterest' %}">Delete selected interests</option>
+            <option value="{% url 'deleteTeachers' %}">Delete selected interests</option>
             </optgroup>
           </select>
               <span class="input-group-btn">
@@ -66,7 +66,7 @@
             {%  for int in interestIndex %}
                 <tr>
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ int.interestId }}"></td>
-                <td>
+                <td style="text-align: center;">
                     {% if int.active %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>
                      {%  else %}
@@ -75,7 +75,7 @@
                         </span>
                 </td>
                  <td><a href="{% url 'editInterests' int.interestId %}">{{ int.interestName }}</a></td>
-                <td>{{ int.description|truncatechars:200 }}</td>
+                <td>{{ int.description|truncatechars:95 }}</td>
 
            </tr>
         {% endfor %}

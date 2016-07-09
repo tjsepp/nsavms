@@ -15,13 +15,17 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from .views import *
 
 urlpatterns = [
-    url(r'^manage/', include(admin.site.urls)),
-    url(r'^',include('nsavolunteer.urls')),
-    url(r'^',include('nsaEvents.urls')),
-    url(r'^',include('nsaSchool.urls')),
-    url(r'^tinymce/', include('tinymce.urls')),
+
+url(r'^teacherIndex$',TeacherIndex,name='teacherIndex'),
+url(r'^addNewTeacher$',addNewTeacher.as_view(),name='addNewTeacher'),
+url(r'^makeTeacherInActive$',markTeacherAsInactive,name='inactiveTeacher'),
+url(r'^makeTeacherActive$',markTeacherAsActive,name='activeTeacher'),
+url(r'^deleteTeacher$',deleteTeacher,name='deleteTeachers'),
+
 ]
 
-admin.site.site_header = 'NSA Volunteer Management Admin '
+#addNewTeacher
+

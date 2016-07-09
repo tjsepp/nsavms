@@ -618,7 +618,7 @@ class UpdateInterest(LoginRequiredMixin,UpdateView):
     template_name = 'forms/addInterests.html'
 
     def get_object(self):
-        return VolunteerInterests.objects.get(interestId=self.kwargs['volid'])
+        return VolunteerInterests.objects.get(interestId=self.kwargs['intid'])
 
     def get_success_url(self):
         return reverse('interestIndex')
@@ -645,3 +645,4 @@ def deleteInterest(request):
     for vol in selected_values:
         ur = VolunteerInterests.objects.get(pk=vol).delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
