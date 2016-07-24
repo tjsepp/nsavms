@@ -27,15 +27,19 @@ class addNewTeacher(LoginRequiredMixin, CreateView):
         return super(addNewTeacher,self).form_valid(form)
 
 
-class UpdateInterest(LoginRequiredMixin,UpdateView):
+class UpdateTeacher(LoginRequiredMixin,UpdateView):
     form_class = AddNewTeacherForm
-    template_name = 'forms/addInterests.html'
+    template_name = 'forms/addTeachers.html'
 
     def get_object(self):
-        return Teachers.objects.get(interestId=self.kwargs['teachid'])
+        return Teachers.objects.get(teacherId=self.kwargs['teachid'])
 
     def get_success_url(self):
-        return reverse('interestIndex')
+        if self.request.POST.get('save'):
+            retPage = 'teacherIndex'
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = 'addNewTeacher'
+        return reverse(retPage)
 
 def markTeacherAsInactive(request):
     selected_values = request.POST.getlist('UserRecs')

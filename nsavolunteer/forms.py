@@ -93,13 +93,13 @@ class PasswordRecoveryForm(PasswordResetForm):
         Sorry you are having issues with your account. Below is your username and new password:
         Username:{username}
         Password:{password}
-        You can login here:www.test.com
-        Change your password here:www.test.com/reset
+        You can login here:http://www.nsavms.com/login/
+        Change your password here:http://www.nsavms.com/changePassword/
         """.format(username = user.email, password=password)
 
         email = EmailMessage(
             '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
-            ['tjsepp@gmail.com'])
+            [user.email])
         email.send()
 
 class AuthUserUpdateForm(ModelForm):
