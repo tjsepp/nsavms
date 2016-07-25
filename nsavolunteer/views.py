@@ -646,3 +646,30 @@ def deleteInterest(request):
         ur = VolunteerInterests.objects.get(pk=vol).delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
+import django_filters
+class ProductFilter(django_filters.FilterSet):
+    family__familyAgg__totalVolHours__gt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours',lookup_type='gte',label='Total Family hours (min)')
+    family__familyAgg__totalVolHours__lt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours', lookup_type='lte',label='Total Family hours (max)')
+    family__familyAgg__trafficDutyCount__gt = django_filters.NumberFilter(name='family__familyAgg__trafficDutyCount', lookup_type='gte',label='Traffic Duty (min)')
+    family__familyAgg__trafficDutyCount__lt = django_filters.NumberFilter(name='family__familyAgg__trafficDutyCount', lookup_type='lte',label='Traffic Duty (max)')
+    class Meta:
+        model = User
+        fields =['linkedUser__interest',
+                 'family__students__grade']
+
+def product_list(request):
+    #f = ProductFilter(request.GET, queryset=User.objects.all())
+    f = ProductFilter(request.GET, queryset=User.objects.filter(family__familyAgg__schoolYear=1).all())
+    print dir(f)
+    print f.queryset
+    print f.qs
+    lx = User.objects.prefetch_related('family','family__familyAgg','family__familyAgg__schoolYear').filter(pk__in=f.qs)\
+        .values('name','family__familyName',
+               'family__familyAgg__totalVolHours','family__familyAgg__trafficDutyCount',
+               'family__familyAgg__schoolYear__currentYear')
+    print dir(lx)
+    #lx= f.queryset.filter(family__familyAgg__schoolYear=SchoolYear.objects.
+                          #get(currentYear=1)).values('name','family','family__familyAgg__totalVolHours')
+    #print lx
+    return render(request, 'tables/testFilter.html',{'filter':f,'lx':lx})

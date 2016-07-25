@@ -90,6 +90,7 @@ class PasswordRecoveryForm(PasswordResetForm):
         user.save()
 
         body = """
+        From: tjsepp/n
         Sorry you are having issues with your account. Below is your username and new password:
         Username:{username}
         Password:{password}
@@ -101,6 +102,7 @@ class PasswordRecoveryForm(PasswordResetForm):
             '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
             [user.email])
         email.send()
+
 
 class AuthUserUpdateForm(ModelForm):
     class Meta:
@@ -149,6 +151,7 @@ class UserProfileForm(ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
+
 class FamilyProfileForm(ModelForm):
     class Meta:
         model = FamilyProfile
@@ -178,6 +181,7 @@ class FamilyProfileForm(ModelForm):
         self.helper.add_input(Submit('save', 'Save',css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
+
 
 class StudentUpdateForm(ModelForm):
     class Meta:
@@ -231,7 +235,6 @@ class AddNewFamily(ModelForm):
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
-
 
 
 class AddFamilyVolunteers(UserCreationForm):

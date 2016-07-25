@@ -69,7 +69,7 @@ class LogHoursFromEventForm(ModelForm):
         self.helper.form_id='volunteerProfileForm'
 
         self.helper.layout = Layout(
-            Field('volunteer', css_id ='volunteerSelect'),
+            Field('volunteer', css_class ='volunteerSelect'),
             Field('eventDate', css_class='datepicker',placeholder='Select Date'),
             Field('event', type='hidden'),
             Field('task', css_id='task', css_class='typeahead'),

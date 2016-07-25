@@ -71,5 +71,5 @@ url(r'^editInterest/(?P<intid>\d+)$',UpdateInterest.as_view(),name='editInterest
 url(r'^makeInterestsInActive$',markInterestAsInactive,name='inactiveInterest'),
 url(r'^makeInterestsActive$',markInterestAsActive,name='activeInterest'),
 url(r'^deleteInterests$',deleteInterest,name='deleteInterest'),
-#url(r'^filterTest/', filterVolunteer_list),
+url(r'^list$', product_list),
 ]

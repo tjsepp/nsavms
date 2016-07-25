@@ -45,8 +45,16 @@ $(document).ready(function () {
 });
 
 
+$(document).ready(function () {
+    $('.volunteerSelect').select2({
+         placeholder: "Select a volunteer"
+    });
+});
 
-
-
+$(document).ready(function () {
+    $('#id_linkedUser__interest').select2({
+         placeholder: "Select Interests"
+    });
+});
 
 
