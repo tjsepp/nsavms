@@ -323,7 +323,7 @@ class AddUserEventForm(ModelForm):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')
         super(AddUserEventForm,self).__init__(*args, **kwargs)
-        #self.fields['family'].queryset = FamilyProfile.objects.filter(famvolunteers = self.user)
+        self.fields['family'].queryset = FamilyProfile.objects.filter(famvolunteers = self.user)
         self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
         if self.famcount==1:

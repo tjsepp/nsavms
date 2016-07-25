@@ -239,7 +239,6 @@ class logUserHours(LoginRequiredMixin, CreateView):
     form_class = AddUserEventForm
     template_name = 'forms/addVolunteerHours.html'
 
-
     def get_success_url(self):
         if self.request.POST.get('save'):
              retPage = 'userVolunteerData'
@@ -483,6 +482,10 @@ def markAsApproved(request):
         if ur.linkedUserAccount.is_active:
             ur.volStatus = 'approved'
             ur.save()
+
+            for fam in ur.linkedUserAccount.family.all():
+                if fam.active:
+                    FamilyAggHours.objects.get_or_create(family = fam, schoolYear = SchoolYear.objects.get(currentYear=1))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -649,6 +652,7 @@ def deleteInterest(request):
 
 import django_filters
 class ProductFilter(django_filters.FilterSet):
+    family__students__grade = django_filters.ModelMultipleChoiceFilter(queryset=GradeLevel.objects.all())
     family__familyAgg__totalVolHours__gt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours',lookup_type='gte',label='Total Family hours (min)')
     family__familyAgg__totalVolHours__lt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours', lookup_type='lte',label='Total Family hours (max)')
     family__familyAgg__trafficDutyCount__gt = django_filters.NumberFilter(name='family__familyAgg__trafficDutyCount', lookup_type='gte',label='Traffic Duty (min)')
@@ -658,17 +662,56 @@ class ProductFilter(django_filters.FilterSet):
         fields =['linkedUser__interest',
                  'family__students__grade']
 
+
+@login_required
 def product_list(request):
-    #f = ProductFilter(request.GET, queryset=User.objects.all())
-    f = ProductFilter(request.GET, queryset=User.objects.filter(family__familyAgg__schoolYear=1).all())
-    print dir(f)
-    print f.queryset
-    print f.qs
+    f = ProductFilter(request.GET, queryset=User.objects.filter(is_active=True).all())
     lx = User.objects.prefetch_related('family','family__familyAgg','family__familyAgg__schoolYear').filter(pk__in=f.qs)\
-        .values('name','family__familyName',
+        .values('name','email','id','family__familyName',
                'family__familyAgg__totalVolHours','family__familyAgg__trafficDutyCount',
                'family__familyAgg__schoolYear__currentYear')
-    print dir(lx)
+
+    #apply additional filter logic
+    print request.GET
+
+    #apply greater than logic to remove dupes for total volunteer hours
+    if request.GET:
+        if request.GET['family__familyAgg__totalVolHours__gt']:
+            lx1=[]
+            for p in lx:
+                if p['family__familyAgg__totalVolHours']>=float(request.GET['family__familyAgg__totalVolHours__gt']):
+                    lx1.append(p)
+            lx = lx1
+
+        #apply less than logic to remove dupes for total volunteer hours
+        if request.GET['family__familyAgg__totalVolHours__lt']:
+            lx1=[]
+            for p in lx:
+                if p['family__familyAgg__totalVolHours']<=float(request.GET['family__familyAgg__totalVolHours__lt']):
+                    lx1.append(p)
+            lx = lx1
+
+        #apply greater than logic to remove dupes for total traffic duty
+        if request.GET['family__familyAgg__trafficDutyCount__gt']:
+            lx1=[]
+            for p in lx:
+                if p['family__familyAgg__trafficDutyCount']>=float(request.GET['family__familyAgg__trafficDutyCount__gt']):
+                    lx1.append(p)
+            lx = lx1
+
+        #apply less than logic to remove dupes for total volunteer hours
+        if request.GET['family__familyAgg__trafficDutyCount__lt']:
+            lx1=[]
+            for p in lx:
+                if p['family__familyAgg__trafficDutyCount']<=float(request.GET['family__familyAgg__trafficDutyCount__lt']):
+                    lx1.append(p)
+            lx = lx1
+
+        lx1 = []
+        for p in lx:
+            if p['family__familyAgg__schoolYear__currentYear']==1:
+                lx1.append(p)
+        lx=lx1
     #lx= f.queryset.filter(family__familyAgg__schoolYear=SchoolYear.objects.
                           #get(currentYear=1)).values('name','family','family__familyAgg__totalVolHours')
     #print lx

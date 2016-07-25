@@ -1,8 +1,10 @@
 {%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
 
 
 {% block title %}
-    Family Index
+    Recruiting
 {% endblock %}
 
 {% block extra_head %}
@@ -13,17 +15,85 @@
 
 {% block base_content %}
 
-<br><br><br><br><br><br><br>
+<div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Recruiting</h2>
+</div>
 
-<form action="" method="get">
-        {{ filter.form.as_p }}
-        <input type="submit" />
-    </form>
+<div class="table-responsive" style="padding:5%">
+
+
+<div class="panel panel-default">
+    <div class="panel-heading" style="background-color: #F0F0F0">
+    <h2 class="panel-title"><a href="#filterBody" data-toggle="collapse" data-target="#filterBody"><b>Data Filter</b></a></h2>
+  </div>
+    <div class="panel-body panel-collapse collapse in" id="filterBody" style="padding: 2%">
+        <form action="" method="get" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-10">
+                <label for="email">Interests: </label>
+                {{ filter.form.linkedUser__interest }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                <label for="Grade" class="control-label">Grade Level: </label>
+                {{ filter.form.family__students__grade }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row"><div class="col-md-2 control-label" style="text-align: left"><b>Volunteer Hours:</b></div></div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                              <label for="inputKey" class="col-md-2 control-label">Min:</label>
+                             {{ filter.form.family__familyAgg__totalVolHours__gt }}
+                            </div>
+
+                            <div class="col-md-4">
+                              <label for="inputValue" class="col-md-2 control-label">Max:</label>
+                             {{ filter.form.family__familyAgg__totalVolHours__lt }}
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+
+
+
+             <div class="form-group">
+                <div class="row"><div class="col-md-2 control-label" style="text-align: left"><b>Traffic Duty:</b></div></div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                              <label for="inputKey" class="col-md-2 control-label">Min:</label>
+                             {{ filter.form.family__familyAgg__trafficDutyCount__gt }}
+                            </div>
+
+                            <div class="col-md-4">
+                              <label for="inputValue" class="col-md-2 control-label">Max:</label>
+                             {{ filter.form.family__familyAgg__trafficDutyCount__lt }}
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+
+            <input type="submit" value="Search" />
+        </form>
+</div>
+    </div>
+
+
+
+
     <table class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
                  <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
                 <th>Volunteer</th>
+                <th>Email</th>
                 <th>Family</th>
                 <th>Hours</th>
                 <th>Traffic</th>
@@ -32,19 +102,33 @@
         <tbody>
             {% for obj in lx %}
 
+                  {% if obj.family__familyAgg__schoolYear__currentYear == 1 %}
                     <tr>
                         <td align="center"><input type="checkbox" name="UserRecs" value="#"></td>
-                        <td>{{ obj.name }}</td>
+                        <td>{{ obj.name}}</td>
+                        <td>{{ obj.email }}</td>
                         <td>{{ obj.family__familyName}}</td>
-                        <td>{{ obj.family__familyAgg__totalVolHours }}</td>
-                        <td>{{ obj.family__familyAgg__trafficDutyCount }}</td>
+                        <td>{{ obj.family__familyAgg__totalVolHours|default_if_none:'' }}</td>
+                        <td>{{ obj.family__familyAgg__trafficDutyCount|default_if_none:'' }}</td>
                     </tr>
+                  {% endif %}
 
             {% endfor %}
         </tbody>
 
     </table>
+    </div>
+
+
+
+
 {%  endblock %}
 
-
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('.help-block').remove();
+});
+</script>
+{% endblock %}
 

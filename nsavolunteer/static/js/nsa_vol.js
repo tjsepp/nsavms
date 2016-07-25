@@ -57,4 +57,9 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+    $('#id_family__students__grade').select2({
+         placeholder: "Select Grades"
+    });
+});
 
