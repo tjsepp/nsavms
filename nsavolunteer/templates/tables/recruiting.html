@@ -86,7 +86,7 @@
     </div>
 
 
-
+<form action="" id="RecruitIdx" method="post">{% csrf_token %}
 
     <table class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
@@ -104,7 +104,7 @@
 
                   {% if obj.family__familyAgg__schoolYear__currentYear == 1 %}
                     <tr>
-                        <td align="center"><input type="checkbox" name="UserRecs" value="#"></td>
+                        <td align="center"><input type="checkbox" name="UserRecs" value="{{ obj.email }}"></td>
                         <td>{{ obj.name}}</td>
                         <td>{{ obj.email }}</td>
                         <td>{{ obj.family__familyName}}</td>
@@ -117,6 +117,8 @@
         </tbody>
 
     </table>
+<button class="btn btnnavy" type="submit" id="formActionBtn" formaction="{% url 'getRecruitingEmail' %}" value="Go"/>Go</button>
+</form>
     </div>
 
 
@@ -130,5 +132,12 @@ $(document).ready(function(){
     $('.help-block').remove();
 });
 </script>
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
 {% endblock %}
 
