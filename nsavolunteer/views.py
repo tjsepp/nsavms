@@ -112,7 +112,7 @@ class Report_Family_Hours_Current(ListView):
     context_object_name = "FamilyIndex"
     template_name="reports/totalFamilyHours.html"
 
-
+@login_required
 def userVolunteerData(request):
     '''
     This view will generate all data needed for all user data. This will include family,
@@ -651,7 +651,7 @@ def deleteInterest(request):
 
 
 import django_filters
-class ProductFilter(django_filters.FilterSet):
+class RecruitingFilter(django_filters.FilterSet):
     family__students__grade = django_filters.ModelMultipleChoiceFilter(queryset=GradeLevel.objects.all())
     family__familyAgg__totalVolHours__gt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours',lookup_type='gte',label='Total Family hours (min)')
     family__familyAgg__totalVolHours__lt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours', lookup_type='lte',label='Total Family hours (max)')
@@ -664,15 +664,14 @@ class ProductFilter(django_filters.FilterSet):
 
 
 @login_required
-def product_list(request):
-    f = ProductFilter(request.GET, queryset=User.objects.filter(is_active=True).all())
+def recruiting_list(request):
+    f = RecruitingFilter(request.GET, queryset=User.objects.filter(is_active=True).all())
     lx = User.objects.prefetch_related('family','family__familyAgg','family__familyAgg__schoolYear').filter(pk__in=f.qs)\
         .values('name','email','id','family__familyName',
                'family__familyAgg__totalVolHours','family__familyAgg__trafficDutyCount',
                'family__familyAgg__schoolYear__currentYear')
 
     #apply additional filter logic
-    print request.GET
 
     #apply greater than logic to remove dupes for total volunteer hours
     if request.GET:
@@ -715,4 +714,18 @@ def product_list(request):
     #lx= f.queryset.filter(family__familyAgg__schoolYear=SchoolYear.objects.
                           #get(currentYear=1)).values('name','family','family__familyAgg__totalVolHours')
     #print lx
-    return render(request, 'tables/testFilter.html',{'filter':f,'lx':lx})
+    return render(request, 'tables/recruiting.html',{'filter':f,'lx':lx})
+
+
+def get_recruits_email(request):
+    selected_values = request.POST.getlist('UserRecs')
+    email_list=[]
+    for vol in selected_values:
+        email_list.append(vol)
+    request.session['recruitingEmailList']=email_list
+    print request.session['recruitingEmailList']
+    return HttpResponseRedirect(reverse('interestIndex'))
+
+
+def send_recruits_email(request):
+    pass
