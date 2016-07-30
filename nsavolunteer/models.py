@@ -531,18 +531,18 @@ class TrafficDuty(TimeStampedModel):
         super(TrafficDuty, self).delete(*args, **kwargs)
 
 
-class RecruitingEmail(TimeStampedModel):
-    emailId = models.AutoField(primary_key=True,db_column='email',verbose_name='emailId')
-    recipients = models.CommaSeparatedIntegerField(max_length=500,db_column='recipients', null=True,blank=False, verbose_name='Recipients')
-    subject = models.CharField(max_length=200,db_column='subject',verbose_name='Subject',null=True,blank=False)
-    body = models.TextField(verbose_name='body', db_column='body', null=True, blank=False)
-    def __unicode__(self):
-        return '%s - %s' %(self.dateCreated,self.subject)
+#class RecruitingEmail(TimeStampedModel):
+#    emailId = models.AutoField(primary_key=True,db_column='email',verbose_name='emailId')
+#    recipients = models.CommaSeparatedIntegerField(max_length=500,db_column='recipients', null=True,blank=False, verbose_name='Recipients')
+#    subject = models.CharField(max_length=200,db_column='subject',verbose_name='Subject',null=True,blank=False)
+#    body = models.TextField(verbose_name='body', db_column='body', null=True, blank=False)
+#    def __unicode__(self):
+#        return '%s - %s' %(self.dateCreated,self.subject)
 
-    class Meta:
-        verbose_name_plural='Recruiting Email'
-        db_table = 'recruitingEmail'
-        ordering = ['dateCreated']
+#    class Meta:
+#        verbose_name_plural='Recruiting Email'
+#        db_table = 'recruitingEmail'
+#        ordering = ['dateCreated']
 
 
 class FamilyAggHours(TimeStampedModel):

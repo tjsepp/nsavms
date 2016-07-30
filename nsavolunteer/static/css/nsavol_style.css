@@ -260,3 +260,7 @@ text-decoration: none;
 .panel-heading a.collapsed:after {
     content:"\e080";
 }
+
+.emailnames{
+    font-size: 14px;
+}

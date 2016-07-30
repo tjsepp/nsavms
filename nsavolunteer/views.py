@@ -11,16 +11,15 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
-    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm
+    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm
 from .models import *
 from django.forms.formsets import formset_factory
-from django.db.models import Sum, Prefetch
+from django.db.models import Sum
 from nsaSchool.models import VolunteerNews, SchoolYear
-from authtools.forms import UserCreationForm
 from nsaEvents.models import EventTasks
 import json
 from django.contrib.auth.models import Group
-
+from django.core.mail import EmailMultiAlternatives, EmailMessage, send_mail
 
 
 def homeView(request):
@@ -713,7 +712,7 @@ def recruiting_list(request):
         lx=lx1
     #lx= f.queryset.filter(family__familyAgg__schoolYear=SchoolYear.objects.
                           #get(currentYear=1)).values('name','family','family__familyAgg__totalVolHours')
-    #print lx
+    request.session['filterPath']= request.get_full_path()
     return render(request, 'tables/recruiting.html',{'filter':f,'lx':lx})
 
 
@@ -722,10 +721,31 @@ def get_recruits_email(request):
     email_list=[]
     for vol in selected_values:
         email_list.append(vol)
-    request.session['recruitingEmailList']=email_list
+    email_list.append(request.user.email)
+    request.session['recruitingEmailList']=list(set(email_list))
     print request.session['recruitingEmailList']
-    return HttpResponseRedirect(reverse('interestIndex'))
+    return HttpResponseRedirect(reverse('sendRecruitingEmail'))
 
 
-def send_recruits_email(request):
-    pass
+def send_recruiting_email(request):
+    if request.method=='POST':
+        emailForm = RecruitingEmailForm(request.POST or None, request.FILES or None)
+        if emailForm.is_valid():
+            subject = request.POST['subject']
+            msgbody = request.POST['msgbody']
+            if 'file' in request.FILES:
+                attach = request.FILES['file']
+            destination = set(request.session['recruitingEmailList'])
+            destination= list(destination)
+            html_content = (subject,msgbody)
+            msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',bcc=destination)
+            if 'file' in request.FILES:
+                msg.attach(attach.name,attach.read(),attach.content_type)
+            msg.send()
+            return HttpResponseRedirect(request.session['filterPath'])
+
+    else:
+        volunteerNames = User.objects.filter(email__in=request.session['recruitingEmailList']).values('name')
+        emailForm = RecruitingEmailForm()
+    ctx={'form':emailForm, 'text_dc':file, 'recps':request.session['recruitingEmailList'],'volNames':volunteerNames}
+    return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))

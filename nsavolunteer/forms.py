@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage, send_mail
 from nsaEvents.models import EventTasks
 
 
+
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
@@ -393,3 +394,35 @@ class AddInterestForm(ModelForm):
         self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
+
+class RecruitingEmailForm(forms.Form):
+    subject = forms.CharField(max_length=100, label='Subject')
+    msgbody = forms.CharField(widget=forms.Textarea, label='Message')
+    file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Attachement')
+    def __init__(self,*args, **kwargs):
+        super(RecruitingEmailForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            HTML('''
+                 <div class="panel panel-default">
+                <div class="panel-heading">Sending Email To:</div>
+                <div class="panel-body">
+                                {%for x in volNames %}
+                    <i class='emailnames'>{{ x.name }}</i>
+                    {% if forloop.last %}
+                    {% else %}
+                    ,
+                    {% endif %}
+                {% endfor %}
+                </div>
+                </div>
+            '''),
+            'subject',
+            'msgbody',
+            'file',
+        )
+        self.helper.add_input(Submit('submit','Send Email'))
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
