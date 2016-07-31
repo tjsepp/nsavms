@@ -246,10 +246,16 @@ text-decoration: none;
 /* css for filtering form*/
 #id_linkedUser__interest{
     width: 100%;
+
 }
 #id_family__students__grade{
     width: 100%;
 }
+
+#id_family__students__teacher{
+    width: 100%;
+}
+
 
 .panel-heading a:after {
     font-family:'Glyphicons Halflings';

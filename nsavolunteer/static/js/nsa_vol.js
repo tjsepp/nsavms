@@ -19,6 +19,16 @@ $(document).ready(function() {
     );
 } );
 
+$(document).ready(function() {
+    $('.recruitingTable').DataTable({
+            "bLengthChange": false,
+            "iDisplayLength": 100,
+                scrollY:        '50vh',
+                scrollCollapse: true,
+        }
+    );
+} );
+
 
 $(document).ready(function () {
     $('#ProfileNagModal').modal('show');
@@ -63,3 +73,8 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+    $('#id_family__students__teacher').select2({
+         placeholder: "Select Teachers"
+    });
+});

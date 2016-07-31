@@ -652,6 +652,7 @@ def deleteInterest(request):
 import django_filters
 class RecruitingFilter(django_filters.FilterSet):
     family__students__grade = django_filters.ModelMultipleChoiceFilter(queryset=GradeLevel.objects.all())
+    family__students__teacher = django_filters.ModelMultipleChoiceFilter(queryset=Teachers.objects.all())
     family__familyAgg__totalVolHours__gt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours',lookup_type='gte',label='Total Family hours (min)')
     family__familyAgg__totalVolHours__lt = django_filters.NumberFilter(name='family__familyAgg__totalVolHours', lookup_type='lte',label='Total Family hours (max)')
     family__familyAgg__trafficDutyCount__gt = django_filters.NumberFilter(name='family__familyAgg__trafficDutyCount', lookup_type='gte',label='Traffic Duty (min)')
@@ -659,7 +660,7 @@ class RecruitingFilter(django_filters.FilterSet):
     class Meta:
         model = User
         fields =['linkedUser__interest',
-                 'family__students__grade']
+                 'family__students__grade','family__students__teacher']
 
 
 @login_required

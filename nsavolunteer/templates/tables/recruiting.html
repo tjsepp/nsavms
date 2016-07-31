@@ -22,7 +22,7 @@
 <div class="table-responsive" style="padding:5%">
 
 
-<div class="panel panel-default">
+<div class="panel panel-default" style="margin-bottom: 5%">
     <div class="panel-heading" style="background-color: #F0F0F0">
     <h2 class="panel-title"><a href="#filterBody" data-toggle="collapse" data-target="#filterBody"><b>Data Filter</b></a></h2>
   </div>
@@ -41,6 +41,14 @@
                 {{ filter.form.family__students__grade }}
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                <label for="Grade" class="control-label">Teachers: </label>
+                {{ filter.form.family__students__teacher }}
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <div class="row"><div class="col-md-2 control-label" style="text-align: left"><b>Volunteer Hours:</b></div></div>
@@ -80,15 +88,19 @@
                     </div>
             </div>
 
-            <input type="submit" value="Search" />
+            <input type="submit" class="btn btnnavy" value="Filter Volunteers" />
         </form>
 </div>
     </div>
 
 
 <form action="" id="RecruitIdx" method="post">{% csrf_token %}
-
-    <table class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+    <div class="col-sm-6">
+          <div class="input-group" style="margin-left: -2.5%; width: 70%">
+          <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="{% url 'getRecruitingEmail' %}" value="Go"/>Email Selected Users</button>
+          </div>
+        </div>
+    <table class="table table-condensed table-striped table-bordered recruitingTable" cellspacing="0" width="100%">
         <thead>
             <tr>
                  <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
@@ -117,9 +129,9 @@
         </tbody>
 
     </table>
-<button class="btn btnnavy" type="submit" id="formActionBtn" formaction="{% url 'getRecruitingEmail' %}" value="Go"/>Go</button>
 </form>
-    </div>
+
+</div>
 
 
 
@@ -132,6 +144,15 @@ $(document).ready(function(){
     $('.help-block').remove();
 });
 </script>
+
+<script>
+$(document).ready(function(){
+    $('#filterBody').collapse('fast');
+});
+</script>
+
+
+
 
 <script>
 $("#checkToggle").change(function () {
