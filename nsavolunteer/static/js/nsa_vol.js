@@ -14,7 +14,9 @@ $(document).ready(function() {
 $(document).ready(function() {
     $('.datatable').DataTable({
             "bLengthChange": false,
-            "iDisplayLength": 100
+            "iDisplayLength": 1000,
+                scrollY:        '60vh',
+                scrollCollapse: true,
         }
     );
 } );
@@ -22,7 +24,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $('.recruitingTable').DataTable({
             "bLengthChange": false,
-            "iDisplayLength": 100,
+            "iDisplayLength": 500,
                 scrollY:        '50vh',
                 scrollCollapse: true,
         }

@@ -91,7 +91,6 @@ class PasswordRecoveryForm(PasswordResetForm):
         user.save()
 
         body = """
-        From: tjsepp/n
         Sorry you are having issues with your account. Below is your username and new password:
         Username:{username}
         Password:{password}

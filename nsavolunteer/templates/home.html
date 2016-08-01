@@ -21,7 +21,11 @@
         <div class="row row-centered" id="faq">
             <div class="col-xs-12 col-sm-6 col-md-3 col-centered">
                 <div class='center'>
-                    <a class='fa fa-child homeIcons' href="{% url 'logUserHours' %}"></a>
+                    {% if user.linkedUser.volStatus == 'approved' %}
+                        <a class='fa fa-child homeIcons' href="{% url 'logUserHours' %}"></a>
+                     {% else %}
+                        <a class='fa fa-child homeIcons' href="{% url 'userVolunteerData' %}"></a>
+                    {% endif %}
 
                 </div>
                 <div class="center homepage-component">

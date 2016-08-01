@@ -257,7 +257,7 @@ text-decoration: none;
 }
 
 
-.panel-heading a:after {
+#filterPanel a:after {
     font-family:'Glyphicons Halflings';
     content:"\e114";
     float: right;

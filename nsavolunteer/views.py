@@ -665,7 +665,7 @@ class RecruitingFilter(django_filters.FilterSet):
 
 @login_required
 def recruiting_list(request):
-    f = RecruitingFilter(request.GET, queryset=User.objects.filter(is_active=True).all())
+    f = RecruitingFilter(request.GET, queryset=User.objects.filter(is_active=True).filter(linkedUser__doNotEmail=False).all())
     lx = User.objects.prefetch_related('family','family__familyAgg','family__familyAgg__schoolYear').filter(pk__in=f.qs)\
         .values('name','email','id','family__familyName',
                'family__familyAgg__totalVolHours','family__familyAgg__trafficDutyCount',
