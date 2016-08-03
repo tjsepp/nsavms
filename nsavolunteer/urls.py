@@ -73,5 +73,7 @@ url(r'^makeInterestsActive$',markInterestAsActive,name='activeInterest'),
 url(r'^deleteInterests$',deleteInterest,name='deleteInterest'),
 url(r'^vol_recruiting$', recruiting_list, name ='volunteer_recruiting'),
 url (r'generate_email_list', get_recruits_email, name='getRecruitingEmail'),
-url (r'sendRecruitingEmail', send_recruiting_email, name='sendRecruitingEmail')
+url (r'sendRecruitingEmail', send_recruiting_email, name='sendRecruitingEmail'),
+url(r'^editVolunteerLoginInfo/(?P<volid>\d+)$',UpdateVolunteerLogin.as_view(),name='editVolunteerLoginAdmin'),
+
 ]

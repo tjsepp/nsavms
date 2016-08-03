@@ -9,9 +9,45 @@
 {% block base_content %}
 <div class="container-fluid" style="padding: 7%">
     <div class="row" style="margin-top: 2%">
-                <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-bottom: 2%; text-align: center">
-                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">{{ family.familyName }} Profile</>
+                <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-bottom: 2%">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">{{ family.familyName }} Profile</h2>
                 </div>
+
+        <div class="row">
+        <div class="col-md-12 col-md-12">
+            <div class="panel panel-default user-data-panel" style="margin-top: -1%">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Profile Information
+                        {% if perms.nsavolunteer.is_volunteer_manager%}
+                        <a class='fa fa-edit pull-right' style="font-size: large"  href="{% url 'updateFamilyProfile' family.familyProfileId %}">  Edit Profile</a>
+                        {% endif %}
+                    </h4>
+                </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Street: </strong>{{ family.streetAddress }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">City:</strong>{{ family.city }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Zip:</strong> {{ family.zip }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Home Phone: </strong> {{ family.homePhone }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Traffic Requirement: </strong> {{ family.trafficRequirement }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Volunteer Requirement: </strong>{{ family.volunteerRequirement }}</div>
+                </div>
+
+                <div class="row">
+                    {% if perms.nsavolunteer.is_volunteer_manager%}
+                    <div class="col-md-12 col-sm-12 dataLabel"><strong style="color: navy">Note:</strong> {{ family.specialInfo }}</div>
+                    {% endif %}
+                </div>
+
+             </div>
+            </div>
+        </div>
+    </div>
 
             {% include './tables/familyProfileVolunteersTable.html' %}
             {% include './tables/familyProfileStudentsTable.html' %}

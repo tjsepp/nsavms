@@ -171,8 +171,10 @@ class FamilyProfileForm(ModelForm):
         'city',
         'zip',
         'homePhone',
+        'trafficRequirement',
+        'volunteerRequirement',
         Field('students', type='hidden'),
-        Field('specialInfo',type='hidden'),
+        Field('specialInfo'),
         Field('inactiveDate',type='hidden'),
         Field('active',type='hidden'),
         Field('volunteers',type='hidden'),
@@ -425,3 +427,33 @@ class RecruitingEmailForm(forms.Form):
         )
         self.helper.add_input(Submit('submit','Send Email'))
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+
+
+class EditVolunteersLogin(AuthUserUpdateForm):
+    '''
+    This form is for inputting users into existing Families.
+    '''
+    def __init__(self, *args, **kwargs):
+        super(EditVolunteersLogin, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
+
+        self.helper = FormHelper()
+        self.helper.form_class='form-horizontal'
+        self.helper.form_id='volunteerProfile'
+        self.helper.layout = Layout(
+            'name',
+            'email',
+            Field('is_superuser', type='hidden'),
+            Field('is_staff', type='hidden'),
+            Field('is_active', type="hidden"),
+            Field('password', type="hidden"),
+            Field('date_joined', type="hidden"),
+            Field('last_login', type="hidden"),
+            Field('groups', type='hidden'),
+            Field('user_permissions', type="hidden")
+            )
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        )

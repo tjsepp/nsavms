@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
-    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm
+    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -203,7 +203,7 @@ class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
         #return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
 
     def get_success_url(self):
-        return reverse('user_profile')
+        return reverse('familyprofile', kwargs={'famid': self.kwargs['famId']})
 
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateFamilyProfile, self).get_context_data(*args, **kwargs)
@@ -739,7 +739,7 @@ def send_recruiting_email(request):
             destination = set(request.session['recruitingEmailList'])
             destination= list(destination)
             html_content = (subject,msgbody)
-            msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',bcc=destination)
+            msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',bcc=destination, headers = {'Reply-To': 'volunteer@nstaracademy.org'})
             if 'file' in request.FILES:
                 msg.attach(attach.name,attach.read(),attach.content_type)
             msg.send()
@@ -750,3 +750,36 @@ def send_recruiting_email(request):
         emailForm = RecruitingEmailForm()
     ctx={'form':emailForm, 'text_dc':file, 'recps':request.session['recruitingEmailList'],'volNames':volunteerNames}
     return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
+
+
+
+
+class UpdateVolunteerLogin(LoginRequiredMixin,UpdateView):
+    form_class = EditVolunteersLogin
+    template_name = 'forms/addNewUserToFamily.html'
+
+    def get_object(self):
+        return User.objects.get(pk=self.kwargs['volid'])
+        #return VolunteerProfile.objects.get(linkedUserAccount=self.request.user)
+
+    def get_success_url(self):
+        return reverse('volunteerIndex')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(UpdateVolunteerLogin, self).get_context_data(*args, **kwargs)
+        context['isEdit'] = 'Edit'
+        return context
+
+    def form_valid(self, form):
+        usr = User.objects.get(pk=self.kwargs['volid'])
+        form.instance.last_login =usr.last_login
+        form.instance.password =usr.password
+        form.instance.date_joined =usr.date_joined
+
+        profile = VolunteerProfile.objects.get(pk=usr.linkedUser.volunteerProfileID)
+        profile.firstName = form.instance.name.split(' ',1)[0]
+        profile.lastName = form.instance.name.split(' ',1)[1]
+        profile.save()
+        return super(UpdateVolunteerLogin,self).form_valid(form)
+
+

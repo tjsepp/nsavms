@@ -100,7 +100,13 @@
                 <td>{{ vol.linkedUser.lastName }}</td>
                 <td>{{ vol.linkedUser.get_volStatus_display }}</td>
                 <td>{{ vol.linkedUser.volunteerType|default:"" }}</td>
-                <td>{{ vol.email }}</td>
+                <td>
+                    {% if perms.nsavolunteer.is_volunteer_manager%}
+                        <a href="{% url 'editVolunteerLoginAdmin' vol.id %}">{{ vol.email }}</a>
+                    {% else %}
+                        {{ vol.email }}
+                    {% endif %}
+                </td>
                 <td>
                     {% for fam in vol.family.all %}
 					    <a href='familyprofile/{{ fam.familyProfileId }}' target='_blank'>{{ fam.familyName }}</a>{%if not forloop.last %}, {% endif %}

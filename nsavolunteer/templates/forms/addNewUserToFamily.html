@@ -3,11 +3,19 @@
 {% crispy example_form example_form.helper %}
 
 
-{% block title %}Add New User{% endblock %}
+{% block title %}
+
+    {%  if isEdit %}
+    Edit user
+    {% else %}
+    Add New User
+    {% endif %}
+{% endblock %}
 
 
 {% block base_content %}
-<h2 style="color:navy; text-align: center; margin-top: 100px">Add New User</h2>
+<h2 style="color:navy; text-align: center; margin-top: 100px">{%  if isEdit %}Edit User{% else %}Add New User{% endif %}</h2>
     {%  crispy form %}
     {{ form.errors }}
+
 {%  endblock %}

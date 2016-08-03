@@ -40,7 +40,13 @@
                         </span>
                 </td>
                 <td>{{ vol.name}}</td>
-                <td>{{ vol.email}}</td>
+                <td>
+                    {% if perms.nsavolunteer.is_volunteer_manager%}
+                        <a href="{% url 'editVolunteerLoginAdmin' vol.id %}">{{ vol.email }}</a>
+                    {% else %}
+                        {{ vol.email }}
+                    {% endif %}
+                </td>
                 <td>{{ vol.linkedUser.cellPhone|default:""}}</td>
                 <td>{{ vol.linkedUser.volunteerType|default:" "}}</td>
                 <td>{{ vol.linkedUser.get_volStatus_display|default:" "}}</td>
