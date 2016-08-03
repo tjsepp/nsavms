@@ -94,7 +94,7 @@ def InactiveVolunteerIndex(request):
 
 
 def FamilyIndex(request):
-    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students')
+    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students').order_by('familyName')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
 
