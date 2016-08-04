@@ -3,6 +3,7 @@ from simple_history.models import HistoricalRecords
 from tinymce import models as tinymce_models
 
 
+
 class TimeStampedModel(models.Model):
     '''
     An abstract base class that provides self-updating 'created' and 'modified' fields.

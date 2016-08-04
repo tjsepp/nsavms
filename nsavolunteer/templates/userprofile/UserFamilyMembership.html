@@ -49,7 +49,7 @@
                         {% for mems in fam.students.all %}
 
                             <li>
-                            {% if mems.grade.gradeId <= 8 %}
+                            {% if mems.grade.gradeId <= 9 %}
                               <a href="{% url 'updatestudent' mems.studentId %}">{{ mems.getFullStudentName }}</a>
                                 <i>({{ mems.grade }}{% if mems.teacher %} - {{ mems.teacher }}{% endif %})</i>
                             {% else %}

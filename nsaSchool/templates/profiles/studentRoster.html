@@ -1,0 +1,26 @@
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+            <div class="panel panel-default user-data-panel" style="margin-top: -1%">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Student Roster
+                    <a class='fa fa-edit pull-right' style="font-size: large"  href="#">  Add Students</a>
+                    </h4>
+                </div>
+
+
+            <div class="panel-body">
+            {% if students %}
+                <ul>
+                    {% for student in students %}
+                        <li><a href="{% url 'updatestudent' student.studentId %}">{{ student.getFullStudentName}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                    <div class="alert alert-info" role="alert">No Students have been added to {{ teacher }}'s class</div>
+                {% endif %}
+
+             </div>
+            </div>
+        </div>
+    </div>

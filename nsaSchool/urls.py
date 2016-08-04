@@ -25,6 +25,7 @@ url(r'^makeTeacherInActive$',markTeacherAsInactive,name='inactiveTeacher'),
 url(r'^makeTeacherActive$',markTeacherAsActive,name='activeTeacher'),
 url(r'^deleteTeacher$',deleteTeacher,name='deleteTeachers'),
 url(r'^editTeacher/(?P<teachid>\d+)$',UpdateTeacher.as_view(),name='editTeacher'),
+url(r'^teacher_profile/(?P<teachid>\d+)$',teacherProfile,name='teacherProfile'),
 
 ]
 

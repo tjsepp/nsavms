@@ -6,6 +6,8 @@ from braces.views import LoginRequiredMixin
 from forms import AddNewTeacherForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from nsavolunteer.models import Student
 
 def TeacherIndex(request):
     teacherIndex = Teachers.objects.all()
@@ -27,6 +29,16 @@ class addNewTeacher(LoginRequiredMixin, CreateView):
         return super(addNewTeacher,self).form_valid(form)
 
 
+#@login_required
+def teacherProfile(request, teachid):
+    teacher = Teachers.objects.get(pk= teachid)
+    students = Student.objects.filter(teacher = teacher.teacherId).all()
+    request.session['teachUpdate']= teacher.teacherId
+    #rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
+    response = render(request, 'profiles/teacherProfile.html',{'teacher':teacher,'students':students})
+    return response
+
+
 class UpdateTeacher(LoginRequiredMixin,UpdateView):
     form_class = AddNewTeacherForm
     template_name = 'forms/addTeachers.html'
@@ -40,6 +52,13 @@ class UpdateTeacher(LoginRequiredMixin,UpdateView):
         elif self.request.POST.get('saveAndAdd'):
             retPage = 'addNewTeacher'
         return reverse(retPage)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(UpdateTeacher, self).get_context_data(*args, **kwargs)
+        previous_page = self.request.META['HTTP_REFERER']
+        print previous_page
+        context['isEdit'] = 'Edit'
+        return context
 
 def markTeacherAsInactive(request):
     selected_values = request.POST.getlist('UserRecs')

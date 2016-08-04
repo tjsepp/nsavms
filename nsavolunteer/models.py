@@ -170,7 +170,7 @@ class Student(TimeStampedModel):
     studentFirstName = models.CharField(max_length=100,db_column='studentFirstName',verbose_name='Students First Name',null=True,blank=False)
     studentLastName = models.CharField(max_length=100,db_column='studentLastName',verbose_name='Students Last Name',null=True,blank=False)
     activeStatus = models.BooleanField(verbose_name='Current Student',default=True,db_column='activeStatus')
-    teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True,on_delete=models.SET_NULL)
+    teacher= models.ForeignKey(Teachers,db_column='teacher',null=True, blank=True,on_delete=models.SET_NULL, related_name='students')
     grade = models.ForeignKey(GradeLevel,db_column='gradeLevel',verbose_name='Grade Level', null=True, blank=True)
     history = HistoricalRecords()
 
@@ -231,6 +231,10 @@ class FamilyProfile(TimeStampedModel):
     students = models.ManyToManyField(Student,verbose_name='Students',blank=True,through='StudentToFamily')
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
+
+    def save(self, force_insert=False,force_update=False, using=None):
+        rec = FamilyAggHours.objects.get_or_create(family = self, schoolYear = SchoolYear.objects.get(currentYear = 1))
+        super(FamilyProfile,self).save(force_insert, force_update)
 
     @property
     def listVolunteers(self):

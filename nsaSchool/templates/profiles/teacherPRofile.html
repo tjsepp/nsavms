@@ -1,0 +1,57 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Teacher Profile - {{ teacher }}
+{% endblock %}
+
+
+{% block base_content %}
+  <div class="container" style="margin-top: 10%">
+
+      <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; text-align: center">
+           <h3 class="vmsHeader">Teacher Profile - {{ teacher }}</h3>
+      </div>
+
+
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+            <div class="panel panel-default user-data-panel" style="margin-top: -1%">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Profile Information
+                        <a class='fa fa-edit pull-right' style="font-size: large"  href="{% url 'editTeacher' teacher.teacherId %}">  Edit Teacher Profile</a>
+                    </h4>
+                </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">First Name: </strong> {{teacher.firstName }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Last Name: </strong> {{teacher.lastName }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Grade:</strong> {{teacher.gradeLevel}}</div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Current Status:</strong>
+                        {% if teacher.activeStatus %}
+                        Active
+                        {% else %}
+                        Inactive
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Created:</strong> {{teacher.dateCreated|date }}</div>
+                    <div class="col-md-4 col-sm-4 dataLabel"><strong style="color: navy">Updated:</strong> {{teacher.dateUpdated|date }}</div>
+                </div>
+
+             </div>
+            </div>
+        </div>
+    </div>
+
+    {%  include  'profiles/studentRoster.html' %}
+
+
+
+  </div>
+{%  endblock %}

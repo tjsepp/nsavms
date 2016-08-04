@@ -3,10 +3,17 @@
 {% crispy example_form example_form.helper %}
 
 
-{% block title %}Add New Interests{% endblock %}
+{% block title %} Teacher Profile{% endblock %}
 
 
 {% block base_content %}
-<h2 class='vmsHeader' style="text-align: center; margin-top: 100px">Add Teachers</h2>
+<h2 class='vmsHeader' style="text-align: center; margin-top: 100px">
+    {% if isEdit %}
+    Edit Teacher
+    {% else %}
+    Add New Teacher
+    {%  endif %}</h2>
+
+
     {%  crispy form %}
 {%  endblock %}

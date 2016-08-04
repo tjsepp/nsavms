@@ -157,6 +157,8 @@ def userSettings(request):
     cur_user = VolunteerProfile.objects.select_related('linkedUserAccount','volunteerType').prefetch_related('interest').get(linkedUserAccount= request.user)
     userFamily = FamilyProfile.objects.filter(famvolunteers = request.user).all()
     rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
+    if request.session.get('teachUpdate'):
+        del request.session['teachUpdate']
     response = render(request, 'userprofile/userprofile.html',{'cur_user':cur_user,'userFamily':userFamily,'rewardCards':rewardCards})
     return response
 
@@ -229,7 +231,11 @@ class UpdateStudent(LoginRequiredMixin,UpdateView):
         return Student.objects.get(pk=self.kwargs['stuId'])
 
     def get_success_url(self):
-        return reverse('user_profile')
+        if self.request.session.get('teachUpdate'):
+            teachid= self.request.session['teachUpdate']
+            return reverse('teacherProfile', kwargs={'teachid':teachid})
+        else:
+            return reverse('user_profile')
 
 
 
