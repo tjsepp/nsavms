@@ -26,7 +26,8 @@ url(r'^makeTeacherActive$',markTeacherAsActive,name='activeTeacher'),
 url(r'^deleteTeacher$',deleteTeacher,name='deleteTeachers'),
 url(r'^editTeacher/(?P<teachid>\d+)$',UpdateTeacher.as_view(),name='editTeacher'),
 url(r'^teacher_profile/(?P<teachid>\d+)$',teacherProfile,name='teacherProfile'),
-
+url(r'^class_assignment/(?P<teachid>\d+)$',StudentToTeacherAssignment,name='teacherAssignment'),
+url(r'^assign_students/(?P<teachid>\d+)$',assignStudents,name='assignStudents'),
 ]
 
 #addNewTeacher

@@ -8,7 +8,7 @@ from django import forms
 from .models import *
 from authtools.models import User
 from tinymce.widgets import TinyMCE
-
+from nsavolunteer.models import Student
 
 
 
@@ -39,6 +39,5 @@ class AddNewTeacherForm(ModelForm):
         self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
-
 
 

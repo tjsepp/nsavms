@@ -1,0 +1,115 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+   Teacher Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Assign Students to {{ teacher }}</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+    <div class="col-sm-6">
+          <div class="input-group" style="margin-left: 0%; width: 70%">
+
+              <span class="input-group-btn">
+                   <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="{% url 'assignStudents' teacher.teacherId %}" data-toggle="popover"
+                          value="Go"
+                          style="margin-left: -3%">Assign Selected
+                  </button>
+
+              </span>
+          </div>
+        </div>
+
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                <th style="width: 2%">Active</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Grade</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for student in students %}
+                <tr>
+               <td align="center"><input type="checkbox" name="UserRecs" value="{{ student.studentId }}"></td>
+                <td style="text-align: center">
+                    {% if student.activeStatus %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red">
+                      {% endif %}
+                        </span>
+                </td>
+                <td>{{ student.studentFirstName }}</td>
+                <td>{{ student.studentLastName }}</td>
+                <td>{{ student.grade }}</td>
+
+
+           </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+$(document).ready(function(){
+    myVal = $('#formActionSelect').change(function(){
+        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
+    });
+});
+</script>
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+

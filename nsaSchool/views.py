@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from nsavolunteer.models import Student
 
+
 def TeacherIndex(request):
     teacherIndex = Teachers.objects.all()
     response = render(request, 'tables/teacherIndex.html',{'teacherIndex':teacherIndex})
@@ -32,7 +33,7 @@ class addNewTeacher(LoginRequiredMixin, CreateView):
 #@login_required
 def teacherProfile(request, teachid):
     teacher = Teachers.objects.get(pk= teachid)
-    students = Student.objects.filter(teacher = teacher.teacherId).all()
+    students = Student.objects.filter(teacher = teacher.teacherId).all().order_by('studentLastName')
     request.session['teachUpdate']= teacher.teacherId
     #rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
     response = render(request, 'profiles/teacherProfile.html',{'teacher':teacher,'students':students})
@@ -82,3 +83,18 @@ def deleteTeacher(request):
         ur = Teachers.objects.get(pk=vol).delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
+def StudentToTeacherAssignment(request,teachid):
+    teach=Teachers.objects.get(pk=teachid)
+    students = Student.objects.filter(grade = teach.gradeLevel).filter(teacher=None)
+    response = render(request, 'tables/classAssignment.html',{'teacher':teach,'students':students})
+    return response
+
+def assignStudents(request,teachid):
+    selected_values = request.POST.getlist('UserRecs')
+    for stu in selected_values:
+        print stu
+        student = Student.objects.get(pk=stu)
+        student.teacher=Teachers.objects.get(pk=teachid)
+        student.save()
+    return HttpResponseRedirect(reverse('teacherProfile', kwargs={'teachid': teachid}))
