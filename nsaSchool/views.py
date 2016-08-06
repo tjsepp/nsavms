@@ -93,7 +93,6 @@ def StudentToTeacherAssignment(request,teachid):
 def assignStudents(request,teachid):
     selected_values = request.POST.getlist('UserRecs')
     for stu in selected_values:
-        print stu
         student = Student.objects.get(pk=stu)
         student.teacher=Teachers.objects.get(pk=teachid)
         student.save()
