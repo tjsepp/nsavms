@@ -40,6 +40,7 @@
               </optgroup>
               <optgroup label="System Access Options">
                 <option value="{% url 'InactiveVolunteerIndex' %}">Show active & inactive users</option>
+                 <option value="{% url 'massPass' %}">Reset Password</option>
                 <option value="{% url 'activateUserAccount' %}">Activate user account</option>
                 <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
               </optgroup>
@@ -86,7 +87,6 @@
                 {% if perms.nsavolunteer.is_volunteer_manager%}
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.linkedUser.volunteerProfileID }}"></td>
                 <td>{{ vol.groups.all|is_avc|default:''|safe}}</td>
-
                 {% endif%}
                 <td>
                     {% if vol.is_active %}
@@ -97,7 +97,12 @@
                         </span>
                 </td>
                 <td>{{ vol.linkedUser.firstName }}</td>
-                <td>{{ vol.linkedUser.lastName }}</td>
+                    {% if  vol.groups.all|is_avc %}
+                    <td>{{ vol.linkedUser.lastName }} (AVC)</td>
+                    {% else %}
+                    <td>{{ vol.linkedUser.lastName }}</td>
+                    {% endif %}
+
                 <td>{{ vol.linkedUser.get_volStatus_display }}</td>
                 <td>{{ vol.linkedUser.volunteerType|default:"" }}</td>
                 <td>

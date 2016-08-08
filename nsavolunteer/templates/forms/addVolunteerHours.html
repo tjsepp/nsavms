@@ -33,15 +33,21 @@ $("#startTour").click(function(){
 
 
 
+
 <script>
+$(document).ready(function() {
+    $('#id_event').change(function() {
+        src = '/get_tasks/'+this.value +'/';
+
         $('#id_task').autocomplete({
-            source: "/get_tasks/",
+            source:src,
             minLength: 0,
             scroll: true
-        }).focus(function() {
+        }).focus(function () {
             $(this).autocomplete("search", "");
         });
-
+    });
+})
 </script>
 
 <script type="text/javascript">

@@ -84,6 +84,7 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         context = super(LogHoursFromEvent,self).get_context_data(*args, **kwargs)
         context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
         context['eventName']=NsaEvents.objects.get(pk=self.kwargs['eventId']).eventName
+        context['eventid']=self.kwargs['eventId']
         context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
         return context
 

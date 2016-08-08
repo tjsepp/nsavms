@@ -34,7 +34,7 @@
                          {% for mems in fam.famvolunteers.all %}
                              {% ifnotequal mems.id user.id %}
                                  <li>
-                                    {{ mems.name }}
+                                    {{ mems.linkedUser.fullName }}
                                  </li>
                              {% endifnotequal %}
                          {% endfor %}

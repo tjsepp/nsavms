@@ -50,7 +50,10 @@ class VolunteerProfile(TimeStampedModel):
         return self.linkedUserAccount.name
 
     def fullName(self):
-        return '%s %s' %(self.firstName,self.lastName)
+        if 'AVC' in  self.linkedUserAccount.groups.values_list('name', flat=True):
+            return '%s %s (AVC)' %(self.firstName,self.lastName)
+        else:
+            return '%s %s' %(self.firstName,self.lastName)
     fullName.short_description = 'Full Name'
 
     def getFamilies(self):
@@ -239,7 +242,7 @@ class FamilyProfile(TimeStampedModel):
     @property
     def listVolunteers(self):
         vols = self.famvolunteers.all()
-        volList = '%s' % ",".join([vol.name for vol in vols])
+        volList = '%s' % ",".join([vol.linkedUser.fullName() for vol in vols])
         return volList
 
     @property

@@ -139,7 +139,7 @@ class UserProfileForm(ModelForm):
             Div('cellPhone',css_class='col-md-6',),
              css_class='row',
             ),
-
+        Field('doNotEmail'),
         Field('linkedUserAccount', type="hidden"),
         HTML('<h5><b>Volunteer Interests:</b></h5>'),
         HTML("{% include 'forms/volunteerInterests.html' %}"),

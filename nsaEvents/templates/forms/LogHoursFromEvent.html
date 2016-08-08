@@ -32,14 +32,17 @@ $("#startTour").click(function(){
 
 
 <script>
-        $('#id_task').autocomplete({
-            source: "/get_tasks/",
-            minLength: 0,
-            scroll: true
-        }).focus(function() {
-            $(this).autocomplete("search", "");
-        });
-
+$(document).ready(function() {
+    var evId = '{{ eventid|escapejs }}';
+    src = "/get_tasks/"+ evId +"/"
+    $('#id_task').autocomplete({
+        source: src,
+        minLength: 0,
+        scroll: true
+    }).focus(function () {
+        $(this).autocomplete("search", "");
+    });
+})
 </script>
 
 <script type="text/javascript">

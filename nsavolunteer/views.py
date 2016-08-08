@@ -534,7 +534,7 @@ def removeFromAvc(request):
         g.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+'''
 def get_tasks(request):
     if request.is_ajax():
         q = request.GET.get('term', '')
@@ -550,7 +550,24 @@ def get_tasks(request):
     else:
         data = 'fail'
     return HttpResponse(data, content_type="application/json")
-
+'''
+def get_tasks(request,eventid):
+    print eventid
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        tasks = EventTasks.objects.filter(relatedEvent=eventid).filter(taskName__icontains = q )[:20]
+        print tasks
+        results = []
+        for task in tasks:
+            task_json = {}
+            task_json['id'] = task.taskid
+            task_json['label'] = task.taskName
+            task_json['value'] = task.taskName
+            results.append(task_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    return HttpResponse(data, content_type="application/json")
 
 def hoursToApprove(request):
     hours_to_approve = VolunteerHours.objects.prefetch_related('volunteer','family','event').filter(approved=False)
@@ -758,6 +775,27 @@ def send_recruiting_email(request):
     return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
 
 
+
+def massPasswordReset(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        volunteer = User.objects.get(pk = VolunteerProfile.objects.get(pk=vol).linkedUserAccount_id)
+        password = User.objects.make_random_password(8)
+        volunteer.set_password(password)
+        volunteer.save()
+        body = """
+            Below is your username and new password for the North Star Academy VMS site:
+            Username:{username}
+            Password:{password}
+            You can login here:http://www.nsavms.com/login/
+            Change your password here:http://www.nsavms.com/changePassword/
+            """.format(username = volunteer.email, password=password)
+
+        email = EmailMessage(
+                '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
+                [volunteer.email])
+        email.send()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 class UpdateVolunteerLogin(LoginRequiredMixin,UpdateView):

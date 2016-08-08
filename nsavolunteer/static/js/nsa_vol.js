@@ -17,6 +17,7 @@ $(document).ready(function() {
             "iDisplayLength": 1000,
                 scrollY:        '60vh',
                 scrollCollapse: true,
+                bStateSave: true,
         }
     );
 } );
@@ -27,6 +28,7 @@ $(document).ready(function() {
             "iDisplayLength": 500,
                 scrollY:        '50vh',
                 scrollCollapse: true,
+                bStateSave: true,
         }
     );
 } );

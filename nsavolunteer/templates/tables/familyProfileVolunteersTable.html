@@ -39,7 +39,7 @@
                       {% endif %}
                         </span>
                 </td>
-                <td>{{ vol.name}}</td>
+                <td>{{ vol.linkedUser.fullName}}</td>
                 <td>
                     {% if perms.nsavolunteer.is_volunteer_manager%}
                         <a href="{% url 'editVolunteerLoginAdmin' vol.id %}">{{ vol.email }}</a>
