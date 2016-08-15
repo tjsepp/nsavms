@@ -1,4 +1,4 @@
-{%  extends 'account/base.html' %}
+{%  extends 'tables/volunteerIndexHeader.html' %}
 {% load appFilters %}
 
 {% block title %}
@@ -9,57 +9,7 @@
 
 {% endblock %}
 
-
-
-{% block base_content %}
-
-
-    <form action="" id="volunteerIdx" method="post">{% csrf_token %}
-    <div class="row">
-
-        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
-                    <h3 class="vmsHeader">Volunteer Index</h3>
-                </div>
-
-            <div class="table-responsive" style="padding:5%; margin-top: 3%">
-
-
-
-        {% if perms.nsavolunteer.is_volunteer_manager%}
-            <div class="col-sm-6">
-          <div class="input-group" style="margin-left: -2.5%; width: 70%">
-          <select id="formActionSelect" class="form-control">
-            <option value="" disabled="disabled" selected="selected">---Select Action---</option>
-              <optgroup label="Approval Options">
-                  <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>
-                  <option value="{% url 'markAsPending' %}">Mark selected users as pending</option>
-              </optgroup>
-              <optgroup label="AVC Permission Options">
-                    <option value="{% url 'markAsAvc' %}">Set as AVC</option>
-                    <option value="{% url 'removeAsAvc' %}">Remove AVC</option>
-              </optgroup>
-              <optgroup label="System Access Options">
-                <option value="{% url 'InactiveVolunteerIndex' %}">Show active & inactive users</option>
-                 <option value="{% url 'massPass' %}">Reset Password</option>
-                <option value="{% url 'activateUserAccount' %}">Activate user account</option>
-                <option value="{% url 'deactivateUserAccount' %}">Deactivate user account</option>
-              </optgroup>
-          </select>
-              <span class="input-group-btn">
-                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
-                  <button class="btn btnnavy" type="submit" id="newUsr" formaction="{% url 'addVolunteer_woFamily' %}" data-toggle="popover"
-                          value="Go" title="Adding a new volunteer?"
-                          data-content="If you are adding a new volunteer, it's recommended
-                           you add the user through a family's page. Doing so will
-                           link the user to the appropriate family."
-                          data-placement="bottom"
-                          style="margin-left: 2%">Add Volunteer
-                  </button>
-
-              </span>
-          </div>
-        </div>
-         {% endif %}
+  {% block tabledata %}
 
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
 
@@ -129,50 +79,8 @@
          </tbody>
 
 </table>
-    </div>
-</div>
-
-    </form>
 
 
 {%  endblock %}
-
-
-{% block extraJquery %}
-
-<script>
-$(document).ready(function(){
-    myVal = $('#formActionSelect').change(function(){
-        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
-    });
-});
-</script>
-
-
-
-<script>
-$("#checkToggle").change(function () {
-    $("input:checkbox").prop('checked', $(this).prop("checked"));
-});
-</script>
-
-
-<script>
-$("#newUsr").click(function(){
-    $('#volunteerIdx').attr("method",'')
-
-})
-</script>
-
-<script>
-$(document).ready(function(){
-    $('[data-toggle="popover"]').popover({
-        trigger : 'hover'
-    });
-});
-</script>
-{% endblock %}
-
-
 
 
