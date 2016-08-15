@@ -42,14 +42,35 @@ def EventIndex(request):
     return response
 
 
-#def makeEventsViewable(request):
-#    selected_values = request.POST.getlist('UserRecs')
-#    for vol in selected_values:
-#        ur = VolunteerProfile.objects.get(pk=vol)
-#        if ur.linkedUserAccount.is_active==False:
-#            ur.linkedUserAccount.is_active = True
-#            ur.linkedUserAccount.save()
-#    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+def EventTaskIndex(request):
+    TaskIndex = EventTasks.objects.all().select_related('task_to_event')
+    response = render(request, 'tables/eventTaskList.html',{'TaskIndex':TaskIndex})
+    return response
+
+
+class addVolunteerEventTask(LoginRequiredMixin, CreateView):
+    form_class = EventTasksForm
+    template_name = 'forms/addEditEventTask.html'
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            return reverse('taskIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('addVolunteerEventTask')
+
+class updateVolunteerEventTask(LoginRequiredMixin,UpdateView):
+    form_class = EventTasksForm
+    template_name = 'forms/addEditEventTask.html'
+
+    def get_object(self, queryset=None):
+        return EventTasks.objects.get(pk=self.kwargs['taskID'])
+
+    def form_valid(self, form):
+        form.save()
+        return super(updateVolunteerEventTask,self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('taskIndex')
 
 
 

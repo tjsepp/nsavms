@@ -1,0 +1,32 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+{% load staticfiles %}
+
+{% block title %}Task Detail{% endblock %}
+
+
+{% block base_content %}
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px">Task Details</h2>
+    {%  crispy form %}
+{%  endblock %}
+
+
+{% block extraJquery %}
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
+
+<script>
+
+$(document).ready(function(){
+    $(".help-block").remove()
+})
+</script>
+
+{% endblock %}

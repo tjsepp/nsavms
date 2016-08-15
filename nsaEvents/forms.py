@@ -47,6 +47,30 @@ class EventsForm(ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
 
+class EventTasksForm(ModelForm):
+    class Meta:
+        model = EventTasks
+        fields='__all__'
+    def __init__(self, *args, **kwargs):
+        super(EventTasksForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        #self.helper.label_class='col-md-2'
+        #self.helper.field_class='col-md-5'
+        self.helper.layout = Layout(
+        'relatedEvent',
+        'taskName',
+        'allowView',
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
+
+
 
 class LogHoursFromEventForm(ModelForm):
     '''
