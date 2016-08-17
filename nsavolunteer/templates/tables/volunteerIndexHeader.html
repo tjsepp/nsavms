@@ -31,8 +31,9 @@
           <select id="formActionSelect" class="form-control">
             <option value="" disabled="disabled" selected="selected">---Select Action---</option>
               <optgroup label="Reports">
-                  <option value="{% url 'InactiveVolunteerIndex' %}">Show inactive users</option>
-                  <option value="#">Unassigned Students</option>
+                  <option value="{% url 'volunteerIndex' %}">All Active Volunteers</option>
+                  <option value="{% url 'pendingvolunteerIndex' %}">Pending Volunteers</option>
+
               </optgroup>
               <optgroup label="Approval Options">
                   <option value="{% url 'markAsApproved' %}">Mark selected users as approved</option>

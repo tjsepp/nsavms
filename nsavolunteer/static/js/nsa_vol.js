@@ -13,11 +13,16 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $('.datatable').DataTable({
+            "pagingType": "full_numbers",
             "bLengthChange": false,
             "iDisplayLength": 1000,
                 scrollY:        '60vh',
                 scrollCollapse: true,
                 bStateSave: true,
+                dom: 'frtipB',
+                buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+        ],
         }
     );
 } );

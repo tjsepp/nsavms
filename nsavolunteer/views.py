@@ -82,6 +82,15 @@ def VolunteerIndex(request):
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 
+def PendingVolunteerIndex(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    volunteerIndex = User.objects.select_related('linkedUser','linkedUser__volunteerType').\
+        prefetch_related('linkedUser__interest','family','groups').filter(is_active=True).filter(linkedUser__volStatus='pending')
+    response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
+    return response
+
 
 def InactiveVolunteerIndex(request):
     '''

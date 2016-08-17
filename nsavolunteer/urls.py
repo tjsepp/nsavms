@@ -31,6 +31,7 @@ url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
 ##Admin templates
 url(r'^volunteerindex',VolunteerIndex,name='volunteerIndex'),
+url(r'^pending_volunteerindex',PendingVolunteerIndex,name='pendingvolunteerIndex'),
 url(r'^Inactivevolunteerindex',InactiveVolunteerIndex,name='InactiveVolunteerIndex'),
 url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
 url(r'^familyindex',FamilyIndex,name='familyIndex'),
