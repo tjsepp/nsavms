@@ -85,9 +85,9 @@ def VolunteerIndex(request):
 
 def InactiveVolunteerIndex(request):
     '''
-    This view populates the volunteerIndex table with all active users
+    This view populates the volunteerIndex table with all inactive users
     '''
-    volunteerIndex = User.objects.all().select_related('linkedUser','linkedUser__volunteerType').\
+    volunteerIndex = User.objects.filter(is_active=False).select_related('linkedUser','linkedUser__volunteerType').\
         prefetch_related('linkedUser__interest','family','groups')
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
@@ -534,23 +534,7 @@ def removeFromAvc(request):
         g.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-'''
-def get_tasks(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        tasks = EventTasks.objects.filter(taskName__icontains = q )[:20]
-        results = []
-        for task in tasks:
-            task_json = {}
-            task_json['id'] = task.taskid
-            task_json['label'] = task.taskName
-            task_json['value'] = task.taskName
-            results.append(task_json)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    return HttpResponse(data, content_type="application/json")
-'''
+
 def get_tasks(request,eventid):
     print eventid
     if request.is_ajax():
