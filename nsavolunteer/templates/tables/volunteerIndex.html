@@ -40,9 +40,9 @@
                 {% endif%}
                 <td>
                     {% if vol.is_active %}
-                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>Active</div>
                      {%  else %}
-                        <span class="glyphicon glyphicon-remove" style="color: red">
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>Inactive</div>
                       {% endif %}
                         </span>
                 </td>
@@ -68,9 +68,9 @@
 				    {% endfor %}
                 </td>
                 <td> {% if vol.linkedUser.interest.all|length >= 1 %}
-                        <span class="glyphicon glyphicon-ok" style='color: green;'>
+                        <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>Complete</div>
                      {%  else %}
-                        <span class="glyphicon glyphicon-remove" style="color: red">
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>Incomplete</div>
                       {% endif %}
                         </span>
                 </td>

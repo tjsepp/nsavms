@@ -70,9 +70,9 @@
                 <td><a href={% url 'familyprofile' fam.familyProfileId  %}>{{ fam.familyName }}</a></td>
                 <td style="text-align: center">
                     {% if fam.active %}
-                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>Active</div>
                      {%  else %}
-                        <span class="glyphicon glyphicon-remove" style="color: red">
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>Inactive</div>
                       {% endif %}
                         </span>
                 </td>

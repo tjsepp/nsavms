@@ -13,6 +13,6 @@ def is_avc(value):
         if x.name =='AVC':
             x_true=1
     if x_true ==1:
-        return "<span class='glyphicon glyphicon-ok' style='color: green;'>"
+        return "<span class='glyphicon glyphicon-ok' style='color: green;'><div style='display: none;'>True</div></span>"
 
 

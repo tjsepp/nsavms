@@ -81,17 +81,17 @@
                 <td>{{ event.location}}</td>
                 <td style="text-align: center">
                     {% if event.autoApprove %}
-                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
                      {%  else %}
-                        <span class="glyphicon glyphicon-remove" style="color: red">
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>False</div>
                       {% endif %}
                         </span>
                 </td>
                 <td style="text-align: center">
                     {% if event.allowView %}
-                     <span class="glyphicon glyphicon-ok" style='color: green;'>
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
                      {%  else %}
-                        <span class="glyphicon glyphicon-remove" style="color: red">
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>False</div>
                       {% endif %}
                         </span>
                 </td>

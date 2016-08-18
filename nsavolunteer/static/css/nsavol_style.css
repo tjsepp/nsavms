@@ -142,6 +142,13 @@ margin-bottom: 50px;
     float: right;
 }
 
+.dataTables_paginate {
+margin-top: 15px;
+position: absolute;
+text-align: right;
+left: 50%;
+}
+
 #volunteerProfile{
        width: 900px;
        margin: 0 auto;

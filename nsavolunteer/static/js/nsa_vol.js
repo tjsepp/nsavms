@@ -16,15 +16,32 @@ $(document).ready(function() {
             "pagingType": "full_numbers",
             "bLengthChange": false,
             "iDisplayLength": 1000,
-                scrollY:        '60vh',
+                scrollY:        '80vh',
                 scrollCollapse: true,
                 bStateSave: true,
+
                 dom: 'frtipB',
+
                 buttons: [
-            'copy', 'csv', 'excel', 'pdf'
-        ],
-        }
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            {
+                                extend: 'pdfHtml5',
+                                orientation: 'landscape'
+
+                             },
+                            'print'
+                        ]
+                    }
+                ],
+    }
     );
+
 } );
 
 $(document).ready(function() {
