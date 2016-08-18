@@ -25,12 +25,10 @@
 
             {% for vol in family.famvolunteers.all %}
             <tr>
-                <td align="center"><a href="#" class="glyphicon glyphicon-edit" data-toggle="popover"  data-trigger="focus"
-                                      title="Edit: <b>{{ vol.name }}</b>"
-                                      data-content="<ul style='list-style-type:none'>
-                                                    <li style='margin-left:-20%'><a href='{%  url 'updateVolunteerProfile' vol.linkedUser.volunteerProfileID  family.familyProfileId %}'>Edit {{ vol.linkedUser.firstName }}'s information</a></li>
-                                                    <li style='margin-left:-20%'><a href='{%  url 'removeContactFromFamily' family.familyProfileId vol.id %}'>Remove {{ vol.linkedUser.firstName }} from {{ family.familyName}}</a></li>
-                                                    </ul>"></a></td>
+                            <td style="white-space: nowrap; width: 5%">
+                    <a href="{%  url 'updateVolunteerProfile' vol.linkedUser.volunteerProfileID  family.familyProfileId %}"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
+                    <a href="{%  url 'removeContactFromFamily' family.familyProfileId vol.id %}"><button type="button" class="btn btn-danger btn-xs">Remove</button></a>
+                </td>
                 <td>
                     {% if vol.is_active %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'>

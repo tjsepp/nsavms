@@ -16,10 +16,10 @@ $(document).ready(function() {
             "pagingType": "full_numbers",
             "bLengthChange": false,
             "iDisplayLength": 1000,
-                scrollY:        '80vh',
+                scrollY:        '65vh',
                 scrollCollapse: true,
                 bStateSave: true,
-
+                searchDelay: 350,
                 dom: 'frtipB',
 
                 buttons: [
