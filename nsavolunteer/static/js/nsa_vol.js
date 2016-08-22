@@ -51,6 +51,25 @@ $(document).ready(function() {
                 scrollY:        '50vh',
                 scrollCollapse: true,
                 bStateSave: true,
+                dom: 'frtipB',
+
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            {
+                                extend: 'pdfHtml5',
+                                orientation: 'landscape'
+
+                             },
+
+                        ]
+                    }
+                ],
         }
     );
 } );

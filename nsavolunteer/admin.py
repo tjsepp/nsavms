@@ -1,6 +1,6 @@
 from django.contrib import admin
 from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerProfile, RewardCardUsers,Student,\
-    FamilyProfile,StudentToFamily,RewardCardUsage,VolunteerHours,TrafficDuty, FamilyAggHours #,RecruitingEmail
+    FamilyProfile,StudentToFamily,RewardCardUsage,VolunteerHours,TrafficDuty, FamilyAggHours, Traffic_Duty
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -90,4 +90,5 @@ admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
 admin.site.register(VolunteerHours,VolunteerHoursAdmin)
 admin.site.register(FamilyAggHours,FamilyAggHoursAdmin)
 admin.site.register(TrafficDuty,TrafficDataAdmin)
+admin.site.register(Traffic_Duty)
 #admin.site.register(RecruitingEmail)

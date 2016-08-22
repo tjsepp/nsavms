@@ -17,7 +17,7 @@ GRADELEVEL = (('0','Kindergarten'),('1','1st Grade'),('2','2nd Grade'),('3','3rd
               ('5','5th Grade'),('6','6th Grade'),('7','7th Grade'),('8','8th Grade'))
 
 TRAFFICDUTY = (('am','Drop-off'),('pm','Pick-up'))
-
+TRAFFICDUTY_INT=((0,'0'),(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'))
 
 class TimeStampedModel(models.Model):
     '''
@@ -235,9 +235,7 @@ class FamilyProfile(TimeStampedModel):
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()
 
-    def save(self, force_insert=False,force_update=False, using=None):
-        rec = FamilyAggHours.objects.get_or_create(family = self, schoolYear = SchoolYear.objects.get(currentYear = 1))
-        super(FamilyProfile,self).save(force_insert, force_update)
+
 
     @property
     def listVolunteers(self):
@@ -488,6 +486,68 @@ class RewardCardUsage(TimeStampedModel):
         db_table = 'rewardCardData'
         ordering = ['refillDate']
 
+class Traffic_Duty(TimeStampedModel):
+    ''' This is the new traffic duty class to allow for weekly input vs. daily observations.
+    '''
+    trafficDutyId= models.AutoField(primary_key=True,db_column='TrafficDutyId',verbose_name='Traffic Duty ID')
+    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDuty_User',db_index=True)
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='Family',blank=True,null=True,related_name='trafficDutyFamily',db_index=True)
+    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
+    weekStart = models.DateField(db_column='trafficDutyWeekStart', verbose_name='Traffic Duty Week Start', null=True, blank=False,db_index=True)
+    weekEnd = models.DateField(db_column='trafficDutyWeekEnd', verbose_name='Traffic Duty Week End', null=True, blank=False,db_index=True)
+    morning_shifts = models.IntegerField(db_column='morningShifts', verbose_name='Morning Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
+    afternoon_shifts = models.IntegerField(db_column='afternoonShifts', verbose_name='Afternoon Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
+    am_manager = models.BooleanField(db_column='am_manager', verbose_name='AM Manager',default=False)
+    totalTrafficShifts =  models.DecimalField(db_column='totalTrafficShifts',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Traffic Shifts')
+    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
+
+    def __unicode__(self):
+        return '%s -- %s through %s' %(self.volunteerId.name,self.weekStart,self.weekEnd)
+
+    class Meta:
+        verbose_name_plural='Traffic Duty'
+        db_table = 'traffic_Duty'
+        ordering = ['weekStart']
+
+    def save(self, *args, **kwargs):
+        #sum shifts and add to total traffic shifts
+        self.totalTrafficShifts = self.morning_shifts + self.afternoon_shifts
+
+        #calcualte total volunteer hours
+        if self.am_manager ==True:
+            am_hours = float(self.morning_shifts) *1.5
+        else:
+            am_hours = self.morning_shifts
+
+        #assign two hours to every afternoon shift
+        pm_hours = self.afternoon_shifts*2
+
+        self.volunteerHours = float(am_hours)+float(pm_hours)
+
+
+        #manage information in the family Aggregate table
+        p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
+        if self.pk: #if this is an existing traffic duty record meaning we're updating an existing entry
+            origRecord = Traffic_Duty.objects.get(pk=self.pk) #get Original record
+            #back out all data from the original record. This should give us a clean slate to add back the updated data
+            p.trafficDutyCount = p.trafficDutyCount - origRecord.totalTrafficShifts
+            p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
+            #add back all new updated data
+            p.trafficDutyCount = p.trafficDutyCount + self.totalTrafficShifts
+            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+        else: #if trafficDuty doesnt exist - this is a new entry
+            p.trafficDutyCount = p.trafficDutyCount+self.totalTrafficShifts #increment
+            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+        p.save()
+        super(Traffic_Duty,self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
+        p.totalVolHours = p.totalVolHours - self.volunteerHours
+        p.trafficDutyCount = p.trafficDutyCount - self.totalTrafficShifts
+        p.save()
+        super(Traffic_Duty, self).delete(*args, **kwargs)
+
 
 class TrafficDuty(TimeStampedModel):
     trafficDutyId= models.AutoField(primary_key=True,db_column='ParkingDutyId',verbose_name='Parking Duty ID')
@@ -503,7 +563,7 @@ class TrafficDuty(TimeStampedModel):
 
 
     class Meta:
-        verbose_name_plural='Traffic Duty'
+        verbose_name_plural='Traffic Duty OLD'
         db_table = 'trafficDuty'
         ordering = ['trafficDutyDate']
 
@@ -565,6 +625,11 @@ class FamilyAggHours(TimeStampedModel):
 
     def __unicode__(self):
         return '%s - %s' %(self.family,self.schoolYear)
+
+    def create_familyAgg_on_familyProfile_creation(sender, instance, created, **kwargs):
+        if created:
+            FamilyAggHours.objects.get_or_create(family = instance, schoolYear = SchoolYear.objects.get(currentYear = 1))
+    post_save.connect(create_familyAgg_on_familyProfile_creation, sender=FamilyProfile)
 
     class Meta:
         verbose_name_plural='Family Sums'
