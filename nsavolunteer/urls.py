@@ -38,6 +38,7 @@ url(r'^familyindex',FamilyIndex,name='familyIndex'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
 url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
+url(r'^weeklytrafficreport',TrafficReportWeekly.as_view(),name='trafficReportWeekly'),
  url(r'^approveHours',hoursToApprove,name='approveHours'),
 ##User and admin Forms
 url(r'^hoursApproved/(?P<vhId>\d+)/$',approvedHours,name='hoursApproved'),
@@ -77,4 +78,8 @@ url (r'generate_email_list', get_recruits_email, name='getRecruitingEmail'),
 url (r'sendRecruitingEmail', send_recruiting_email, name='sendRecruitingEmail'),
 url(r'^editVolunteerLoginInfo/(?P<volid>\d+)$',UpdateVolunteerLogin.as_view(),name='editVolunteerLoginAdmin'),
 url(r'^mass_password_reset$',massPasswordReset,name='massPass'),
+url(r'^add_traffic_duty_weekly$',addNewTraffic_weekly.as_view(),name='addWeeklyTraffic'),
+url(r'^edit_traffic_duty_weekly/(?P<trafficid>\d+)$',editTraffic_weekly.as_view(),name='editWeeklyTraffic'),
+url(r'^delete_traffic_duty_weekly/(?P<trafficid>\d+)$',deleteTrafficDuty,name='deleteWeeklyTraffic'),
+
 ]

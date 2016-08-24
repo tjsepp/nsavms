@@ -11,7 +11,8 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
-    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin
+    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
+    TrafficWeeklyUpdate
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -20,7 +21,7 @@ from nsaEvents.models import EventTasks
 import json
 from django.contrib.auth.models import Group
 from django.core.mail import EmailMultiAlternatives, EmailMessage, send_mail
-
+from django.template import loader
 
 def homeView(request):
     news = VolunteerNews.objects.all()
@@ -819,4 +820,54 @@ class UpdateVolunteerLogin(LoginRequiredMixin,UpdateView):
         profile.save()
         return super(UpdateVolunteerLogin,self).form_valid(form)
 
+
+class addNewTraffic_weekly(LoginRequiredMixin, CreateView):
+    form_class = TrafficWeeklyUpdate
+    template_name = 'forms/trafficWeekly.html'
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            retPage = 'trafficReportWeekly'
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = 'addWeeklyTraffic'
+        return reverse(retPage)
+
+
+
+
+class editTraffic_weekly(LoginRequiredMixin,UpdateView):
+    form_class = TrafficWeeklyUpdate
+    template_name = 'forms/trafficWeekly.html'
+
+    def get_object(self):
+        return Traffic_Duty.objects.get(trafficDutyId=self.kwargs['trafficid'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(editTraffic_weekly, self).get_context_data(*args, **kwargs)
+        context['isEdit'] = 'Edit'
+        return context
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            retPage = 'trafficReportWeekly'
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = 'addWeeklyTraffic'
+        return reverse(retPage)
+
+
+
+
+class TrafficReportWeekly(TemplateView):
+
+    template_name = "tables/trafficDutyWeekly.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TrafficReportWeekly, self).get_context_data(**kwargs)
+        context['recentTraffic'] = Traffic_Duty.objects.all().order_by('-dateCreated')[:50]
+        return context
+
+def deleteTrafficDuty(request, trafficid):
+    obj = Traffic_Duty.objects.get(pk=trafficid)
+    obj.delete()
+    return HttpResponseRedirect(reverse('trafficReportWeekly'))
 

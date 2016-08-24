@@ -95,7 +95,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $('.selectVol').select2({
-         placeholder: "enter a volunteer"
+         placeholder: "Select a volunteer"
     });
 });
 
@@ -123,3 +123,4 @@ $(document).ready(function () {
          placeholder: "Select Teachers"
     });
 });
+

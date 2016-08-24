@@ -332,3 +332,7 @@ text-decoration: none;
     -moz-border-radius: 6px 0 6px 6px;
     border-radius: 6px 0 6px 6px;
 }
+
+.bootstrap-datetimepicker-widget tr:hover {
+    background-color: #808080;
+}

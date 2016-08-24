@@ -1,0 +1,85 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Traffic Duty
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Recent Traffic Duty Updates</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Volunteer</th>
+                <th>Family</th>
+                <th>Week Start</th>
+                <th>A.M. Manager</th>
+                <th>A.M. Shifts</th>
+                <th>P.M. Shifts</th>
+                <th>Total Shifts</th>
+                <th>Volunteer Hrs.</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+        {% for duty in recentTraffic %}
+
+            <tr>
+                <td style="white-space: nowrap; width: 5%">
+                    <a href="{%  url 'editWeeklyTraffic' duty.trafficDutyId %}"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
+                    <a href="#" data-toggle="modal" data-target="#deleteTrafficWeekly_{{duty.trafficDutyId}}"><button type="button" class="btn btn-danger btn-xs"
+                            >Delete</button></a>
+                </td>
+                <td>{{duty.volunteerId.name}}</td>
+                <td>{{ duty.linkedFamily }}</td>
+                <td>{{ duty.weekStart }}</td>
+                <td>
+                {% if duty.am_manager %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
+                {%  else %}
+                     <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'></div>
+                {% endif %}
+                     </span>
+                </td>
+                <td>{{ duty.morning_shifts}}</td>
+                <td>{{ duty.afternoon_shifts}}</td>
+                <td>{{ duty.totalTrafficShifts}}</td>
+                <td>{{ duty.volunteerHours}}</td>
+            </tr>
+        {% include 'modals/deleteTrafficDutyModal.html' %}
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

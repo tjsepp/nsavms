@@ -1,0 +1,71 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+
+
+{% block title %}Add Traffic Duty{% endblock %}
+
+
+{% block base_content %}
+<h2 class='vmsHeader' style="text-align: center; margin-top: 100px">
+    {% if isEdit %}
+        Edit
+    {% else %}
+        Add
+    {% endif %}
+        Traffic Duty
+</h2>
+    {%  crispy form %}
+{%  endblock %}
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+
+  //Initialize the datePicker(I have taken format as mm-dd-yyyy, you can     //have your owh)
+  $("#weeklyDatePicker").datetimepicker({
+      format: 'MM-DD-YYYY'
+  });
+   //Get the value of Start and End of Week
+  $('#weeklyDatePicker').on('dp.change', function (e) {
+      var value = $("#weeklyDatePicker").val();
+      var firstDate = moment(value, "MM/DD/YYYY").day(0).format("MM/DD/YYYY");
+      var lastDate =  moment(value, "MM/DD/YYYY").day(6).format("MM/DD/YYYY");
+      $("#weeklyDatePicker").val(firstDate + " - " + lastDate);
+      $('#id_weekStart').val(firstDate)
+      $('#id_weekEnd').val(lastDate)
+  });
+});
+</script>
+
+
+<script>
+$(document).ready(function(){
+    $("#id_linkedFamily").empty();
+    $('#id_volunteerId').change(function(){
+        $("#id_linkedFamily").empty();
+        usid = this.value;
+        request_url = '/get_related_families/' + usid + '/';
+
+            $.ajax({
+                url:request_url,
+                success: function (data) {
+
+
+
+                    $.each(data, function(key, value){
+                        $.each(value, function(key, value){
+                            $("#id_linkedFamily").append($("<option></option>")
+                                        .attr("value",key)
+                                        .text(value));
+                        });
+                    });
+                }
+            })
+        })
+    })
+</script>
+
+
+
+{% endblock %}

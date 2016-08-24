@@ -384,6 +384,9 @@ class VolunteerHours(TimeStampedModel):
                     if self.approved:
                         summed_hours = summed_hours
 
+                if summed_hours <0:
+                    summed_hours = 0
+
                 p.totalVolHours = summed_hours
                 p.save()
 
@@ -415,8 +418,9 @@ class VolunteerHours(TimeStampedModel):
 
     def delete(self, *args, **kwargs):
         p = FamilyAggHours.objects.get(family = self.family, schoolYear = self.schoolYear)
-        hoursToRemove = p.totalVolHours - self.volunteerHours
-        p.totalVolHours = hoursToRemove
+        if self.approved:
+            hoursToRemove = p.totalVolHours - self.volunteerHours
+            p.totalVolHours = hoursToRemove
         p.save()
         super(VolunteerHours, self).delete(*args, **kwargs)
 
@@ -491,13 +495,13 @@ class Traffic_Duty(TimeStampedModel):
     '''
     trafficDutyId= models.AutoField(primary_key=True,db_column='TrafficDutyId',verbose_name='Traffic Duty ID')
     volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDuty_User',db_index=True)
-    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='Family',blank=True,null=True,related_name='trafficDutyFamily',db_index=True)
+    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='Family',blank=False,null=True,related_name='trafficDutyFamily',db_index=True)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     weekStart = models.DateField(db_column='trafficDutyWeekStart', verbose_name='Traffic Duty Week Start', null=True, blank=False,db_index=True)
     weekEnd = models.DateField(db_column='trafficDutyWeekEnd', verbose_name='Traffic Duty Week End', null=True, blank=False,db_index=True)
     morning_shifts = models.IntegerField(db_column='morningShifts', verbose_name='Morning Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
     afternoon_shifts = models.IntegerField(db_column='afternoonShifts', verbose_name='Afternoon Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
-    am_manager = models.BooleanField(db_column='am_manager', verbose_name='AM Manager',default=False)
+    am_manager = models.BooleanField(db_column='am_manager', verbose_name='A.M. Manager',default=False)
     totalTrafficShifts =  models.DecimalField(db_column='totalTrafficShifts',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Traffic Shifts')
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
 
@@ -515,7 +519,7 @@ class Traffic_Duty(TimeStampedModel):
 
         #calcualte total volunteer hours
         if self.am_manager ==True:
-            am_hours = float(self.morning_shifts) *1.5
+            am_hours = float(self.morning_shifts ) *1.5
         else:
             am_hours = self.morning_shifts
 

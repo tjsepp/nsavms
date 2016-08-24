@@ -297,6 +297,7 @@ class AddNewVolunteersToFamily(UserCreationForm):
         raise forms.ValidationError('This email is already in use. Please check for existing user')
 
 
+
 class AddTrafficVolunteersForm(ModelForm):
     class Meta:
         model=TrafficDuty
@@ -457,3 +458,33 @@ class EditVolunteersLogin(AuthUserUpdateForm):
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         )
+
+class TrafficWeeklyUpdate(ModelForm):
+    class Meta:
+        model=Traffic_Duty
+    weekPicker = forms.CharField(label='Week')
+    def __init__(self, *args, **kwargs):
+        super(TrafficWeeklyUpdate,self).__init__(*args, **kwargs)
+        self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        self.fields['volunteerId'].queryset = User.objects.filter(is_active = True)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            Field('volunteerId',css_class='selectVol'),
+            'linkedFamily',
+            Field('schoolYear',type='hidden'),
+            Div(
+            Field('weekPicker',id='weeklyDatePicker'),style='position: relative'),
+            Field('weekStart',type="hidden"),
+            Field('weekEnd',type="hidden"),
+            Field('morning_shifts',css_class='shifts'),
+            Field('afternoon_shifts',css_class='shifts'),
+            'am_manager',
+        HTML('<div class="form-group"><div class="col-lg-5"></div>'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
