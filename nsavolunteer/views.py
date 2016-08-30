@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
-    AddTrafficVolunteersForm,AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
+    AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
     TrafficWeeklyUpdate
 from .models import *
 from django.forms.formsets import formset_factory
@@ -129,13 +129,13 @@ def userVolunteerData(request):
     '''
 
     curYear = SchoolYear.objects.get(currentYear = 1)
-    curUser = User.objects.prefetch_related('linkedUser','linkedUser__linkedUserAccount__volunteerhours_set',
-                                            'linkedUser__linkedUserAccount__family','linkedUser__linkedUserAccount__rewardCardValue').get(pk=request.user.id)
+    curUser = User.objects.select_related('trafficDuty_User','linkedUser','linkedUser__linkedUserAccount__volunteerhours_set','linkedUser__linkedUserAccount__rewardCardValue')\
+        .prefetch_related('linkedUser__linkedUserAccount__family').get(pk=request.user.id)
     rewardCardData = curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
     volhours = curUser.volunteerhours_set.select_related('event','family').filter(schoolYear=curYear).all().order_by('-eventDate')
-    traffic = curUser.trafficDutyUser.filter(schoolYear = curYear).order_by('-trafficDutyDate')
+    traffic = curUser.trafficDuty_User.filter(schoolYear = curYear).order_by('-weekStart')
     rewardCardSum =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
-    parkingDutySum=curUser.trafficDutyUser.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+    parkingDutySum=traffic.aggregate(Sum('volunteerHours')).values()[0]
     volunteerHoursSum=volhours.filter(approved=True).aggregate(Sum('volunteerHours')).values()[0]
     if rewardCardSum==None:
         rewardCardSum=0
@@ -143,9 +143,7 @@ def userVolunteerData(request):
         volunteerHoursSum = 0
     if parkingDutySum==None:
         parkingDutySum=0
-    familySums = curUser.family.all()
     totalVolunteerHoursUser = rewardCardSum+volunteerHoursSum+parkingDutySum
-    histHours = curUser.linkedUser.historical_volunteer_data
     hasInterests = curUser.linkedUser.interest.count()
     if curUser.family.count()>1:
         multFam = True
@@ -154,8 +152,8 @@ def userVolunteerData(request):
 
     response = render(request, 'volunteerData/volunteerData.html',{'rewardCardData':rewardCardData,
          'volHours':volhours,'rewardCardSum':rewardCardSum,'volunteerHoursSum':volunteerHoursSum,
-        'familySums':familySums,'totalVolunteerHoursUser':totalVolunteerHoursUser,'multFam':multFam,
-        'curYear':curYear,'curUser':curUser,'histHours':histHours,'hasInterests':hasInterests,'traffic':traffic})
+        'totalVolunteerHoursUser':totalVolunteerHoursUser,'multFam':multFam,
+        'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests,'traffic':traffic})
     return response
 
 
@@ -233,6 +231,15 @@ class UpdateFamilyProfile(LoginRequiredMixin,UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+def StudentIndex(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    StudentIndex = Student.objects.all().select_related('grade').prefetch_related('familyprofile_set','teacher').filter(activeStatus=True)
+    response = render(request, 'tables/StudentIndex.html',{'StudentIndex':StudentIndex})
+    return response
+
+
 class UpdateStudent(LoginRequiredMixin,UpdateView):
     form_class = StudentUpdateForm
     template_name = 'forms/studentUpdate.html'
@@ -246,8 +253,6 @@ class UpdateStudent(LoginRequiredMixin,UpdateView):
             return reverse('teacherProfile', kwargs={'teachid':teachid})
         else:
             return reverse('user_profile')
-
-
 
 
 class logUserHours(LoginRequiredMixin, CreateView):
@@ -470,15 +475,6 @@ def YearEndProcess(request):
 def deactivateFullFamily(request, famid):
     pass
 
-
-class TrafficReport(TemplateView):
-
-    template_name = "tables/trafficDuty.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(TrafficReport, self).get_context_data(**kwargs)
-        context['recentTraffic'] = TrafficDuty.objects.all().order_by('-dateCreated')[:50]
-        return context
 
 
 def markAsPending(request):

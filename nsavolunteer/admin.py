@@ -1,6 +1,6 @@
 from django.contrib import admin
 from models import VolunteerInterests,VolunteerType,FamilyProfile,VolunteerProfile, RewardCardUsers,Student,\
-    FamilyProfile,StudentToFamily,RewardCardUsage,VolunteerHours,TrafficDuty, FamilyAggHours, Traffic_Duty
+    FamilyProfile,StudentToFamily,RewardCardUsage,VolunteerHours,FamilyAggHours, Traffic_Duty
 from simple_history.admin import SimpleHistoryAdmin
 from django import forms
 from django.forms import TextInput, Textarea
@@ -54,19 +54,18 @@ class FamilyProfileAdmin(SimpleHistoryAdmin):
     actions = [make_active,make_inactive]
 
 
-class TrafficDataAdmin(admin.ModelAdmin):
-    models= TrafficDuty
-    list_display = ('volunteerId','trafficDutyDate','linkedFamily','schoolYear')
-
 
 class StudentAdmin(SimpleHistoryAdmin):
     model = Student
     list_display = ('getFullStudentName','activeStatus','grade','teacher')
     list_editable = ('grade','teacher',)
 
+
 class VolunteerHoursAdmin(SimpleHistoryAdmin):
     model = VolunteerHours
-    list_display = ('volunteer','family','event','eventDate','volunteerHours','approved')
+    search_fields = ('family','volunteer','event')
+    list_display = ('volunteer','family','event','eventDate','dateCreated','volunteerHours','approved')
+    list_filter = ('eventDate','dateCreated',)
 
 
 class FamilyAggHoursAdmin(SimpleHistoryAdmin):
@@ -89,6 +88,5 @@ admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
 admin.site.register(VolunteerHours,VolunteerHoursAdmin)
 admin.site.register(FamilyAggHours,FamilyAggHoursAdmin)
-admin.site.register(TrafficDuty,TrafficDataAdmin)
 admin.site.register(Traffic_Duty)
 #admin.site.register(RecruitingEmail)

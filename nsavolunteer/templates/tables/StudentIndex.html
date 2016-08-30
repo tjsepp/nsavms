@@ -1,0 +1,117 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Student Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Student Index</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+    <div class="col-sm-6">
+          <div class="input-group" style="margin-left: -2.5%; width: 70%">
+          <select id="formActionSelect" class="form-control">
+            <option value="" data-toggle="">---Select Action---</option>
+            <option value="#">Future Student Action 1</option>
+            <option value="#">Future Student Action 2</option>
+          </select>
+              <span class="input-group-btn">
+                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
+
+              </span>
+          </div>
+        </div>
+
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                <th></th>
+                <th style="width: 2%">Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Family</th>
+                <th>Grade</th>
+                <th>Teacher</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for student in StudentIndex %}
+                <tr>
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ fam.familyProfileId }}"></td>
+                <td align="center" style="white-space: nowrap; width: 3%">
+                    <a href="{% url 'updatestudent' student.studentId %}"><button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+                </td>
+                <td style="text-align: center">
+                    {% if student.activeStatus %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>Active</div>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>Inactive</div>
+                      {% endif %}
+                        </span>
+                </td>
+                <td>{{ student.studentFirstName }}</td>
+                <td>{{ student.studentLastName }}</td>
+                <td>
+                  {% for fam in student.familyprofile_set.all %}
+					    <a href='familyprofile/{{ fam.familyProfileId }}' target='_blank'>{{ fam.familyName }}</a>{%if not forloop.last %}, {% endif %}
+				    {% endfor %}
+                </td>
+                <td>{{ student.grade|default:''  }}</td>
+                <td>
+                        {% if student.teacher_id %}
+                        <a href="{% url 'teacherProfile' student.teacher_id %}">{{ student.teacher.lastName|default:'' }}</a>
+                        {%else%}
+                        {{ student.teacher.lastName|default:'' }}
+                        {%endif%}
+                </td>
+            </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+

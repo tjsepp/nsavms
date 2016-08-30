@@ -35,9 +35,9 @@ url(r'^pending_volunteerindex',PendingVolunteerIndex,name='pendingvolunteerIndex
 url(r'^Inactivevolunteerindex',InactiveVolunteerIndex,name='InactiveVolunteerIndex'),
 url(r'^updateFamilyProfile/(?P<famId>\d+)$',UpdateFamilyProfile.as_view(),name='updateFamilyProfile'),
 url(r'^familyindex',FamilyIndex,name='familyIndex'),
+url(r'^studentindex',StudentIndex,name='studentIndex'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
-url(r'^trafficreport',TrafficReport.as_view(),name='trafficReport'),
 url(r'^weeklytrafficreport',TrafficReportWeekly.as_view(),name='trafficReportWeekly'),
  url(r'^approveHours',hoursToApprove,name='approveHours'),
 ##User and admin Forms

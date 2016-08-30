@@ -250,47 +250,19 @@ class FamilyProfile(TimeStampedModel):
         return stuList
 
     @property
-    def totalCurrentVolunteerHours(self):
-      curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = VolunteerHours.objects.select_related('famvolunteers','schoolYear','event','volunteer').filter(approved=True).filter(family=self).filter(schoolYear=curYear) \
-              .aggregate(total=Sum('volunteerHours'))
-      if hours['total']:
-          total = hours['total']
-      else:
-          total = 0
-      return total
-
-    @property
-    def totalCurrentRewardCardHours(self):
-      curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = RewardCardUsage.objects.select_related('linkedFamily','volunteerId','schoolYear').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
-      if hours['total']:
-          total = hours['total']
-      else:
-          total = 0
-      return total
-
-    @property
-    def totalCurrentParkingDutyHours(self):
-      curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = TrafficDuty.objects.select_related('linkedFamily','schoolYear','volunteerId').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Sum('volunteerHours'))
-      if hours['total']:
-          total = hours['total']
-      else:
-          total = 0
-      return total
-
-    @property
     def totalCurrentHours(self):
-      hours =  self.totalCurrentVolunteerHours + self.totalCurrentRewardCardHours+self.totalCurrentParkingDutyHours
-      return hours
+      hours =  FamilyAggHours.objects.filter(family=self).filter(schoolYear=SchoolYear.objects.filter(currentYear=1))
+      if hours:
+          total = hours[0].totalVolHours
+      else:
+          total = 0
+      return total
 
     @property
     def totalCurrentTrafficDutyCount(self):
-      curYear = SchoolYear.objects.filter(currentYear=1)
-      hours = TrafficDuty.objects.select_related('linkedFamily','schoolYear','volunteerId').filter(linkedFamily_id=self.familyProfileId).filter(schoolYear =curYear).aggregate(total=Count('trafficDutyId'))
-      if hours['total']:
-          total = hours['total']
+      hours =  FamilyAggHours.objects.filter(family=self).filter(schoolYear=SchoolYear.objects.filter(currentYear=1))
+      if hours:
+          total = hours[0].trafficDutyCount
       else:
           total = 0
       return total
@@ -551,70 +523,6 @@ class Traffic_Duty(TimeStampedModel):
         p.trafficDutyCount = p.trafficDutyCount - self.totalTrafficShifts
         p.save()
         super(Traffic_Duty, self).delete(*args, **kwargs)
-
-
-class TrafficDuty(TimeStampedModel):
-    trafficDutyId= models.AutoField(primary_key=True,db_column='ParkingDutyId',verbose_name='Parking Duty ID')
-    trafficDutyDate = models.DateField(db_column='parkingDutyDate', verbose_name='Parking Duty Date', null=True, blank=True,db_index=True)
-    schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=True)
-    volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='trafficDutyUser',db_index=True)
-    linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='parkingDutyFamily',db_index=True)
-    trafficDutyType =models.CharField(max_length=25,db_column='store',verbose_name='Duty Type',null=True,blank=False,choices=TRAFFICDUTY)
-    volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
-
-    def __unicode__(self):
-        return '%s - %s' %(self.volunteerId.name,self.trafficDutyDate)
-
-
-    class Meta:
-        verbose_name_plural='Traffic Duty OLD'
-        db_table = 'trafficDuty'
-        ordering = ['trafficDutyDate']
-
-    def save(self, *args, **kwargs):
-        if self.trafficDutyType == 'am':
-            volTime = 1
-        elif self.trafficDutyType =='pm':
-            volTime =2
-        else:
-            volTime = 0
-        self.volunteerHours = volTime
-
-        p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
-        if self.pk: #if trafficDuty exitst
-            origRecord = TrafficDuty.objects.get(pk=self.pk) #get Original record
-            p.trafficDutyCount = p.trafficDutyCount #dont increment
-            if origRecord.volunteerHours !=self.volunteerHours:
-                p.totalVolHours = p.totalVolHours - origRecord.volunteerHours + self.volunteerHours
-            else:
-                p.totalVolHours = p.totalVolHours
-        else: #if trafficDuty doesnt exist
-            p.trafficDutyCount = p.trafficDutyCount+1 #increment
-            p.totalVolHours = p.totalVolHours + self.volunteerHours
-        p.save()
-        super(TrafficDuty,self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
-        p.totalVolHours = p.totalVolHours - self.volunteerHours
-        p.trafficDutyCount = p.trafficDutyCount - 1
-        p.save()
-        super(TrafficDuty, self).delete(*args, **kwargs)
-
-
-#class RecruitingEmail(TimeStampedModel):
-#    emailId = models.AutoField(primary_key=True,db_column='email',verbose_name='emailId')
-#    recipients = models.CommaSeparatedIntegerField(max_length=500,db_column='recipients', null=True,blank=False, verbose_name='Recipients')
-#    subject = models.CharField(max_length=200,db_column='subject',verbose_name='Subject',null=True,blank=False)
-#    body = models.TextField(verbose_name='body', db_column='body', null=True, blank=False)
-#    def __unicode__(self):
-#        return '%s - %s' %(self.dateCreated,self.subject)
-
-#    class Meta:
-#        verbose_name_plural='Recruiting Email'
-#        db_table = 'recruitingEmail'
-#        ordering = ['dateCreated']
-
 
 class FamilyAggHours(TimeStampedModel):
     familySumId = models.AutoField(primary_key=True,db_column='FamilySumId',verbose_name='Family Sum ID')

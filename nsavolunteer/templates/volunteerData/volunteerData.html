@@ -9,16 +9,17 @@
     </div>
 
 
-    <div class="row" id="one">
+        <div class="row" id="one">
         <div class="col-lg-4 dashHeader">
-            <p>Total individual volunteer hours: <b id="userHours">{{ totalVolunteerHoursUser }}</b></p>
-            Total volunteer hours for family:<span  id="familyHours"></span>
-            {% for famx in familySums %}
+            <p>Total Individual Volunteer Hours: <b id="userHours">{{ totalVolunteerHoursUser }}</b></p>
+            Totals For Family:<span  id="familyHours"></span>
+            {% for famx in curUser.family.all %}
                 <ul style="margin: 1%">
-            <li style="margin: -1%">{{famx.familyName}}: <b>{{ famx.totalCurrentHours }}</b></li>
+            <li style="margin: -1%">{{famx.familyName}}: <b>{{ famx.totalCurrentHours }}</b> Hours -  <b>{{ famx.totalCurrentTrafficDutyCount }}</b> Traffic Shifts</li>
                 </ul>
             {% endfor %}
         </div>
+
 
         {% if user.linkedUser.volStatus == 'approved' %}
         <div class="col-lg-4" style="margin-left: 7%">
@@ -101,18 +102,30 @@
                 <table class="table table-hover table-bordered table-condensed">
                 <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
+
+                    <th>Week Of</th>
+                    {% if multFam %}
+                    <th>Family</th>
+                     {% endif %}
+                    <th>A.M. Shifts</th>
+                    <th>P.M. Shifts</th>
+                    <th>Total Shifts</th>
                     <th>Volunteer Hours</th>
                 </tr>
                 </thead>
                     {% for duty in traffic %}
                 <tr>
+
                     <td>
-                        {{ duty.trafficDutyDate }}
+                        {{ duty.weekStart }}
                     </td>
+                    {% if multFam %}
+                    <td>{{ duty.linkedFamily }}</td>
+                     {% endif %}
+                    <td>{{ duty.morning_shifts }}</td>
+                    <td>{{ duty.afternoon_shifts }}</td>
                     <td>
-                        {{ duty.get_trafficDutyType_display }}
+                        {{ duty.totalTrafficShifts }}
                     </td>
                     <td>
                         {{ duty.volunteerHours }}
@@ -125,6 +138,9 @@
         {% endif %}
 
     </div>
+
+
+
 
     <div class="panel panel-default user-data-panel">
         <div class="panel-heading">
@@ -159,36 +175,6 @@
                 <h4 style="color: red; text-align: center"><i>No reward card purchase data reported</i></h4>
         {% endif %}
 
-    </div>
-
-
-    <div class="panel panel-default user-data-panel">
-        <div class="panel-heading">
-            <h4 class="panel-title"><span id ='histTable'>Volunteer Hours By School Year <i>(Individual)</i></span></h4>
-        </div>
-    {% if histHours %}
-        
-                <table class="table table-hover table-bordered table-condensed">
-                <thead>
-                <tr>
-                    <th>School Year</th>
-                    <th>Total Hours</th>
-                </tr>
-                </thead>
-                    {% for yr in histHours %}
-                <tr>
-                    <td>
-                        {{ yr.schoolYear }}
-                    </td>
-                    <td>
-                        {{ yr.total }}
-                    </td>
-                </tr>
-                    {% endfor %}
-                </table>
-        {% else %}
-            <h4 style="color: red; text-align: center">No hours reported</h4>
-        {% endif %}
     </div>
 
 
