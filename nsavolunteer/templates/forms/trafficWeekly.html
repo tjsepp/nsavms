@@ -21,7 +21,6 @@
 {% block extraJquery %}
 <script>
 $(document).ready(function(){
-
   //Initialize the datePicker(I have taken format as mm-dd-yyyy, you can     //have your owh)
   $("#weeklyDatePicker").datetimepicker({
       format: 'MM-DD-YYYY'
@@ -39,32 +38,65 @@ $(document).ready(function(){
 </script>
 
 
-<script>
-$(document).ready(function(){
-    $("#id_linkedFamily").empty();
-    $('#id_volunteerId').change(function(){
-        $("#id_linkedFamily").empty();
-        usid = this.value;
-        request_url = '/get_related_families/' + usid + '/';
 
-            $.ajax({
-                url:request_url,
-                success: function (data) {
+{% if isEdit %}
+  <script>
+                $(document).ready(function(){
+                    $('#id_volunteerId').change(function(){
+                        $("#id_linkedFamily").empty();
+                        usid = this.value;
+                        request_url = '/get_related_families/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
 
 
 
-                    $.each(data, function(key, value){
-                        $.each(value, function(key, value){
-                            $("#id_linkedFamily").append($("<option></option>")
-                                        .attr("value",key)
-                                        .text(value));
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_linkedFamily").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
                         });
-                    });
-                }
-            })
-        })
-    })
-</script>
+                          $("#weeklyDatePicker").val($('#id_weekStart').val() + " - " +  $('#id_weekEnd').val());
+                })
+        </script>
+{% else %}
+        <script>
+                $(document).ready(function(){
+                    $("#id_linkedFamily").empty();
+                    $('#id_volunteerId').change(function(){
+                        $("#id_linkedFamily").empty();
+                        usid = this.value;
+                        request_url = '/get_related_families/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
+
+
+
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_linkedFamily").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                        })
+                    })
+        </script>
+{% endif %}
+
+
+
 
 
 

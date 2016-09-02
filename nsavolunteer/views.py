@@ -440,25 +440,6 @@ def RemoveContactFromFamily(request,famid,volunteerid):
     return HttpResponseRedirect(reverse('familyprofile', kwargs={'famid': famid}))
 
 
-def AddTrafficVolunteers(request):
-    addVolunteerFormset = formset_factory(AddTrafficVolunteersForm, extra=1)
-    formset=addVolunteerFormset(request.POST )
-    if request.method =="POST":
-        if formset.is_valid() :
-            message="Thank You!"
-            for form in formset:
-                form.save(commit=False)
-                form.instance.linkedFamily = FamilyProfile.objects.filter(famvolunteers =form.instance.volunteerId)[0]
-                form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
-                form.save()
-            return HttpResponseRedirect(reverse_lazy('trafficReport'))
-        else:
-            form_errors = formset.errors
-            return render_to_response('forms/addTrafficVolunteers.html',{'formset':formset,'form_errors':form_errors}, context_instance=RequestContext(request))
-    else:
-        return render_to_response('forms/addTrafficVolunteers.html',{'formset':addVolunteerFormset()},
-                                  context_instance=RequestContext(request))
-
 
 def YearEndProcess(request):
     '''

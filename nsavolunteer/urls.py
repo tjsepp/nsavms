@@ -52,7 +52,6 @@ url(r'^adduserstofamily/(?P<famid>\d+)/$',AddVolunteersToNewFamily,name='adduser
 url(r'^processContacttofamily/(?P<famid>\d+)/$',ProcessContactToExistingFamily,name='processContactToFamily'),
 url(r'^addContacttofamily/(?P<famid>\d+)/$',addContactToExistingFamily,name='addContactToExistingFamily'),
 url(r'^removeContactFromFamily/(?P<famid>\d+)/(?P<volunteerid>\d+)/$',RemoveContactFromFamily,name='removeContactFromFamily'),
-url(r'^addTrafficVolunteers/$',AddTrafficVolunteers,name='addtrafficvolunteers'),
 url(r'^deleteinterest/(?P<Intid>\d+)/$',deleteInterestFromProfile,name='deleteinterestFromProfile'),
 url(r'^markpending$',markAsPending,name='markAsPending'),
 url(r'^markApproved$',markAsApproved,name='markAsApproved'),
