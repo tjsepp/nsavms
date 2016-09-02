@@ -473,7 +473,8 @@ class Traffic_Duty(TimeStampedModel):
     weekEnd = models.DateField(db_column='trafficDutyWeekEnd', verbose_name='Traffic Duty Week End', null=True, blank=False,db_index=True)
     morning_shifts = models.IntegerField(db_column='morningShifts', verbose_name='Morning Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
     afternoon_shifts = models.IntegerField(db_column='afternoonShifts', verbose_name='Afternoon Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
-    am_manager = models.BooleanField(db_column='am_manager', verbose_name='A.M. Manager',default=False)
+    am_manager = models.BooleanField(db_column='am_manager', verbose_name='Supervisor',default=False)
+    kindie1 = models.BooleanField(db_column='kindie', verbose_name='Kindie',default=False) #this is a test
     totalTrafficShifts =  models.DecimalField(db_column='totalTrafficShifts',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Traffic Shifts')
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
 

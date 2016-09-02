@@ -61,7 +61,7 @@
                 </td>
                 <td>{{ duty.morning_shifts}}</td>
                 <td>{{ duty.afternoon_shifts}}</td>
-                <td>{{ duty.totalTrafficShifts}}</td>
+                <td>{{ duty.totalTrafficShifts|floatformat}}</td>
                 <td>{{ duty.volunteerHours}}</td>
             </tr>
         {% include 'modals/deleteTrafficDutyModal.html' %}

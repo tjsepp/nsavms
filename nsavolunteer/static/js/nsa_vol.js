@@ -16,11 +16,11 @@ $(document).ready(function() {
             "pagingType": "full_numbers",
             "bLengthChange": false,
             "iDisplayLength": 1000,
-                scrollY:        '65vh',
-                scrollCollapse: true,
-                bStateSave: true,
-                searchDelay: 350,
-                dom: 'frtipB',
+                "scrollY":'65vh',
+                "scrollCollapse": true,
+                "bStateSave": true,
+                "searchDelay": 350,
+                "dom": 'frtipB',
 
                 buttons: [
                     {
@@ -38,7 +38,7 @@ $(document).ready(function() {
                             'print'
                         ]
                     }
-                ],
+                ]
     }
     );
 
@@ -47,11 +47,11 @@ $(document).ready(function() {
 $(document).ready(function() {
     $('.recruitingTable').DataTable({
             "bLengthChange": false,
-            "iDisplayLength": 500,
-                scrollY:        '50vh',
-                scrollCollapse: true,
-                bStateSave: true,
-                dom: 'frtipB',
+            "iDisplayLength": 1000,
+                "scrollY":        '50vh',
+                "scrollCollapse": true,
+                "bStateSave": true,
+                "dom": 'frtipB',
 
                 buttons: [
                     {
@@ -65,11 +65,11 @@ $(document).ready(function() {
                                 extend: 'pdfHtml5',
                                 orientation: 'landscape'
 
-                             },
+                             }
 
                         ]
                     }
-                ],
+                ]
         }
     );
 } );

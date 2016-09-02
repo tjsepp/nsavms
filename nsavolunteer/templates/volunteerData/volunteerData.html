@@ -103,7 +103,7 @@
                 <thead>
                 <tr>
 
-                    <th>Week Of</th>
+                    <th style="width: 15%">Week Of</th>
                     {% if multFam %}
                     <th>Family</th>
                      {% endif %}
@@ -117,7 +117,7 @@
                 <tr>
 
                     <td>
-                        {{ duty.weekStart }}
+                        {{ duty.weekStart }} - {{ duty.weekEnd }}
                     </td>
                     {% if multFam %}
                     <td>{{ duty.linkedFamily }}</td>
@@ -125,7 +125,7 @@
                     <td>{{ duty.morning_shifts }}</td>
                     <td>{{ duty.afternoon_shifts }}</td>
                     <td>
-                        {{ duty.totalTrafficShifts }}
+                        {{ duty.totalTrafficShifts|floatformat }}
                     </td>
                     <td>
                         {{ duty.volunteerHours }}
