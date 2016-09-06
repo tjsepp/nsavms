@@ -461,7 +461,8 @@ class TrafficWeeklyUpdate(ModelForm):
             Field('weekEnd',type="hidden"),
             Field('morning_shifts',css_class='shifts'),
             Field('afternoon_shifts',css_class='shifts'),
-            'am_manager',
+            Field('am_manager',css_class='check_class'),
+            Field('kindie',css_class='check_class'),
         HTML('<div class="form-group"><div class="col-lg-5"></div>'),
         ButtonHolder(
         self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),

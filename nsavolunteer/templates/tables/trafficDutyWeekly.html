@@ -30,7 +30,8 @@
                 <th>Volunteer</th>
                 <th>Family</th>
                 <th>Week Start</th>
-                <th>A.M. Manager</th>
+                <th>Supervisor</th>
+                <th>Kindie</th>
                 <th>A.M. Shifts</th>
                 <th>P.M. Shifts</th>
                 <th>Total Shifts</th>
@@ -53,6 +54,14 @@
                 <td>{{ duty.weekStart }}</td>
                 <td>
                 {% if duty.am_manager %}
+                     <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
+                {%  else %}
+                     <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'></div>
+                {% endif %}
+                     </span>
+                </td>
+                <td>
+                {% if duty.kindie %}
                      <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
                 {%  else %}
                      <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'></div>

@@ -63,7 +63,7 @@ class StudentAdmin(SimpleHistoryAdmin):
 
 class VolunteerHoursAdmin(SimpleHistoryAdmin):
     model = VolunteerHours
-    search_fields = ('family','volunteer','event')
+    search_fields = ('volunteer__name','event__eventName','family__familyName')
     list_display = ('volunteer','family','event','eventDate','dateCreated','volunteerHours','approved')
     list_filter = ('eventDate','dateCreated',)
 

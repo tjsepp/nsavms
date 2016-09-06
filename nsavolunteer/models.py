@@ -474,7 +474,7 @@ class Traffic_Duty(TimeStampedModel):
     morning_shifts = models.IntegerField(db_column='morningShifts', verbose_name='Morning Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
     afternoon_shifts = models.IntegerField(db_column='afternoonShifts', verbose_name='Afternoon Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
     am_manager = models.BooleanField(db_column='am_manager', verbose_name='Supervisor',default=False)
-    kindie1 = models.BooleanField(db_column='kindie', verbose_name='Kindie',default=False) #this is a test
+    kindie = models.BooleanField(db_column='kindie', verbose_name='Kindie',default=False) #this is a test
     totalTrafficShifts =  models.DecimalField(db_column='totalTrafficShifts',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Traffic Shifts')
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
 
@@ -487,19 +487,24 @@ class Traffic_Duty(TimeStampedModel):
         ordering = ['weekStart']
 
     def save(self, *args, **kwargs):
-        #sum shifts and add to total traffic shifts
-        self.totalTrafficShifts = self.morning_shifts + self.afternoon_shifts
-
         #calcualte total volunteer hours
         if self.am_manager ==True:
             am_hours = float(self.morning_shifts ) *1.5
         else:
             am_hours = self.morning_shifts
 
-        #assign two hours to every afternoon shift
-        pm_hours = self.afternoon_shifts*2
-
+        #caclulate kindie traffic shifts
+        if self.kindie==True:
+            self.totalTrafficShifts = float(self.morning_shifts * .5) + float(self.afternoon_shifts * .5)
+            am_hours = float(self.morning_shifts) * .5
+            pm_hours = float(self.afternoon_shifts) * .5
+        else:
+            #assign two hours to every afternoon shift
+            pm_hours = self.afternoon_shifts*2
+            #sum shifts and add to total traffic shifts
+            self.totalTrafficShifts = float(self.morning_shifts) + float(self.afternoon_shifts)
         self.volunteerHours = float(am_hours)+float(pm_hours)
+
 
 
         #manage information in the family Aggregate table
@@ -507,10 +512,10 @@ class Traffic_Duty(TimeStampedModel):
         if self.pk: #if this is an existing traffic duty record meaning we're updating an existing entry
             origRecord = Traffic_Duty.objects.get(pk=self.pk) #get Original record
             #back out all data from the original record. This should give us a clean slate to add back the updated data
-            p.trafficDutyCount = p.trafficDutyCount - origRecord.totalTrafficShifts
+            p.trafficDutyCount = float(p.trafficDutyCount) - float(origRecord.totalTrafficShifts)
             p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
             #add back all new updated data
-            p.trafficDutyCount = p.trafficDutyCount + self.totalTrafficShifts
+            p.trafficDutyCount = float(p.trafficDutyCount) + float(self.totalTrafficShifts)
             p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
         else: #if trafficDuty doesnt exist - this is a new entry
             p.trafficDutyCount = p.trafficDutyCount+self.totalTrafficShifts #increment
