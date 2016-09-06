@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from .models import *
 from .forms import *
+from nsavolunteer.models import VolunteerHours
 
 
 class addVolunteerEvent(LoginRequiredMixin, CreateView):
@@ -98,6 +99,7 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
         form.instance.eventId=self.kwargs['eventId']
+        form.instance.approved = True
         #form.save()
         return super(LogHoursFromEvent,self).form_valid(form)
 
@@ -107,6 +109,7 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         context['eventName']=NsaEvents.objects.get(pk=self.kwargs['eventId']).eventName
         context['eventid']=self.kwargs['eventId']
         context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
+        context['dataList']=VolunteerHours.objects.filter(event=self.kwargs['eventId']).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
         return context
 
     def get_form_kwargs(self):
@@ -115,6 +118,14 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = self.request.user)
         kwargs['user'] = self.request.user
         return kwargs
+
+
+def deleteLoggedHoursfromevent(request, vhoursID):
+    obj = VolunteerHours.objects.get(pk=vhoursID)
+    obj.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 
 def get_related_families(request,usid):
     relatedUser = usid

@@ -1,0 +1,48 @@
+<div class="panel panel-default" style="margin-top: 0%; position: absolute; left:10%;right: 10%; padding-bottom: 2%">
+ <div class="panel-heading">
+     <h1 class="panel-title"><b>Logged Hours</b></h1>
+ </div>
+
+    <div class="panel-body">
+        {% if dataList %}
+        <table class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+                <thead>
+                    <th>Action</th>
+                    <th>Volunteer Date</th>
+                    <th>Update Date</th>
+                    <th>Volunteer</th>
+                    <th>Family</th>
+                    <th>Hours</th>
+                    <th style="text-align: center">Approved</th>
+                </thead>
+                <tbody>
+
+                    {% for data in dataList %}
+                    <tr>
+                        <td style="white-space: nowrap; width: 5%">
+                    <a href="#"><button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="{%  url 'delete_hours_from_event' data.volunteerHoursId %}"><button type="button" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
+                        <td>{{ data.eventDate }}</td>
+                        <td>{{ data.dateUpdated }}</td>
+                        <td>{{ data.volunteer.name }}</td>
+                        <td>{{ data.family }}</td>
+                        <td>{{ data.volunteerHours }}</td>
+                        <td style="text-align: center">
+                                {% if data.approved %}
+                                 <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>True</div>
+                                 {%  else %}
+                                    <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>False</div>
+                                  {% endif %}
+                                    </span>
+                            </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <h4 style="color: red; text-align: center"><i>No Data Has Been Entered</i></h4>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

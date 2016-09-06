@@ -280,6 +280,7 @@ class logUserHours(LoginRequiredMixin, CreateView):
         context = super(logUserHours,self).get_context_data(*args, **kwargs)
         context['schoolYear'] = SchoolYear.objects.get(currentYear=1)
         context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
+        context['dataList']=VolunteerHours.objects.filter(volunteer=self.request.user).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
         return context
 
     def get_form_kwargs(self):
