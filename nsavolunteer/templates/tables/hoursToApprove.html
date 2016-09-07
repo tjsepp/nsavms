@@ -62,7 +62,7 @@
         {%  for rec in hours_to_approve %}
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ rec.volunteerHoursId}}"></td>
                 <td style="white-space: nowrap; width: 5%">
-                    <a href="#"><button type="button" class="btn btn-danger btn-xs">Decline</button></a>
+                    <a href="{% url 'decline_hours_email' rec.volunteerHoursId %}"><button type="button" class="btn btn-danger btn-xs">Decline</button></a>
                 </td>
                 <td>{{ rec.volunteer.name }}</td>
                 <td>{{ rec.family.familyName }}</td>

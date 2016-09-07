@@ -47,14 +47,15 @@
                 <thead>
                 <tr>
                     {% if user.linkedUser.volStatus == 'approved' %}
-                    <th></th>
+                    <th style="width: 6%"></th>
                     {% endif %}
                     {% if multFam %}
                     <th>Family</th>
                      {% endif %}
-                    <th>Date</th>
+                    <th style="width: 12%">Date</th>
                     <th>Event</th>
-                    <th>Volunteer Hours</th>
+                    <th>Task</th>
+                    <th style="width: 12%">Hours</th>
                 </tr>
                 </thead>
                     {% for hrs in volHours %}
@@ -80,6 +81,7 @@
                     <td>
                         {{ hrs.event }}
                     </td>
+                <td>{{ hrs.task|truncatewords:7 }}</td>
                     <td>
                         {{ hrs.volunteerHours }} {% if not hrs.approved %}
                         <i style="color: red;font-size: 12px;margin-left: 1%"> (Pending Approval)</i>{% endif %}

@@ -10,10 +10,11 @@
                     <th>Action</th>
                     <th style="width: 12%">Volunteer Date</th>
                     <th style="width: 17%">Update Date</th>
-                    <th>Volunteer</th>
+                    <th style="text-align: center;width: 15%">Volunteer</th>
                     <th>Family</th>
+                    <th>Task</th>
                     <th style="width: 6%">Hours</th>
-                    <th style="text-align: center">Approved</th>
+                    <th style="text-align: center;width: 6%">Approved</th>
                 </thead>
                 <tbody>
 
@@ -27,6 +28,7 @@
                         <td>{{ data.dateUpdated }}</td>
                         <td>{{ data.volunteer.name }}</td>
                         <td>{{ data.family }}</td>
+                        <td>{{ data.task|truncatewords:8 }}</td>
                         <td>{{ data.volunteerHours }}</td>
                         <td style="text-align: center">
                                 {% if data.approved %}

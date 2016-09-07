@@ -469,3 +469,32 @@ class TrafficWeeklyUpdate(ModelForm):
         self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
         ))
+
+class DeclineLoggedHours(forms.Form):
+    subject = forms.CharField(max_length=100, label='Subject')
+    msgbody = forms.CharField(widget=forms.Textarea, label='Message')
+    def __init__(self,*args, **kwargs):
+        super(DeclineLoggedHours,self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            HTML('''
+               <div class="panel panel-default">
+                <div class="panel-heading">Volunteer Detail:</div>
+                <div class="panel-body">
+                <p><b>Volunteer: </b>{{volDetail.volunteer.name}}</p>
+                <p><b>Event: </b>{{volDetail.event.eventName}}</p>
+                <p><b>Volunteer Date: </b>{{volDetail.eventDate}}</p>
+                <p><b>Date Entered: </b>{{volDetail.dateCreated}}</p>
+                <p><b>Task: </b>{{volDetail.task}}</p>
+                <p><b>Volunteer Hours: </b>{{volDetail.volunteerHours}}</p>
+                </div>
+               </div>
+            '''),
+            'subject',
+            'msgbody',
+        )
+        self.helper.add_input(Submit('submit','Send Email'))
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))

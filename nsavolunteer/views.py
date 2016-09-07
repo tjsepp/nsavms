@@ -12,7 +12,7 @@ from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
     AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
-    TrafficWeeklyUpdate
+    TrafficWeeklyUpdate,DeclineLoggedHours
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -753,6 +753,28 @@ def send_recruiting_email(request):
         emailForm = RecruitingEmailForm()
     ctx={'form':emailForm, 'text_dc':file, 'recps':request.session['recruitingEmailList'],'volNames':volunteerNames}
     return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
+
+
+def decline_volunteerHours_email(request,vhoursId):
+    rec = VolunteerHours.objects.get(pk=vhoursId)
+    if request.method=='POST':
+        emailForm = DeclineLoggedHours(request.POST or None)
+        if emailForm.is_valid():
+            subject = request.POST['subject']
+            msgbody = request.POST['msgbody']
+            destination = rec.volunteer.email
+            approver = request.user.email
+            html_content = (subject,msgbody)
+            msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',to=[destination],bcc=[approver], headers = {'Reply-To': 'volunteer@nstaracademy.org'})
+            msg.send()
+            rec.delete()
+            return HttpResponseRedirect(reverse('approveHours'))
+
+    else:
+        volunteerNames = list(rec.volunteer.name)
+        emailForm = DeclineLoggedHours()
+    ctx={'form':emailForm, 'recps':rec.volunteer.name,'volNames':volunteerNames,'volDetail':rec}
+    return render_to_response('forms/decliningVolunteerHours.html', ctx, context_instance=RequestContext(request))
 
 
 
