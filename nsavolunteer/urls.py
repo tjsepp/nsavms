@@ -42,6 +42,7 @@ url(r'^weeklytrafficreport',TrafficReportWeekly.as_view(),name='trafficReportWee
  url(r'^approveHours',hoursToApprove,name='approveHours'),
 ##User and admin Forms
 url(r'^hoursApproved/(?P<vhId>\d+)/$',approvedHours,name='hoursApproved'),
+ url(r'^approve_hours_checkbox$',ApproveHoursCheckBox,name='approveHoursCheckBox'),
  url(r'^deleteloggedhours/(?P<vhoursID>\d+)',deleteLoggedHours,name='deleteUserHours'),
 url(r'^updatestudent/(?P<stuId>\d+)$',UpdateStudent.as_view(),name='updatestudent'),
 url(r'^loghours',logUserHours.as_view(),name='logUserHours'),

@@ -14,17 +14,39 @@
 {% block base_content %}
 <div class="row">
 
-        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -10%; text-align: center">
                     <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Unapproved Volunteer Hours</h2>
                 </div>
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+ <form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+            <div class="table-responsive" style="padding:5%; margin-top: 1%">
+
+
+            <div class="col-sm-6">
+          <div class="input-group" style="margin-left: -2.5%; width: 70%">
+          <select id="formActionSelect" class="form-control">
+            <option value="" disabled="disabled" selected="selected">---Select Action---</option>
+              <optgroup label="Actions">
+                  <option value="{% url 'approveHoursCheckBox' %}">Approve Selected Entries</option>
+              </optgroup>
+
+          </select>
+              <span class="input-group-btn">
+                  <button class="btn btnnavy" type="submit" id="formActionBtn" formaction="x" value="Go"/>Go</button>
+              </span>
+          </div>
+        </div>
 
 
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
 
         <thead>
             <tr>
+                <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
                 <th style="text-align: center">Action</th>
                 <th>Volunteer</th>
                 <th>Family</th>
@@ -38,9 +60,9 @@
 
         <tbody>
         {%  for rec in hours_to_approve %}
+                <td align="center"><input type="checkbox" name="UserRecs" value="{{ rec.volunteerHoursId}}"></td>
                 <td style="white-space: nowrap; width: 5%">
-                    <a href="{% url 'hoursApproved' rec.volunteerHoursId %}"><button type="button" class="btn btn-primary btn-xs">Approve</button></a>
-                    <button type="button" class="btn btn-danger btn-xs">Decline</button>
+                    <a href="#"><button type="button" class="btn btn-danger btn-xs">Decline</button></a>
                 </td>
                 <td>{{ rec.volunteer.name }}</td>
                 <td>{{ rec.family.familyName }}</td>
@@ -57,11 +79,44 @@
     </div>
 </div>
 {%  endblock %}
-
+</form>
 
 {% block extraJquery %}
 
+<script>
+$(document).ready(function(){
+    myVal = $('#formActionSelect').change(function(){
+        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
+    });
+});
+</script>
+
+
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
+
+<script>
+$("#newUsr").click(function(){
+    $('#volunteerIdx').attr("method",'')
+
+})
+</script>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({
+        trigger : 'hover'
+    });
+});
+</script>
 {% endblock %}
+
+
 
 
 

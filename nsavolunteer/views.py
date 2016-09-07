@@ -554,6 +554,15 @@ def approvedHours(request,vhId):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
+def ApproveHoursCheckBox(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for vol in selected_values:
+        rec = VolunteerHours.objects.get(pk=vol)
+        rec.approved =True
+        rec.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 def get_students(request, famid):
     if request.is_ajax():
         q = request.GET.get('search_text', '')
