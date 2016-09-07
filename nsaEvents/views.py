@@ -74,8 +74,6 @@ class updateVolunteerEventTask(LoginRequiredMixin,UpdateView):
         return reverse('taskIndex')
 
 
-
-
 class LogHoursFromEvent(LoginRequiredMixin, CreateView):
     form_class = LogHoursFromEventForm
     template_name = 'forms/LogHoursFromEvent.html'
@@ -119,6 +117,49 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+
+class UpdateLoggedHoursFromEvent(LoginRequiredMixin,UpdateView):
+    form_class = LogHoursFromEventForm
+    template_name = 'forms/LogHoursFromEvent.html'
+
+    def get_object(self, queryset=None):
+        return VolunteerHours.objects.select_related('family','schoolYear','volunteer__linkedUser__user').get(pk=self.kwargs['vhoursID'])
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(UpdateLoggedHoursFromEvent,self).get_context_data(*args, **kwargs)
+        rec = self.get_object()
+        context['schoolYear'] = rec.schoolYear#SchoolYear.objects.get(currentYear=1)
+        context['eventName']=rec.event.eventName#self.event.eventName
+        context['eventid']=rec.event.eventId#self.event.eventId
+        context['isEdit'] = True
+        context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
+        context['dataList']=VolunteerHours.objects.select_related('family','schoolYear').filter(event=rec.event.eventId).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
+        #context['dataList']=VolunteerHours.objects.filter(volunteer=rec.volunteer).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
+        return context
+
+    def get_form_kwargs(self):
+        # pass "user" keyword argument with the current user to your form
+        rec = self.get_object()
+        kwargs = super(UpdateLoggedHoursFromEvent, self).get_form_kwargs()
+        kwargs['famcount'] = FamilyProfile.objects.filter(famvolunteers = rec.volunteer)
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
+        #form.instance.eventId=self.kwargs['eventId']
+        form.instance.approved = True
+        #form.save()
+        return super(UpdateLoggedHoursFromEvent,self).form_valid(form)
+
+    def get_success_url(self):
+        rec = self.get_object()
+        if self.request.POST.get('save'):
+            retPage = 'home'
+            return reverse('edit_hours_from_event', kwargs={'vhoursID':self.kwargs['vhoursID']})
+        elif self.request.POST.get('saveAndAdd'):
+            retPage = "'log_hours_from_event',kwargs={'eventId': %s}" % (str(rec.event.eventId))
+            return reverse('log_hours_from_event', kwargs={'eventId':rec.event.eventId})
 
 def deleteLoggedHoursfromevent(request, vhoursID):
     obj = VolunteerHours.objects.get(pk=vhoursID)

@@ -7,7 +7,8 @@
 
 
 {% block base_content %}
-<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">Log Volunteer Hours for {{ eventName }}</h2>
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">
+    {% if isEdit %}Edit{% else %}Log{% endif %} Volunteer Hours for {{ eventName }}</h2>
     {%  crispy form %}
 
     {% include 'tables/dataList.html' %}
@@ -153,8 +154,56 @@ $('#pickIcon2').click(function(){
 
 
 
+{% if isEdit %}
+<script>
+$(document).ready(function(){
+        usid = $('#id_volunteer').val();
+        $("#id_family").empty();
+        request_url = '/get_related_families/' + usid + '/';
+             $.ajax({
+                url:request_url,
+                success: function (data) {
+                    $.each(data, function(key, value){
+                        $.each(value, function(key, value){
+                            $("#id_family").append($("<option></option>")
+                                        .attr("value",key)
+                                        .text(value));
+                        });
+                    });
+                }
+            })
+
+})
+</script>
+
+<script>
+$(document).ready(function(){
+    $("#hint_id_family").hide();
+    $('#id_volunteer').change(function(){
+        $("#id_family").empty();
+        usid = this.value;
+        $("#id_family").empty();
+        request_url = '/get_related_families/' + usid + '/';
+
+             $.ajax({
+                url:request_url,
+                success: function (data) {
 
 
+
+                    $.each(data, function(key, value){
+                        $.each(value, function(key, value){
+                            $("#id_family").append($("<option></option>")
+                                        .attr("value",key)
+                                        .text(value));
+                        });
+                    });
+                }
+            })
+        })
+    })
+</script>
+{% else %}
 <script>
 $(document).ready(function(){
     $("#hint_id_family").hide();
@@ -182,5 +231,7 @@ $(document).ready(function(){
         })
     })
 </script>
+
+{% endif %}
 {% endblock %}
 

@@ -290,7 +290,6 @@ class logUserHours(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-
 @login_required
 def deleteLoggedHours(request, vhoursID):
     obj = VolunteerHours.objects.get(pk=vhoursID)

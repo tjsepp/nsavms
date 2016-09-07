@@ -28,6 +28,7 @@ url(r'^TaskIndex',EventTaskIndex,name='taskIndex'),
 url(r'^addEventTask',addVolunteerEventTask.as_view(),name='addEventTask'),
 url(r'^editEventTask/(?P<taskID>\d+)$',updateVolunteerEventTask.as_view(),name='editEventTask'),
 url(r'^log_hours_from_event/(?P<eventId>\d+)$',LogHoursFromEvent.as_view(),name='log_hours_from_event'),
+url(r'^edit_hours_from_event/(?P<vhoursID>\d+)$',UpdateLoggedHoursFromEvent.as_view(),name='edit_hours_from_event'),
 url(r'^delete_hours_from_event/(?P<vhoursID>\d+)$',deleteLoggedHoursfromevent,name='delete_hours_from_event'),
 url(r'^get_related_families/(?P<usid>\d+)',get_related_families,name='GetFam')
 ]

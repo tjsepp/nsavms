@@ -20,7 +20,7 @@
                     {% for data in dataList %}
                     <tr>
                         <td style="white-space: nowrap; width: 5%">
-                    <a href="#"><button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="{% url 'edit_hours_from_event' data.volunteerHoursId%}"><button type="button" class="btn btn-primary btn-xs">Edit</button></a>
                     <a href="{%  url 'delete_hours_from_event' data.volunteerHoursId %}"><button type="button" class="btn btn-danger btn-xs">Delete</button></a>
                 </td>
                         <td>{{ data.eventDate }}</td>
