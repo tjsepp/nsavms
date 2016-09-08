@@ -85,7 +85,7 @@ class LogHoursFromEventForm(ModelForm):
         self.famcount = len(kwargs.pop('famcount'))
         self.user= kwargs.pop('user')
         super(LogHoursFromEventForm,self).__init__(*args, **kwargs)
-        self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
+        #self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'

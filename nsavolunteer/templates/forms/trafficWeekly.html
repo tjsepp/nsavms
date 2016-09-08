@@ -103,6 +103,38 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+$("#amShifts, #pmShifts,#supervisor,#kindie").change(function() {
+    var amShift=parseFloat($("#amShifts").val())||0;
+    var pmShift=parseFloat($("#pmShifts").val())||0;
+
+
+
+    if($('#supervisor').is(':checked')==true) {
+          var amHours=amShift*1.5;
+    }
+    else{
+        var amHours=amShift*1;
+    };
+
+    if($('#kindie').is(':checked')==true) {
+        var amHours=amShift*.5;
+        var pmHours=pmShift*.5;
+        amShift = amShift*.5;
+        pmShift = pmShift*.5;
+
+    }
+    else{
+        var pmHours= pmShift*2;
+    };
+    totalshifts= amShift+pmShift;
+    totalHours =amHours+pmHours;
+    $("#totalShifts").val(totalshifts);
+    $("#volunteerHours").val(totalHours);
+
+});
+</script>
+
 
 
 {% endblock %}

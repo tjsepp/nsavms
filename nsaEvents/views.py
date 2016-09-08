@@ -98,7 +98,7 @@ class LogHoursFromEvent(LoginRequiredMixin, CreateView):
         form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
         form.instance.eventId=self.kwargs['eventId']
         form.instance.approved = True
-        #form.save()
+        form.save()
         return super(LogHoursFromEvent,self).form_valid(form)
 
     def get_context_data(self,*args, **kwargs):
@@ -135,6 +135,7 @@ class UpdateLoggedHoursFromEvent(LoginRequiredMixin,UpdateView):
         context['tasks'] = ', '.join("'{0}'".format(x[0]) for x in EventTasks.objects.all().values_list('taskName'))
         context['dataList']=VolunteerHours.objects.select_related('family','schoolYear').filter(event=rec.event.eventId).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
         #context['dataList']=VolunteerHours.objects.filter(volunteer=rec.volunteer).filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateUpdated')
+
         return context
 
     def get_form_kwargs(self):
@@ -147,9 +148,9 @@ class UpdateLoggedHoursFromEvent(LoginRequiredMixin,UpdateView):
 
     def form_valid(self, form):
         form.instance.schoolYear = SchoolYear.objects.get(currentYear=1)
-        #form.instance.eventId=self.kwargs['eventId']
+        form.instance.eventId=self.kwargs['eventId']
         form.instance.approved = True
-        #form.save()
+        form.save()
         return super(UpdateLoggedHoursFromEvent,self).form_valid(form)
 
     def get_success_url(self):

@@ -124,8 +124,8 @@
                     {% if multFam %}
                     <td>{{ duty.linkedFamily }}</td>
                      {% endif %}
-                    <td>{{ duty.morning_shifts }}</td>
-                    <td>{{ duty.afternoon_shifts }}</td>
+                    <td>{{ duty.morning_shifts|default_if_none:0 }}</td>
+                    <td>{{ duty.afternoon_shifts|default_if_none:0 }}</td>
                     <td>
                         {{ duty.totalTrafficShifts|floatformat }}
                     </td>

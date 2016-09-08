@@ -471,8 +471,8 @@ class Traffic_Duty(TimeStampedModel):
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     weekStart = models.DateField(db_column='trafficDutyWeekStart', verbose_name='Traffic Duty Week Start', null=True, blank=False,db_index=True)
     weekEnd = models.DateField(db_column='trafficDutyWeekEnd', verbose_name='Traffic Duty Week End', null=True, blank=False,db_index=True)
-    morning_shifts = models.IntegerField(db_column='morningShifts', verbose_name='Morning Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
-    afternoon_shifts = models.IntegerField(db_column='afternoonShifts', verbose_name='Afternoon Shifts', null=True,blank=True, default=0, choices=TRAFFICDUTY_INT)
+    morning_shifts = models.DecimalField(db_column='morningShifts', verbose_name='Morning Shifts',max_digits=8, decimal_places=3, null=True,blank=True)
+    afternoon_shifts = models.DecimalField(db_column='afternoonShifts', verbose_name='Afternoon Shifts',max_digits=8, decimal_places=3, null=True,blank=True)
     am_manager = models.BooleanField(db_column='am_manager', verbose_name='Supervisor',default=False)
     kindie = models.BooleanField(db_column='kindie', verbose_name='Kindie',default=False) #this is a test
     totalTrafficShifts =  models.DecimalField(db_column='totalTrafficShifts',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Traffic Shifts')
@@ -487,6 +487,7 @@ class Traffic_Duty(TimeStampedModel):
         ordering = ['weekStart']
 
     def save(self, *args, **kwargs):
+        '''
         #calcualte total volunteer hours
         if self.am_manager ==True:
             am_hours = float(self.morning_shifts ) *1.5
@@ -504,7 +505,7 @@ class Traffic_Duty(TimeStampedModel):
             #sum shifts and add to total traffic shifts
             self.totalTrafficShifts = float(self.morning_shifts) + float(self.afternoon_shifts)
         self.volunteerHours = float(am_hours)+float(pm_hours)
-
+        '''
 
 
         #manage information in the family Aggregate table
