@@ -87,6 +87,7 @@ class LogHoursFromEventForm(ModelForm):
         super(LogHoursFromEventForm,self).__init__(*args, **kwargs)
         #self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        self.fields['volunteer'].queryset=User.objects.filter(linkedUser__volStatus='approved')
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'
