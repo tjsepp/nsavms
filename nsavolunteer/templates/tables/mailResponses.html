@@ -1,0 +1,106 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Email Logs
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Email Logs</h2>
+                </div>
+    <div class="table-responsive" style="padding:5%; margin-top: 3%">
+     <h2 style="margin-bottom: -2%">Delivered Email</h2>
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatableNoReport" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Volunteer Email</th>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for log in logdata %}
+            {% if log.event == 'delivered' %}
+            <tr>
+                <td>{{ log.recipient }}</td>
+                <td>{{ log.date }}</td>
+                <td>{{log.subject}}</td>
+                <td>{{ log.event }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+         </tbody>
+
+</table>
+</div>
+
+<div class="table-responsive" style="padding:5%; margin-top: -4%">
+     <h2 style="margin-bottom: -2%">Failed Deliveries</h2>
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatableNoReport" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Volunteer Email</th>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for log in logdata %}
+            {% if log.event == 'failed' %}
+            <tr>
+                <td>{{ log.recipient }}</td>
+                <td>{{ log.date }}</td>
+                <td>{{log.subject}}</td>
+                <td>{{ log.event }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+         </tbody>
+
+</table>
+</div>
+
+
+<div class="table-responsive" style="padding:5%; margin-top: -4%">
+<h2 style="margin-bottom: -2%">Suppressed Email Addresses</h2>
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatableNoReport" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Volunteer Email</th>
+
+                <th>error</th>
+              </tr>
+        </thead>
+
+        <tbody>
+            {%  for err in suppressions %}
+                <tr>
+                <td>{{ err.recipient }}</td>
+
+                <td>{{err.error}}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+{%  endblock %}
+
+
+

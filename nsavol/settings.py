@@ -134,6 +134,8 @@ FIXTURE_DIRS = (
    os.path.join(BASE_DIR, 'fixtures'),
 )
 
+MAILGUN_API_KEY=''
+MAILGUN_DOMAIN = ''
 
 try:
     from localSettings import *

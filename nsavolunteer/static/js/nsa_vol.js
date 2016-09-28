@@ -45,6 +45,21 @@ $(document).ready(function() {
 } );
 
 $(document).ready(function() {
+    $('.datatableNoReport').DataTable({
+            "paging": false,
+            "bLengthChange": false,
+            "iDisplayLength": 1000,
+                "scrollY":'65vh',
+                "scrollCollapse": true,
+                "bStateSave": true,
+                "searchDelay": 350,
+                "aaSorting": []
+    }
+    );
+
+} );
+
+$(document).ready(function() {
     $('.recruitingTable').DataTable({
             "bLengthChange": false,
             "iDisplayLength": 1000,
