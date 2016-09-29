@@ -778,8 +778,9 @@ def send_recruiting_email(request):
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
                       files=[('attachment',attach)],
-                      data={"from": "NSA-VolunteerRecruiting <volunteer@nstaracademy.org>",
-                      "to": destination,
+                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      "to":["volunteer@nstaracademy.org"],
+                      "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
                       "o:tracking": True,
@@ -789,8 +790,9 @@ def send_recruiting_email(request):
                 requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
-                      data={"from": "NSA-VolunteerRecruiting <volunteer@nstaracademy.org>",
-                      "to": destination,
+                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      "to":["volunteer@nstaracademy.org"],
+                      "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
                       "o:tracking": True,
@@ -929,17 +931,18 @@ def deleteTrafficDuty(request, trafficid):
     return HttpResponseRedirect(reverse('trafficReportWeekly'))
 
 
-def GetMailGunLogs():
+def GetMailGunLogsDelivered():
     logData=[]
-    myDate = datetime.datetime.now() - datetime.timedelta(days=10)
+    myDate = datetime.datetime.now() #- datetime.timedelta(days=10)
     startDate = myDate.strftime('%a, %d %B %y %H:%M:%S -0000')
     mgreturn= requests.get(
         "https://api.mailgun.net/v3/mg.nsavms.com/events",
         auth=("api", settings.MAILGUN_API_KEY),
-        params={"begin"       : startDate,
-                "ascending"   : "yes",
+        params={"end"       : startDate,
+                "ascending"   : "no",
                 "limit"       :  300,
-                "pretty"      : "yes"
+                "pretty"      : "yes",
+                "event"       :'delivered'
                 })
     parsed_json = json.loads(mgreturn.text)
     for y in parsed_json['items']:
@@ -949,6 +952,32 @@ def GetMailGunLogs():
         mgDict['subject']=y['message']['headers']['subject']
         mgDict['event']=y['event']
         mgDict['timestamp']=y['timestamp']
+        logData.append(mgDict)
+        newlist = sorted(logData, key=itemgetter('date'), reverse=True)
+    return newlist
+
+def GetMailGunLogsFailed():
+    logData=[]
+    myDate = datetime.datetime.now() #- datetime.timedelta(days=10)
+    startDate = myDate.strftime('%a, %d %B %y %H:%M:%S -0000')
+    mgreturn= requests.get(
+        "https://api.mailgun.net/v3/mg.nsavms.com/events",
+        auth=("api", settings.MAILGUN_API_KEY),
+        params={"end"       : startDate,
+                "ascending"   : "no",
+                "limit"       :  300,
+                "pretty"      : "yes",
+                "event"       :'failed'
+                })
+    parsed_json = json.loads(mgreturn.text)
+    for y in parsed_json['items']:
+        mgDict={}
+        mgDict['recipient'] = y['recipient']
+        mgDict['date'] = datetime.datetime.fromtimestamp(y['timestamp'])
+        mgDict['subject']=y['message']['headers']['subject']
+        mgDict['event']=y['event']
+        mgDict['timestamp']=y['timestamp']
+        mgDict["msg"] = y["delivery-status"]["message"]
         logData.append(mgDict)
         newlist = sorted(logData, key=itemgetter('date'), reverse=True)
     return newlist
@@ -971,6 +1000,7 @@ def GetMailGunSuppressions():
 
 @login_required
 def mailGunLog(request):
-    logData = GetMailGunLogs()
+    logData = GetMailGunLogsDelivered()
+    faileddata = GetMailGunLogsFailed()
     suppressions = GetMailGunSuppressions()
-    return render_to_response('tables/mailResponses.html',{'logdata':logData, 'suppressions':suppressions})
+    return render_to_response('tables/mailResponses.html',{'logdata':logData,'faileddata':faileddata ,'suppressions':suppressions})

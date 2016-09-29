@@ -32,14 +32,13 @@
 
         <tbody>
             {%  for log in logdata %}
-            {% if log.event == 'delivered' %}
             <tr>
                 <td>{{ log.recipient }}</td>
                 <td>{{ log.date }}</td>
                 <td>{{log.subject}}</td>
                 <td>{{ log.event }}</td>
             </tr>
-            {% endif %}
+
         {% endfor %}
          </tbody>
 
@@ -55,17 +54,23 @@
                 <th>Date</th>
                 <th>Subject</th>
                 <th>Action</th>
+
             </tr>
         </thead>
 
+
         <tbody>
-            {%  for log in logdata %}
+            {%  for log in faileddata %}
             {% if log.event == 'failed' %}
             <tr>
                 <td>{{ log.recipient }}</td>
                 <td>{{ log.date }}</td>
                 <td>{{log.subject}}</td>
-                <td>{{ log.event }}</td>
+                <td><a data-toggle="popover" title="Reason for failure"
+                          data-content="{{ log.msg }}"
+                          data-placement="left"
+                          style="margin-left: 2%">{{ log.event }}</a></td>
+
             </tr>
             {% endif %}
         {% endfor %}
@@ -104,3 +109,13 @@
 
 
 
+{% block extraJquery %}
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'click'
+        });
+    });
+    </script>
+{% endblock %}
