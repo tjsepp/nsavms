@@ -759,20 +759,17 @@ def send_recruiting_email(request):
     return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
 '''
 def send_recruiting_email(request):
+    volunteerNames = User.objects.filter(email__in=request.session['recruitingEmailList']).values('name')
     if request.method=='POST':
         emailForm = RecruitingEmailForm(request.POST or None, request.FILES or None)
         if emailForm.is_valid():
+            print emailForm.is_valid()
             subject = request.POST['subject']
             msgbody = request.POST['msgbody']
             if 'file' in request.FILES:
                 attach = request.FILES['file']
             destination = set(request.session['recruitingEmailList'])
             destination= list(destination)
-            #html_content = (subject,msgbody)
-            #msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',bcc=destination, headers = {'Reply-To': 'volunteer@nstaracademy.org'})
-            #if 'file' in request.FILES:
-            #    msg.attach(attach.name,attach.read(),attach.content_type)
-            #msg.send()
             if 'file' in request.FILES:
                 requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
@@ -783,9 +780,7 @@ def send_recruiting_email(request):
                       "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
-                      "o:tracking": True,
-                      "o:tracking-opens": True}
-                )
+                      "o:tracking": True})
             else:
                 requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
@@ -795,13 +790,10 @@ def send_recruiting_email(request):
                       "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
-                      "o:tracking": True,
-                      "o:tracking-opens": True}
-                )
+                      "o:tracking": True})
             return HttpResponseRedirect(request.session['filterPath'])
 
     else:
-        volunteerNames = User.objects.filter(email__in=request.session['recruitingEmailList']).values('name')
         emailForm = RecruitingEmailForm()
     ctx={'form':emailForm, 'text_dc':file, 'recps':request.session['recruitingEmailList'],'volNames':volunteerNames}
     return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
@@ -931,18 +923,17 @@ def deleteTrafficDuty(request, trafficid):
     return HttpResponseRedirect(reverse('trafficReportWeekly'))
 
 
-def GetMailGunLogsDelivered():
+def GetMailGunLogs():
     logData=[]
-    myDate = datetime.datetime.now() #- datetime.timedelta(days=10)
+    myDate = datetime.datetime.now() - datetime.timedelta(days=10)
     startDate = myDate.strftime('%a, %d %B %y %H:%M:%S -0000')
     mgreturn= requests.get(
         "https://api.mailgun.net/v3/mg.nsavms.com/events",
         auth=("api", settings.MAILGUN_API_KEY),
-        params={"end"       : startDate,
-                "ascending"   : "no",
+        params={"begin"       : startDate,
+                "ascending"   : "yes",
                 "limit"       :  300,
-                "pretty"      : "yes",
-                "event"       :'delivered'
+                "pretty"      : "yes"
                 })
     parsed_json = json.loads(mgreturn.text)
     for y in parsed_json['items']:
@@ -952,32 +943,6 @@ def GetMailGunLogsDelivered():
         mgDict['subject']=y['message']['headers']['subject']
         mgDict['event']=y['event']
         mgDict['timestamp']=y['timestamp']
-        logData.append(mgDict)
-        newlist = sorted(logData, key=itemgetter('date'), reverse=True)
-    return newlist
-
-def GetMailGunLogsFailed():
-    logData=[]
-    myDate = datetime.datetime.now() #- datetime.timedelta(days=10)
-    startDate = myDate.strftime('%a, %d %B %y %H:%M:%S -0000')
-    mgreturn= requests.get(
-        "https://api.mailgun.net/v3/mg.nsavms.com/events",
-        auth=("api", settings.MAILGUN_API_KEY),
-        params={"end"       : startDate,
-                "ascending"   : "no",
-                "limit"       :  300,
-                "pretty"      : "yes",
-                "event"       :'failed'
-                })
-    parsed_json = json.loads(mgreturn.text)
-    for y in parsed_json['items']:
-        mgDict={}
-        mgDict['recipient'] = y['recipient']
-        mgDict['date'] = datetime.datetime.fromtimestamp(y['timestamp'])
-        mgDict['subject']=y['message']['headers']['subject']
-        mgDict['event']=y['event']
-        mgDict['timestamp']=y['timestamp']
-        mgDict["msg"] = y["delivery-status"]["message"]
         logData.append(mgDict)
         newlist = sorted(logData, key=itemgetter('date'), reverse=True)
     return newlist
@@ -998,9 +963,9 @@ def GetMailGunSuppressions():
 
     return logData
 
-@login_required
 def mailGunLog(request):
-    logData = GetMailGunLogsDelivered()
-    faileddata = GetMailGunLogsFailed()
+    logData = GetMailGunLogs()
     suppressions = GetMailGunSuppressions()
-    return render_to_response('tables/mailResponses.html',{'logdata':logData,'faileddata':faileddata ,'suppressions':suppressions})
+
+
+    return render_to_response('tables/mailResponses.html',{'logdata':logData, 'suppressions':suppressions})

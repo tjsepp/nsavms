@@ -408,8 +408,8 @@ class RewardCardUsers(TimeStampedModel):
     This will link values back to the user allowing the system to aggregate the information on the user level
     '''
     RewardCardId = models.AutoField(primary_key=True,db_column='rewardCardId',verbose_name='Reward Card ID')
-    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser',db_index=True)
-    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True,db_index=True)
+    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
+    family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True)
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
     active = models.BooleanField(verbose_name='active',db_column='active',default=True)
@@ -422,6 +422,7 @@ class RewardCardUsers(TimeStampedModel):
         verbose_name_plural = 'Reward Card User Information'
         db_table = 'rewardCardUserInformation'
         ordering = ['dateCreated']
+        unique_together = ("storeName", "customerCardNumber")
 
 
 class RewardCardUsage(TimeStampedModel):
@@ -446,21 +447,50 @@ class RewardCardUsage(TimeStampedModel):
     def volunteer_Hours(self):
         return self.refillValue/100
 
+
     def save(self, force_insert=False,force_update=False, using=None):
+        # this block saves user data based on the card number
         if not self.volunteerId:
             cardUser = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
             self.volunteerId = cardUser.linkedUser
         if not self.volunteerHours:
             self.volunteerHours = self.volunteer_Hours()
+        else:
+            self.volunteerHours = self.volunteer_Hours()
+
         if not self.linkedFamily:
             cardfamily = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
             self.linkedFamily = cardUser.family
+        if not self.schoolYear:
+            self.schoolYear = SchoolYear.objects.get(currentYear=1)
+        ## end user data save
+
+        # This block will deal with the updates to the family aggregate process
+        p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
+        if self.pk: #if this is an existing rewardCard update
+            origRecord = RewardCardUsage.objects.get(pk=self.pk) #get Original record
+            print origRecord
+            #back out all data from the original record. This should give us a clean slate to add back the updated data
+            p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
+            #add back all new updated data
+            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+        else: #if RewardCard data doesnt exist - this is a new entry
+            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+        p.save()
         super(RewardCardUsage,self).save(force_insert, force_update)
+
+
+    def delete(self, *args, **kwargs):
+        p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
+        p.totalVolHours = p.totalVolHours - self.volunteerHours
+        p.save()
+        super(RewardCardUsage, self).delete(*args, **kwargs)
 
     class Meta:
         verbose_name_plural='Reward Card Purchase Data'
         db_table = 'rewardCardData'
-        ordering = ['refillDate']
+        ordering = ['-refillDate']
+
 
 class Traffic_Duty(TimeStampedModel):
     ''' This is the new traffic duty class to allow for weekly input vs. daily observations.
@@ -487,27 +517,6 @@ class Traffic_Duty(TimeStampedModel):
         ordering = ['weekStart']
 
     def save(self, *args, **kwargs):
-        '''
-        #calcualte total volunteer hours
-        if self.am_manager ==True:
-            am_hours = float(self.morning_shifts ) *1.5
-        else:
-            am_hours = self.morning_shifts
-
-        #caclulate kindie traffic shifts
-        if self.kindie==True:
-            self.totalTrafficShifts = float(self.morning_shifts * .5) + float(self.afternoon_shifts * .5)
-            am_hours = float(self.morning_shifts) * .5
-            pm_hours = float(self.afternoon_shifts) * .5
-        else:
-            #assign two hours to every afternoon shift
-            pm_hours = self.afternoon_shifts*2
-            #sum shifts and add to total traffic shifts
-            self.totalTrafficShifts = float(self.morning_shifts) + float(self.afternoon_shifts)
-        self.volunteerHours = float(am_hours)+float(pm_hours)
-        '''
-
-
         #manage information in the family Aggregate table
         p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
         if self.pk: #if this is an existing traffic duty record meaning we're updating an existing entry
