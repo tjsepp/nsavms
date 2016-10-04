@@ -14,7 +14,8 @@ from authtools.forms import UserCreationForm
 from django.forms.formsets import BaseFormSet,formset_factory
 from django.core.mail import EmailMessage, send_mail
 from nsaEvents.models import EventTasks
-
+import io, csv
+import datetime
 
 
 class LoginForm(AuthenticationForm):
@@ -500,3 +501,70 @@ class DeclineLoggedHours(forms.Form):
         )
         self.helper.add_input(Submit('submit','Send Email'))
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+
+
+
+class upLoadRewardCardUsers(forms.Form):
+    data_file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Reward Card User Upload')
+
+    def __init__(self,*args, **kwargs):
+        super(upLoadRewardCardUsers,self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            'data_file',
+        )
+        self.helper.add_input(Submit('submit','Add Cards'))
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+
+    def process_data(self):
+        """
+        take csv with header:user,family,store,cardNumber
+        """
+        errorRecs = []
+        f = io.TextIOWrapper(self.cleaned_data['data_file'].file)
+        reader = csv.DictReader(f)
+
+        for card in reader:
+            try:
+                RewardCardUsers.objects.get_or_create(linkedUser = User.objects.get(pk=card['user'])
+                                            ,family=FamilyProfile.objects.get(pk=card['family'])
+                                            ,storeName=card['store'],customerCardNumber=card['cardNumber'])
+            except:
+                errorRecs.append(card)
+        if len(errorRecs)>0:
+            print card
+
+
+class upLoadRewardCardPurchaseData(forms.Form):
+    data_file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Reward Card Purchase Data')
+
+    def __init__(self,*args, **kwargs):
+        super(upLoadRewardCardPurchaseData,self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+        self.helper.layout = Layout(
+            'data_file',
+        )
+        self.helper.add_input(Submit('submit','Add Data'))
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+
+    def process_data(self):
+        """
+        take csv with header:user,family,store,cardNumber
+        """
+        errorRecs = []
+        f = io.TextIOWrapper(self.cleaned_data['data_file'].file)
+        reader = csv.DictReader(f)
+
+
+        for data in reader:
+            print data
+            prop_date =datetime.datetime.strftime(datetime.datetime.strptime(data['date'],'%m/%d/%Y'),'%Y-%m-%d')
+            print prop_date
+            RewardCardUsage.objects.get_or_create(customerCardNumber = data['cardnumber'],refillValue=float(data['value']),
+                                                      refillDate=prop_date,storeName=data['store'],schoolYear=SchoolYear.objects.get(currentYear=1))

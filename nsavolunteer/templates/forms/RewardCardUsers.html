@@ -1,0 +1,20 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+
+
+{% block title %}Reward Card Management{% endblock %}
+
+
+{% block base_content %}
+<h2 class='vmsHeader' style="text-align: center; margin-top: 100px">
+        Upload Reward Card Users
+</h2>
+    {%  crispy form %}
+{%  endblock %}
+
+{% block extraJquery %}
+
+
+
+{% endblock %}

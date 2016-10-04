@@ -442,7 +442,11 @@ class RewardCardUsage(TimeStampedModel):
 
 
     def __unicode__(self):
-        return '%s - %s - $%0.2f' %(self.volunteerId.name,self.refillDate,self.refillValue)
+        if self.volunteerId:
+            volName = self.volunteerId.name
+        else:
+            volName = 'Card Not Matched'
+        return '%s - %s - $%0.2f' %(volName,self.refillDate,self.refillValue)
 
     def volunteer_Hours(self):
         return self.refillValue/100
@@ -451,16 +455,22 @@ class RewardCardUsage(TimeStampedModel):
     def save(self, force_insert=False,force_update=False, using=None):
         # this block saves user data based on the card number
         if not self.volunteerId:
-            cardUser = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
-            self.volunteerId = cardUser.linkedUser
+            try:
+                cardUser = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
+                self.volunteerId = cardUser.linkedUser
+            except:
+                pass
         if not self.volunteerHours:
             self.volunteerHours = self.volunteer_Hours()
         else:
             self.volunteerHours = self.volunteer_Hours()
 
         if not self.linkedFamily:
-            cardfamily = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
-            self.linkedFamily = cardUser.family
+            try:
+                cardfamily = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
+                self.linkedFamily = cardUser.family
+            except:
+                pass
         if not self.schoolYear:
             self.schoolYear = SchoolYear.objects.get(currentYear=1)
         ## end user data save

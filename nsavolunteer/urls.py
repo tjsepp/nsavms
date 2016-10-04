@@ -83,5 +83,6 @@ url(r'^mass_password_reset$',massPasswordReset,name='massPass'),
 url(r'^add_traffic_duty_weekly$',addNewTraffic_weekly.as_view(),name='addWeeklyTraffic'),
 url(r'^edit_traffic_duty_weekly/(?P<trafficid>\d+)$',editTraffic_weekly.as_view(),name='editWeeklyTraffic'),
 url(r'^delete_traffic_duty_weekly/(?P<trafficid>\d+)$',deleteTrafficDuty,name='deleteWeeklyTraffic'),
-
+url(r'^uploadRewardCardUsers$',AddRewardCardUsersView.as_view(),name='uploadRewardCardUserInfo'),
+url(r'^uploadRewardCardPurchaseDate$',AddRewardCardPurchaseData.as_view(),name='uploadRewardCardPurchaseInfo'),
 ]

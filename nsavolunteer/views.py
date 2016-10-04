@@ -12,7 +12,7 @@ from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
     AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
-    TrafficWeeklyUpdate,DeclineLoggedHours
+    TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -923,6 +923,33 @@ def deleteTrafficDuty(request, trafficid):
     return HttpResponseRedirect(reverse('trafficReportWeekly'))
 
 
+class AddRewardCardUsersView(FormView):
+    template_name = 'forms/RewardCardUsers.html'
+    form_class = upLoadRewardCardUsers
+    #success_url = '/upload/'
+
+    def get_success_url(self):
+        return reverse('volunteerIndex')
+
+    def form_valid(self, form):
+        form.process_data()
+        return super(AddRewardCardUsersView, self).form_valid(form)
+
+class AddRewardCardPurchaseData(FormView):
+    template_name = 'forms/RewardCardUsers.html'
+    form_class = upLoadRewardCardPurchaseData
+    #success_url = '/upload/'
+
+    def get_success_url(self):
+        return reverse('volunteerIndex')
+
+    def form_valid(self, form):
+        form.process_data()
+        return super(AddRewardCardPurchaseData, self).form_valid(form)
+
+
+
+
 def GetMailGunLogs():
     logData=[]
     myDate = datetime.datetime.now() - datetime.timedelta(days=10)
@@ -966,6 +993,4 @@ def GetMailGunSuppressions():
 def mailGunLog(request):
     logData = GetMailGunLogs()
     suppressions = GetMailGunSuppressions()
-
-
     return render_to_response('tables/mailResponses.html',{'logdata':logData, 'suppressions':suppressions})

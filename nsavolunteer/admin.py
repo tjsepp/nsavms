@@ -34,7 +34,7 @@ class RewardCardInfoAdmin(admin.ModelAdmin):
 
 class RewardCardDataAdmin(admin.ModelAdmin):
     models= RewardCardUsage
-    list_display = ('storeName','schoolYear')
+    list_display = ('volunteerId','customerCardNumber','storeName','schoolYear')
     list_editable = ('schoolYear',)
 
 
