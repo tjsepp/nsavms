@@ -538,6 +538,13 @@ class upLoadRewardCardUsers(forms.Form):
             print card
 
 
+def convertKSNumbers(num):
+    digs = num.split('-')[-3:]
+    dig2 = ''.join(digs)
+    finalVal = ' '.join(dig2[i:i+3] for i in xrange(0,len(dig2),3))
+    return finalVal
+
+
 class upLoadRewardCardPurchaseData(forms.Form):
     data_file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Reward Card Purchase Data')
 
@@ -563,8 +570,12 @@ class upLoadRewardCardPurchaseData(forms.Form):
 
 
         for data in reader:
-            print data
             prop_date =datetime.datetime.strftime(datetime.datetime.strptime(data['date'],'%m/%d/%Y'),'%Y-%m-%d')
-            print prop_date
-            RewardCardUsage.objects.get_or_create(customerCardNumber = data['cardnumber'],refillValue=float(data['value']),
-                                                      refillDate=prop_date,storeName=data['store'],schoolYear=SchoolYear.objects.get(currentYear=1))
+            if data['store']=='King Soopers':
+                card_num = convertKSNumbers(data['cardnumber'])
+            else:
+                card_num=data['cardnumber']
+            if float(data['value'])>0:
+                RewardCardUsage.objects.create(customerCardNumber = card_num,refillValue=float(data['value']),
+                                                      refillDate=prop_date,storeName=data['store'],schoolYear=SchoolYear.objects.get(currentYear=1),
+                                                      statementCardNumber=data['cardnumber'])

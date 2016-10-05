@@ -431,7 +431,7 @@ class RewardCardUsage(TimeStampedModel):
     spent on reward refils/repurchases
     '''
     rewardCardusageId= models.AutoField(primary_key=True,db_column='rewardCardUsageId',verbose_name='Reward Card Usage ID')
-    customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number',blank=False,null=True,db_index=True)
+    customerCardNumber = models.CharField(max_length=50, db_column='customerCardNumber',verbose_name='Card Number (internal)',blank=False,null=True,db_index=True)
     volunteerId = models.ForeignKey(settings.AUTH_USER_MODEL,db_column='volunteer',verbose_name='Volunteer', blank=True, null=True, related_name='rewardCardValue',db_index=True)
     linkedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='family',blank=True,null=True,related_name='rewardCardFamilyLink',db_index=True)
     refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
@@ -439,7 +439,7 @@ class RewardCardUsage(TimeStampedModel):
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
-
+    statementCardNumber =models.CharField(max_length=50, db_column='StatementcustomerCardNumber',verbose_name='Card Number (statement)',blank=False,null=True)
 
     def __unicode__(self):
         if self.volunteerId:
@@ -453,6 +453,7 @@ class RewardCardUsage(TimeStampedModel):
 
 
     def save(self, force_insert=False,force_update=False, using=None):
+        cardfamily = None
         # this block saves user data based on the card number
         if not self.volunteerId:
             try:
@@ -476,23 +477,34 @@ class RewardCardUsage(TimeStampedModel):
         ## end user data save
 
         # This block will deal with the updates to the family aggregate process
-        p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
-        if self.pk: #if this is an existing rewardCard update
-            origRecord = RewardCardUsage.objects.get(pk=self.pk) #get Original record
-            print origRecord
-            #back out all data from the original record. This should give us a clean slate to add back the updated data
-            p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
-            #add back all new updated data
-            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-        else: #if RewardCard data doesnt exist - this is a new entry
-            p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-        p.save()
+
+        if cardfamily:
+            print 'Yes - a family exists'
+            p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
+            if self.pk: #if this is an existing rewardCard update
+                origRecord = RewardCardUsage.objects.get(pk=self.pk) #get Original record
+                print origRecord
+
+                if origRecord.linkedFamily ==None:
+                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+                else:
+                    #back out all data from the original record. This should give us a clean slate to add back the updated data
+                    p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
+                    #add back all new updated data
+                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+            else: #if RewardCard data doesnt exist - this is a new entry
+                p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+            p.save()
         super(RewardCardUsage,self).save(force_insert, force_update)
 
 
     def delete(self, *args, **kwargs):
         p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
+        #print p
+        #print 'total hours before delete ' +str(p.totalVolHours)
+        #print 'removing '+str(self.volunteerHours)+' hours'
         p.totalVolHours = p.totalVolHours - self.volunteerHours
+        #print 'hours should now be ' +str(p.totalVolHours)
         p.save()
         super(RewardCardUsage, self).delete(*args, **kwargs)
 

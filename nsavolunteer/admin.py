@@ -16,6 +16,16 @@ def mark_pending(modeladmin, request, queryset):
     queryset.update(volStatus='pending')
 mark_pending.short_description = "Mark selected users as pending"
 
+def really_delete_selected(self, request, queryset):
+        for obj in queryset:
+            obj.delete()
+        if queryset.count() == 1:
+            message_bit = "1 purchase record was"
+        else:
+            message_bit = "%s purchase entries were" % queryset.count()
+        self.message_user(request, "%s successfully deleted." % message_bit)
+really_delete_selected.short_description = "Really Delete selected entries"
+
 class VolunteerProfileAdmin(SimpleHistoryAdmin):
     model = VolunteerProfile
     search_fields = ('firstName','lastName')
@@ -28,14 +38,18 @@ class VolunteerProfileAdmin(SimpleHistoryAdmin):
 
 class RewardCardInfoAdmin(admin.ModelAdmin):
     model = RewardCardUsers
-    list_display = ('linkedUser','storeName','customerCardNumber')
+    search_fields = ('linkedUser__name',)
+    list_display = ('linkedUser','family','storeName','customerCardNumber')
     list_filter = ('storeName',)
 
 
 class RewardCardDataAdmin(admin.ModelAdmin):
     models= RewardCardUsage
-    list_display = ('volunteerId','customerCardNumber','storeName','schoolYear')
+    search_fields = ('volunteerId__name','customerCardNumber','statementCardNumber',)
+    list_display = ('volunteerId','linkedFamily','refillDate','customerCardNumber','statementCardNumber','storeName','schoolYear','refillValue')
     list_editable = ('schoolYear',)
+    actions = [really_delete_selected]
+
 
 
 def make_active(modeladmin, request, queryset):
@@ -71,6 +85,7 @@ class VolunteerHoursAdmin(SimpleHistoryAdmin):
 class FamilyAggHoursAdmin(SimpleHistoryAdmin):
     model = VolunteerHours
     list_display = ('family','schoolYear','totalVolHours','trafficDutyCount')
+    search_fields = ('family__familyName',)
 
 
 
