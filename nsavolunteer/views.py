@@ -923,6 +923,15 @@ def deleteTrafficDuty(request, trafficid):
     return HttpResponseRedirect(reverse('trafficReportWeekly'))
 
 
+def RewardCardUserIndex(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    volunteerIndex = RewardCardUsers.objects.all().select_related('linkedUser').prefetch_related('family')
+    response = render(request, 'tables/rewardCardUserIndex.html',{'volunteerIndex':volunteerIndex})
+    return response
+
+
 class AddRewardCardUsersView(FormView):
     template_name = 'forms/RewardCardUsers.html'
     form_class = upLoadRewardCardUsers
@@ -946,6 +955,7 @@ class AddRewardCardPurchaseData(FormView):
     def form_valid(self, form):
         form.process_data()
         return super(AddRewardCardPurchaseData, self).form_valid(form)
+
 
 
 

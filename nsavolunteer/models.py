@@ -499,13 +499,16 @@ class RewardCardUsage(TimeStampedModel):
 
 
     def delete(self, *args, **kwargs):
-        p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
-        #print p
-        #print 'total hours before delete ' +str(p.totalVolHours)
-        #print 'removing '+str(self.volunteerHours)+' hours'
-        p.totalVolHours = p.totalVolHours - self.volunteerHours
-        #print 'hours should now be ' +str(p.totalVolHours)
-        p.save()
+        try:
+            p = FamilyAggHours.objects.get(family = self.linkedFamily, schoolYear = self.schoolYear)
+            #print p
+            #print 'total hours before delete ' +str(p.totalVolHours)
+            #print 'removing '+str(self.volunteerHours)+' hours'
+            p.totalVolHours = p.totalVolHours - self.volunteerHours
+            #print 'hours should now be ' +str(p.totalVolHours)
+            p.save()
+        except:
+            pass
         super(RewardCardUsage, self).delete(*args, **kwargs)
 
     class Meta:
