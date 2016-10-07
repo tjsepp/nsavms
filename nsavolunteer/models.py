@@ -424,6 +424,20 @@ class RewardCardUsers(TimeStampedModel):
         ordering = ['dateCreated']
         unique_together = ("storeName", "customerCardNumber")
 
+    def save(self, *args, **kwargs):
+        try:
+            all_purchases = RewardCardUsage.objects.filter(customerCardNumber = self.customerCardNumber).all()
+            for rec in all_purchases:
+                if rec.linkedFamily!=self.family:
+                    rec.linkedFamily = self.family
+                    rec.save()
+        except:
+            pass
+        super(RewardCardUsers,self).save(*args, **kwargs)
+
+
+
+
 
 class RewardCardUsage(TimeStampedModel):
     '''
@@ -439,7 +453,7 @@ class RewardCardUsage(TimeStampedModel):
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
-    statementCardNumber =models.CharField(max_length=50, db_column='StatementcustomerCardNumber',verbose_name='Card Number (statement)',blank=False,null=True)
+    statementCardNumber =models.CharField(max_length=50, db_column='StatementcustomerCardNumber',verbose_name='Card Number (statement)',blank=True,null=True)
 
     def __unicode__(self):
         if self.volunteerId:
@@ -454,17 +468,19 @@ class RewardCardUsage(TimeStampedModel):
 
     def save(self, force_insert=False,force_update=False, using=None):
         cardfamily = None
-        # this block saves user data based on the card number
+
+        # this block populates user data based on the card number
         if not self.volunteerId:
             try:
                 cardUser = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
                 self.volunteerId = cardUser.linkedUser
             except:
                 pass
-        if not self.volunteerHours:
-            self.volunteerHours = self.volunteer_Hours()
+
+        if not self.volunteerHours: #if hours aren't populated
+            self.volunteerHours = self.volunteer_Hours() #populate hours
         else:
-            self.volunteerHours = self.volunteer_Hours()
+            self.volunteerHours = self.volunteer_Hours() #populate hours
 
         if not self.linkedFamily:
             try:
@@ -472,28 +488,43 @@ class RewardCardUsage(TimeStampedModel):
                 self.linkedFamily = cardUser.family
             except:
                 pass
+        else:
+            cardfamily = self.linkedFamily
+
         if not self.schoolYear:
             self.schoolYear = SchoolYear.objects.get(currentYear=1)
         ## end user data save
 
+
         # This block will deal with the updates to the family aggregate process
-
         if cardfamily:
-            print 'Yes - a family exists'
             p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
-            if self.pk: #if this is an existing rewardCard update
-                origRecord = RewardCardUsage.objects.get(pk=self.pk) #get Original record
-                print origRecord
-
-                if origRecord.linkedFamily ==None:
+            if created:
+                p.totalVolHours = p.totalVolHours+self.volunteerHours
+                try:
+                    if self.pk:
+                        try:
+                            origRecord = RewardCardUsage.objects.get(pk=self.pk)
+                            oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
+                            oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
+                            oldAgg.save()
+                        except:
+                            pass
+                except:
+                    pass
+            else:
+                if self.pk: #if this is an existing record
+                    try:
+                        origRecord = RewardCardUsage.objects.get(pk=self.pk)
+                        oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
+                        oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
+                        oldAgg.save()
+                    except:
+                        pass
+                    #add back updated data
                     p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
                 else:
-                    #back out all data from the original record. This should give us a clean slate to add back the updated data
-                    p.totalVolHours = p.totalVolHours - origRecord.volunteerHours
-                    #add back all new updated data
                     p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-            else: #if RewardCard data doesnt exist - this is a new entry
-                p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
             p.save()
         super(RewardCardUsage,self).save(force_insert, force_update)
 

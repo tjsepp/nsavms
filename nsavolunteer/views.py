@@ -927,7 +927,7 @@ def RewardCardUserIndex(request):
     '''
     This view populates the volunteerIndex table with all active users
     '''
-    volunteerIndex = RewardCardUsers.objects.all().select_related('linkedUser').prefetch_related('family')
+    volunteerIndex = RewardCardUsers.objects.select_related('linkedUser','linkedUser__linkedUser').prefetch_related('family').all().order_by('linkedUser__linkedUser__lastName')
     response = render(request, 'tables/rewardCardUserIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 

@@ -32,8 +32,8 @@
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
-
-                <th>User</th>
+                <th>Last Name</th>
+                <th>First Name</th>
                 <th>Family</th>
                 <th>Store</th>
                 <th>Card Number</th>
@@ -43,7 +43,8 @@
         <tbody>
             {%  for int in volunteerIndex %}
            <tr>
-           <td>{{ int.linkedUser.name }}</td>
+           <td>{{ int.linkedUser.linkedUser.lastName }}</td>
+           <td>{{ int.linkedUser.linkedUser.firstName }}</td>
            <td>{{ int.family }}</td>
            <td>{{ int.storeName }}</td>
            <td>{{ int.customerCardNumber }}</td>
