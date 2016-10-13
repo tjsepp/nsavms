@@ -104,11 +104,13 @@ class VolunteerProfile(TimeStampedModel):
             filter(volunteer = self.volunteerProfileID)
         return volunteerEvents
 
+    '''
     @property
     def currentTrafficDutyData(self):
         trafficDuty = TrafficDuty.objects.filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
             filter(volunteerId = self.volunteerProfileID)
         return trafficDuty
+    '''
 
     @property
     def currentRewardCardData(self):
@@ -123,7 +125,8 @@ class VolunteerProfile(TimeStampedModel):
         permissions = (
             ("is_avc", "Is AVC"),
             ("is_volunteer_manager", "Is Volunteer Manager"),
-            ("is_traffic_manager", "Is Traffic Manager")
+            ("is_traffic_manager", "Is Traffic Manager"),
+            ("is_reward_card_manager", "Is Reward Card Manager")
         )
 
 

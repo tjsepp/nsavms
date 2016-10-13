@@ -88,6 +88,10 @@ class FamilyAggHoursAdmin(SimpleHistoryAdmin):
     search_fields = ('family__familyName',)
 
 
+class TrafficDutyAdmin(SimpleHistoryAdmin):
+    model = Traffic_Duty
+    list_display =('volunteerId','linkedFamily','weekStart','weekEnd','totalTrafficShifts','volunteerHours')
+    search_fields = ('linkedFamily__familyName','volunteerId__name')
 
 #admin.site.register(VolunteerProfile,VolunteerProfileAdmin)
 #admin.site.register(Volunteers,VolunteerAdmin)
@@ -103,5 +107,5 @@ admin.site.register(RewardCardUsage,RewardCardDataAdmin)
 admin.site.register(RewardCardUsers,RewardCardInfoAdmin)
 admin.site.register(VolunteerHours,VolunteerHoursAdmin)
 admin.site.register(FamilyAggHours,FamilyAggHoursAdmin)
-admin.site.register(Traffic_Duty)
+admin.site.register(Traffic_Duty,TrafficDutyAdmin)
 #admin.site.register(RecruitingEmail)

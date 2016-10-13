@@ -84,6 +84,6 @@ url(r'^add_traffic_duty_weekly$',addNewTraffic_weekly.as_view(),name='addWeeklyT
 url(r'^edit_traffic_duty_weekly/(?P<trafficid>\d+)$',editTraffic_weekly.as_view(),name='editWeeklyTraffic'),
 url(r'^delete_traffic_duty_weekly/(?P<trafficid>\d+)$',deleteTrafficDuty,name='deleteWeeklyTraffic'),
 url(r'^uploadRewardCardUsers$',AddRewardCardUsersView.as_view(),name='uploadRewardCardUserInfo'),
-url(r'^uploadRewardCardPurchaseDate$',AddRewardCardPurchaseData.as_view(),name='uploadRewardCardPurchaseInfo'),
+url(r'^uploadRewardCardPurchaseData$',AddRewardCardPurchaseData.as_view(),name='uploadRewardCardPurchaseInfo'),
 url(r'^rewardCard_userIndex',RewardCardUserIndex,name='rewardCardUserIndex'),
 ]
