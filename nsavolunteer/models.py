@@ -233,7 +233,6 @@ class FamilyProfile(TimeStampedModel):
     volunteerRequirement = models.IntegerField(verbose_name='Volunteer Requirement', db_column='volunteerReq',null=True,blank=True,default=40)
     inactiveDate = models.DateField(verbose_name='Inactive Date',db_column='inactiveDate',null=True,blank=True)
     famvolunteers = models.ManyToManyField(User,verbose_name='Volunteers',db_table='familyVolunteers',blank=True,related_name='family')
-    #volunteers = models.ManyToManyField(User,verbose_name='Volunteers',through='VolunteerToFamily', related_name='family')
     students = models.ManyToManyField(Student,verbose_name='Students',blank=True,through='StudentToFamily')
     active =  models.BooleanField(verbose_name='active',db_column='active',default=True)
     history = HistoricalRecords()

@@ -931,6 +931,15 @@ def RewardCardUserIndex(request):
     response = render(request, 'tables/rewardCardUserIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 
+def RewardCardPurchaseIndex(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','linkedUser__linkedUser','family')\
+        .filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).order_by('-refillDate')
+    response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex})
+    return response
+
 
 class AddRewardCardUsersView(FormView):
     template_name = 'forms/RewardCardUsers.html'
@@ -938,7 +947,7 @@ class AddRewardCardUsersView(FormView):
     #success_url = '/upload/'
 
     def get_success_url(self):
-        return reverse('volunteerIndex')
+        return reverse('rewardCardUserIndex')
 
     def form_valid(self, form):
         form.process_data()

@@ -86,4 +86,5 @@ url(r'^delete_traffic_duty_weekly/(?P<trafficid>\d+)$',deleteTrafficDuty,name='d
 url(r'^uploadRewardCardUsers$',AddRewardCardUsersView.as_view(),name='uploadRewardCardUserInfo'),
 url(r'^uploadRewardCardPurchaseData$',AddRewardCardPurchaseData.as_view(),name='uploadRewardCardPurchaseInfo'),
 url(r'^rewardCard_userIndex',RewardCardUserIndex,name='rewardCardUserIndex'),
+url(r'^rewardCard_purchaseIndex',RewardCardPurchaseIndex,name='rewardCardPurchaseIndex'),
 ]

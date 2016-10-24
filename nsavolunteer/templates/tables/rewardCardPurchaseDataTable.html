@@ -1,0 +1,103 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+   Reward Card Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Reward Card Users</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+
+
+
+
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Purchase Date</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Family</th>
+                <th>Store</th>
+                <th>Card Number</th>
+
+                <th>Purchase Value</th>
+                <th>Volunteer Hours</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for int in rewardCardPurchaseIndex %}
+           <tr>
+           <td>{{ int.refillDate }}</td>
+           <td>{{ int.volunteerId.linkedUser.lastName }}</td>
+           <td>{{ int.volunteerId.linkedUser.firstName }}</td>
+           <td>{{ int.linkedFamily.familyName }}</td>
+           <td>{{ int.storeName }}</td>
+           <td>{{ int.customerCardNumber }}</td>
+
+           <td>${{ int.refillValue }}</td>
+           <td>{{ int.volunteerHours }}</td>
+
+           </tr>
+        {% endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+$(document).ready(function(){
+    myVal = $('#formActionSelect').change(function(){
+        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
+    });
+});
+</script>
+
+<script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+

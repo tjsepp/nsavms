@@ -575,7 +575,18 @@ class upLoadRewardCardPurchaseData(forms.Form):
                 card_num = convertKSNumbers(data['cardnumber'])
             else:
                 card_num=data['cardnumber']
-            if float(data['value'].replace('$',''))>0:
-                RewardCardUsage.objects.create(customerCardNumber = card_num,refillValue=float(data['value'].replace('$','')),
+
+            #when procesing the kingsoopers csv, sometimes negat
+            if '(' and ')' in data['value']:
+                print 'this is a negative value'
+                cardVal= float(data['value'].replace('(','').replace(')','').replace('$','-'))
+            else:
+                cardVal = float(data['value'].replace('$',''))
+
+            if cardVal>0:
+                try:
+                    RewardCardUsage.objects.create(customerCardNumber = card_num,refillValue=cardVal,
                                                       refillDate=prop_date,storeName=data['store'],schoolYear=SchoolYear.objects.get(currentYear=1),
                                                       statementCardNumber=data['cardnumber'])
+                except:
+                    pass
