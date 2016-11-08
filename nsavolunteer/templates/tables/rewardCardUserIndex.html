@@ -37,6 +37,7 @@
                 <th>Family</th>
                 <th>Store</th>
                 <th>Card Number</th>
+                <th>Last reported</th>
             </tr>
         </thead>
 
@@ -48,6 +49,7 @@
            <td>{{ int.family }}</td>
            <td>{{ int.storeName }}</td>
            <td>{{ int.customerCardNumber }}</td>
+           <td>{{ int.lastReportedUsage|default:'' }}</td>
 
            </tr>
         {% endfor %}

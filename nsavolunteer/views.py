@@ -12,7 +12,7 @@ from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
     AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
-    TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData
+    TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData,AddEditRewardCardData
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -935,7 +935,7 @@ def RewardCardPurchaseIndex(request):
     '''
     This view populates the volunteerIndex table with all active users
     '''
-    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','linkedUser__linkedUser','family')\
+    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','volunteerId__linkedUser','linkedFamily')\
         .filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).order_by('-refillDate')
     response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex})
     return response
@@ -965,7 +965,26 @@ class AddRewardCardPurchaseData(FormView):
         form.process_data()
         return super(AddRewardCardPurchaseData, self).form_valid(form)
 
+def deleteRewardCardPurchase(request, purchaseId):
+    obj = RewardCardUsage.objects.get(pk=purchaseId)
+    obj.delete()
+    return HttpResponseRedirect(reverse('rewardCardPurchaseIndex'))
 
+class LogRewardCardPurchaseData(LoginRequiredMixin, CreateView):
+    form_class = AddEditRewardCardData
+    template_name = 'forms/LogRewardCardPurchaseData.html'
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            return reverse('rewardCardPurchaseIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('addPurchase')
+
+    def form_valid(self, form):
+        card = RewardCardUsers.objects.get(pk=form.instance.customerCardNumber)
+        form.instance.customerCardNumber = card.customerCardNumber
+        form.instance.linkedFamily = card.family
+        form.instance.storeName = card.storeName
+        return super(LogRewardCardPurchaseData, self).form_valid(form)
 
 
 
@@ -1013,3 +1032,18 @@ def mailGunLog(request):
     logData = GetMailGunLogs()
     suppressions = GetMailGunSuppressions()
     return render_to_response('tables/mailResponses.html',{'logdata':logData, 'suppressions':suppressions})
+
+
+def get_related_rewardCards(request,usid):
+    relatedUser = usid
+    #print 'ajax user name',relatedUser
+
+    result_set=[]
+    all_families =[]
+    #relatedFamilies = str(relatedUser[1:-1])
+    selected_user=RewardCardUsers.objects.filter(linkedUser=relatedUser)
+    #print 'selected user', relatedUser
+    all_cards = selected_user.all()
+    for card in all_cards:
+        result_set.append({card.RewardCardId:card.customerCardNumber})
+    return HttpResponse(json.dumps(result_set), content_type='application/json')

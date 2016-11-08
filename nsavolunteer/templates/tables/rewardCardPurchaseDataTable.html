@@ -2,7 +2,7 @@
 
 
 {% block title %}
-   Reward Card Index
+   Reward Card Reload Data
 {% endblock %}
 
 {% block extra_head %}
@@ -32,13 +32,13 @@
     <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
+                <th></th>
                 <th>Purchase Date</th>
                 <th>Last Name</th>
                 <th>First Name</th>
                 <th>Family</th>
                 <th>Store</th>
                 <th>Card Number</th>
-
                 <th>Purchase Value</th>
                 <th>Volunteer Hours</th>
             </tr>
@@ -47,6 +47,10 @@
         <tbody>
             {%  for int in rewardCardPurchaseIndex %}
            <tr>
+        <td style="white-space: nowrap; width: 5%">
+                    <a href="#"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
+                    <a href="{% url 'deletePurchase' int.rewardCardusageId %}"><button type="button" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
            <td>{{ int.refillDate }}</td>
            <td>{{ int.volunteerId.linkedUser.lastName }}</td>
            <td>{{ int.volunteerId.linkedUser.firstName }}</td>

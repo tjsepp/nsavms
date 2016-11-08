@@ -415,6 +415,7 @@ class RewardCardUsers(TimeStampedModel):
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
     active = models.BooleanField(verbose_name='active',db_column='active',default=True)
+    lastReportedUsage = models.DateField(db_column='lastReportedUsage', verbose_name='Last Reported Usage', null=True, blank=True)
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -453,7 +454,7 @@ class RewardCardUsage(TimeStampedModel):
     refillDate = models.DateField(db_column='refillDate', verbose_name='Refill Date', null=True, blank=True)
     refillValue = models.DecimalField(db_column='refillValue',verbose_name='Refill Value',max_digits=8, decimal_places=2)
     volunteerHours = models.DecimalField(db_column='volunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Volunteer Hours')
-    storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
+    storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=True,choices=STORES)
     schoolYear = models.ForeignKey(SchoolYear, db_column='SchoolYear',verbose_name='School Year', null=True,blank=False)
     statementCardNumber =models.CharField(max_length=50, db_column='StatementcustomerCardNumber',verbose_name='Card Number (statement)',blank=True,null=True)
 
@@ -528,6 +529,16 @@ class RewardCardUsage(TimeStampedModel):
                 else:
                     p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
             p.save()
+
+        #update cards usage
+        card = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
+        if card.lastReportedUsage:
+            if self.refillDate>card.lastReportedUsage:
+                card.lastReportedUsage = self.refillDate
+        else:
+            card.lastReportedUsage = self.refillDate
+        card.save()
+
         super(RewardCardUsage,self).save(force_insert, force_update)
 
 

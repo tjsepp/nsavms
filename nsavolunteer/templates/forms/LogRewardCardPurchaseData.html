@@ -1,0 +1,92 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+{% load staticfiles %}
+
+{% block title %}Log Volunteer Hours{% endblock %}
+
+
+{% block base_content %}
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">
+    {% if isEdit %}Edit{% else %}Log{% endif %} Reward Card Purchases</h2>
+    {%  crispy form %}
+
+
+{%  endblock %}
+
+
+
+{% block extraJquery %}
+
+
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
+{% if isEdit %}
+  <script>
+                $(document).ready(function(){
+                    $('#id_volunteerId').change(function(){
+                        $("#id_customerCardNumber").empty();
+                        usid = this.value;
+                        request_url = '/get_related_cards/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
+
+
+
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_customerCardNumber").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                        });
+
+                })
+        </script>
+{% else %}
+        <script>
+                $(document).ready(function(){
+                    $("#id_customerCardNumber").empty();
+                    $('#id_volunteerId').change(function(){
+                        $("#id_customerCardNumber").empty();
+                        usid = this.value;
+                        request_url = '/get_related_cards/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
+
+
+
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_customerCardNumber").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                        })
+                    })
+        </script>
+{% endif %}
+
+
+
+
+
+
+{% endblock %}
+

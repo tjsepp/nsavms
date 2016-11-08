@@ -538,6 +538,46 @@ class upLoadRewardCardUsers(forms.Form):
             print card
 
 
+class AddEditRewardCardData(ModelForm):
+    '''
+    This class allows admins to log volunteer hours from events
+    '''
+    class Meta:
+        model = RewardCardUsage
+        fields = '__all__'
+        widgets ={
+            'customerCardNumber':forms.Select(),
+        }
+    def __init__(self, *args, **kwargs):
+        #self.famcount = len(kwargs.pop('famcount'))
+        #self.user= kwargs.pop('user')
+        super(AddEditRewardCardData,self).__init__(*args, **kwargs)
+        #self.fields['event'].queryset = NsaEvents.objects.filter(allowView=True)
+        self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+
+        self.helper.layout = Layout(
+            Field('volunteerId', css_class ='volunteerSelect', css_id='id_volunteer'),
+            #Field('linkedFamily',),
+            Field('customerCardNumber', css_id='cardNumber'),
+            Field('refillDate', css_class='datepicker',placeholder='Select Date'),
+            Field('refillValue', css_class='refillValue', placeholder ='Enter dollar amount'),
+            Field('volunteerHours', type='hidden'),
+            Field('storeName', type='hidden'),
+            Field('schoolYear', type='hidden'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
+
+
+
+
+
 def convertKSNumbers(num):
     digs = num.split('-')[-3:]
     dig2 = ''.join(digs)
