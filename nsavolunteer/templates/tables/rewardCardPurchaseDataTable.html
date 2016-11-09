@@ -48,7 +48,7 @@
             {%  for int in rewardCardPurchaseIndex %}
            <tr>
         <td style="white-space: nowrap; width: 5%">
-                    <a href="#"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
+                    <a href="{% url 'editPurchase' int.rewardCardusageId %}"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
                     <a href="{% url 'deletePurchase' int.rewardCardusageId %}"><button type="button" class="btn btn-danger btn-xs">Delete</button></a>
                 </td>
            <td>{{ int.refillDate }}</td>

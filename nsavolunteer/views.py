@@ -986,7 +986,33 @@ class LogRewardCardPurchaseData(LoginRequiredMixin, CreateView):
         form.instance.storeName = card.storeName
         return super(LogRewardCardPurchaseData, self).form_valid(form)
 
+class EditRewardCardPurchaseData(LoginRequiredMixin,UpdateView):
+    form_class = AddEditRewardCardData
+    template_name = 'forms/LogRewardCardPurchaseData.html'
 
+    def get_object(self):
+        return RewardCardUsage.objects.get(pk=self.kwargs['purchaseId'])
+
+    def get_context_data(self, *args, **kwargs):
+        card = RewardCardUsage.objects.get(pk=self.kwargs['purchaseId'])
+        context = super(EditRewardCardPurchaseData, self).get_context_data(*args, **kwargs)
+        context['isEdit'] = 'Edit'
+        context['cardNum'] = card.customerCardNumber
+        return context
+
+    def form_valid(self, form):
+        print 'card num is' +form.instance.customerCardNumber
+        card = RewardCardUsers.objects.get(pk=form.instance.customerCardNumber)
+        form.instance.customerCardNumber = card.customerCardNumber
+        form.instance.linkedFamily = card.family
+        form.instance.storeName = card.storeName
+        return super(EditRewardCardPurchaseData, self).form_valid(form)
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            return reverse('rewardCardPurchaseIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('addPurchase')
 
 def GetMailGunLogs():
     logData=[]

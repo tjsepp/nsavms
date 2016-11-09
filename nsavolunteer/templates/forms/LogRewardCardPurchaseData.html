@@ -29,10 +29,11 @@
 </script>
 {% if isEdit %}
   <script>
+  tst = "{{ cardNum }}"
                 $(document).ready(function(){
-                    $('#id_volunteerId').change(function(){
-                        $("#id_customerCardNumber").empty();
-                        usid = this.value;
+                    //This first piece is to create the record list on intialization of the edit page
+                $("#id_customerCardNumber").empty();
+                        usid = $('#id_volunteerId').val();
                         request_url = '/get_related_cards/' + usid + '/';
 
                             $.ajax({
@@ -41,6 +42,24 @@
 
 
 
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_customerCardNumber").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                    //This piece allows the card to change after a user is selected
+                    $('#id_volunteerId').change(function(){
+                        $("#id_customerCardNumber").empty();
+                        usid = this.value;
+                        request_url = '/get_related_cards/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
                                     $.each(data, function(key, value){
                                         $.each(value, function(key, value){
                                             $("#id_customerCardNumber").append($("<option></option>")
