@@ -538,6 +538,36 @@ class upLoadRewardCardUsers(forms.Form):
             print card
 
 
+class AddEditRewardCardUsers(ModelForm):
+    '''
+    This class allows admins to log volunteer hours from events
+    '''
+    class Meta:
+        model = RewardCardUsers
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(AddEditRewardCardUsers,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class='form-horizontal'
+        self.helper.form_class='volunteerProfile'
+        self.helper.form_id='volunteerProfileForm'
+
+        self.helper.layout = Layout(
+            Field('linkedUser',lable='Volunteer', css_class ='volunteerSelect', id='id_volunteerId'),
+            Field('family',id='id_linkedFamily'),
+            Field('storeName', lable='Store'),
+            Field('customerCardNumber', css_id='cardNumber',lable='Card Number'),
+            Field('active'),
+            Field('lastReportedUsage', type='hidden'),
+        ButtonHolder(
+        self.helper.add_input(Submit('save', 'Save', css_class="btn btnnavy")),
+        self.helper.add_input(Submit('saveAndAdd', 'Save & Add Another', css_class="btn btnnavy")),
+        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
+        ))
+
+
+
 class AddEditRewardCardData(ModelForm):
     '''
     This class allows admins to log volunteer hours from events

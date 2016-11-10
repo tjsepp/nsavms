@@ -90,5 +90,9 @@ url(r'^rewardCard_purchaseIndex',RewardCardPurchaseIndex,name='rewardCardPurchas
 url(r'^log_purchase_data',LogRewardCardPurchaseData.as_view(),name='addPurchase'),
 url(r'^edit_purchase_data/(?P<purchaseId>\d+)$',EditRewardCardPurchaseData.as_view(),name='editPurchase'),
 url(r'^delete_purchase_data/(?P<purchaseId>\d+)$',deleteRewardCardPurchase,name='deletePurchase'),
-url(r'^get_related_cards/(?P<usid>\d+)',get_related_rewardCards,name='GetCards')
+url(r'^get_related_cards/(?P<usid>\d+)',get_related_rewardCards,name='GetCards'),
+url(r'^add_user_from_index/(?P<cardNo>[\d\s]+)',AddRewardCardUser_FromIndex.as_view(),name='add_card_from_index'),
+url(r'^add_card_user',AddRewardCardUser.as_view(),name='add_card_user')
 ]
+
+

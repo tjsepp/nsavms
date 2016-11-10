@@ -410,7 +410,7 @@ class RewardCardUsers(TimeStampedModel):
     This will link values back to the user allowing the system to aggregate the information on the user level
     '''
     RewardCardId = models.AutoField(primary_key=True,db_column='rewardCardId',verbose_name='Reward Card ID')
-    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='LinkedUser',db_column='linkedUser')
+    linkedUser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rewardCardUser',verbose_name='Volunteer',db_column='linkedUser')
     family = models.ForeignKey('FamilyProfile',db_column='family', verbose_name='Family', null=True)
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
@@ -430,10 +430,7 @@ class RewardCardUsers(TimeStampedModel):
     def save(self, *args, **kwargs):
         try:
             all_purchases = RewardCardUsage.objects.filter(customerCardNumber = self.customerCardNumber).all()
-            for rec in all_purchases:
-                if rec.linkedFamily!=self.family:
-                    rec.linkedFamily = self.family
-                    rec.save()
+            all_purchases.update(linkedFamily=self.family,volunteerId = self.linkedUser )
         except:
             pass
         super(RewardCardUsers,self).save(*args, **kwargs)

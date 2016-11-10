@@ -12,7 +12,7 @@ from braces.views import LoginRequiredMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
     AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
-    TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData,AddEditRewardCardData
+    TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData,AddEditRewardCardData,AddEditRewardCardUsers
 from .models import *
 from django.forms.formsets import formset_factory
 from django.db.models import Sum
@@ -953,6 +953,8 @@ class AddRewardCardUsersView(FormView):
         form.process_data()
         return super(AddRewardCardUsersView, self).form_valid(form)
 
+
+
 class AddRewardCardPurchaseData(FormView):
     template_name = 'forms/RewardCardUsers.html'
     form_class = upLoadRewardCardPurchaseData
@@ -986,6 +988,36 @@ class LogRewardCardPurchaseData(LoginRequiredMixin, CreateView):
         form.instance.storeName = card.storeName
         return super(LogRewardCardPurchaseData, self).form_valid(form)
 
+
+class AddRewardCardUser_FromIndex(LoginRequiredMixin,CreateView):
+    form_class = AddEditRewardCardUsers
+    template_name = 'forms/addRewardCard.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddRewardCardUser_FromIndex, self).get_context_data(*args, **kwargs)
+        context['cardNum'] = self.kwargs['cardNo']
+        return context
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            return reverse('rewardCardPurchaseIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('addPurchase')
+
+
+class AddRewardCardUser(LoginRequiredMixin,CreateView):
+    form_class = AddEditRewardCardUsers
+    template_name = 'forms/addRewardCard.html'
+
+
+    def get_success_url(self):
+        if self.request.POST.get('save'):
+            return reverse('rewardCardUserIndex')
+        elif self.request.POST.get('saveAndAdd'):
+            return reverse('add_card_user')
+
+
+
 class EditRewardCardPurchaseData(LoginRequiredMixin,UpdateView):
     form_class = AddEditRewardCardData
     template_name = 'forms/LogRewardCardPurchaseData.html'
@@ -1001,7 +1033,6 @@ class EditRewardCardPurchaseData(LoginRequiredMixin,UpdateView):
         return context
 
     def form_valid(self, form):
-        print 'card num is' +form.instance.customerCardNumber
         card = RewardCardUsers.objects.get(pk=form.instance.customerCardNumber)
         form.instance.customerCardNumber = card.customerCardNumber
         form.instance.linkedFamily = card.family

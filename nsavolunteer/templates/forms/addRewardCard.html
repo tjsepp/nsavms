@@ -1,0 +1,92 @@
+{%  extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+{% crispy example_form example_form.helper %}
+{% load staticfiles %}
+
+{% block title %}Log Volunteer Hours{% endblock %}
+
+
+{% block base_content %}
+<h2 class="vmsHeader" style="text-align: center; margin-top: 100px" id="startTour">
+    {% if isEdit %}Edit{% else %}Add{% endif %} Reward Card User</h2>
+    {%  crispy form %}
+
+
+{%  endblock %}
+
+
+
+{% block extraJquery %}
+
+
+ <script src="{% static "js/jquery-ui.min.js"%}"></script>
+ <script src="{% static "js/bootstrap-timepicker.min.js"%}"></script>
+<script>$(document).ready(function(){
+    $(".datepicker").datepicker({
+        showOptions: { direction: "down" }
+    });
+})
+</script>
+
+{% if isEdit %}
+  <script>
+                $(document).ready(function(){
+                    var cardId='{{ cardNum }}';
+                   $('#id_customerCardNumber').val(cardId)
+                    $('#id_volunteerId').change(function(){
+                        $("#id_linkedFamily").empty();
+                        usid = this.value;
+                        request_url = '/get_related_families/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
+
+
+
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_linkedFamily").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                        });
+                          $("#weeklyDatePicker").val($('#id_weekStart').val() + " - " +  $('#id_weekEnd').val());
+                })
+        </script>
+{% else %}
+        <script>
+                $(document).ready(function(){
+                    var cardId='{{ cardNum }}';
+                    $('#id_customerCardNumber').val(cardId)
+                    $("#id_linkedFamily").empty();
+                    $('#id_volunteerId').change(function(){
+                        $("#id_linkedFamily").empty();
+                        usid = this.value;
+                        request_url = '/get_related_families/' + usid + '/';
+
+                            $.ajax({
+                                url:request_url,
+                                success: function (data) {
+
+
+
+                                    $.each(data, function(key, value){
+                                        $.each(value, function(key, value){
+                                            $("#id_linkedFamily").append($("<option></option>")
+                                                        .attr("value",key)
+                                                        .text(value));
+                                        });
+                                    });
+                                }
+                            })
+                        })
+                    })
+        </script>
+{% endif %}
+
+{% endblock %}
+
