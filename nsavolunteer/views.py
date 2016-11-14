@@ -971,7 +971,7 @@ class AddRewardCardPurchaseData(FormView):
     #success_url = '/upload/'
 
     def get_success_url(self):
-        return reverse('volunteerIndex')
+        return reverse('rewardCardPurchaseIndex')
 
     def form_valid(self, form):
         form.process_data()

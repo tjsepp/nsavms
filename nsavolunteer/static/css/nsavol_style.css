@@ -140,6 +140,7 @@ margin-bottom: 50px;
 
 .dataTables_filter{
     float: right;
+    margin-right: 1%;
 }
 
 .dataTables_paginate {
