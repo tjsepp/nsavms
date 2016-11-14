@@ -25,7 +25,23 @@
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
 
 
-
+ <div class="col-sm-6">
+    <div class="btn-group" style="margin: 0 0 1% -2%">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Data Options <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="{% url 'addPurchase' %}">Add Single Purchase Data</a></li>
+    <li><a href="{% url 'uploadRewardCardPurchaseInfo' %}">Upload King Soopers Data</a></li>
+    <li role="separator" class="divider"></li>
+      {% if unlinked %}
+        <li><a href="{% url 'rewardCardPurchaseIndex' %}">All Purchase Data</a></li>
+      {% else %}
+          <li><a href="{% url 'unlinkedRewardCards' %}">Filter For Unlinked Cards</a></li>
+      {% endif %}
+  </ul>
+</div>
+ </div>
 
 
 

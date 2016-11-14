@@ -940,6 +940,16 @@ def RewardCardPurchaseIndex(request):
     response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex})
     return response
 
+def RewardCardPurchaseIndex_unlinkedCards(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    unlinked ='True'
+    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','volunteerId__linkedUser','linkedFamily')\
+        .filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).filter(linkedFamily__isnull = True).order_by('-refillDate')
+    response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex,'unlinked':unlinked})
+    return response
+
 
 class AddRewardCardUsersView(FormView):
     template_name = 'forms/RewardCardUsers.html'

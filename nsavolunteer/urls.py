@@ -87,6 +87,7 @@ url(r'^uploadRewardCardUsers$',AddRewardCardUsersView.as_view(),name='uploadRewa
 url(r'^uploadRewardCardPurchaseData$',AddRewardCardPurchaseData.as_view(),name='uploadRewardCardPurchaseInfo'),
 url(r'^rewardCard_userIndex',RewardCardUserIndex,name='rewardCardUserIndex'),
 url(r'^rewardCard_purchaseIndex',RewardCardPurchaseIndex,name='rewardCardPurchaseIndex'),
+ url(r'^unlinkedRewardCards',RewardCardPurchaseIndex_unlinkedCards,name='unlinkedRewardCards'),
 url(r'^log_purchase_data',LogRewardCardPurchaseData.as_view(),name='addPurchase'),
 url(r'^edit_purchase_data/(?P<purchaseId>\d+)$',EditRewardCardPurchaseData.as_view(),name='editPurchase'),
 url(r'^delete_purchase_data/(?P<purchaseId>\d+)$',deleteRewardCardPurchase,name='deletePurchase'),

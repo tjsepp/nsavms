@@ -627,7 +627,7 @@ class upLoadRewardCardPurchaseData(forms.Form):
         self.helper.layout = Layout(
             'data_file',
         )
-        self.helper.add_input(Submit('submit','Add Data'))
+        self.helper.add_input(Submit('submit','Add Data',css_class='btn-btnnavy'))
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
 
     def process_data(self):
@@ -640,6 +640,7 @@ class upLoadRewardCardPurchaseData(forms.Form):
 
 
         for data in reader:
+            data['store']='King Soopers'
             prop_date =datetime.datetime.strftime(datetime.datetime.strptime(data['date'],'%m/%d/%Y'),'%Y-%m-%d')
             if data['store']=='King Soopers':
                 card_num = convertKSNumbers(data['cardnumber'])
