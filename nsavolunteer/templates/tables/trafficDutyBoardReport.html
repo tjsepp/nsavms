@@ -1,0 +1,87 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Traffic Duty
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Traffic Duty</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+
+            <tr>
+                <th>Family</th>
+                <th>Volunteers</th>
+                <th>Student Grade Level</th>
+                <th>Traffic Requirement</th>
+                <th>Total Shifts</th>
+                <th>Requirement Met</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+        {% for duty in trafficData %}
+
+            {% if duty.family.trafficRequirement == 0 %}
+                <tr class="active">
+            {% elif duty.trafficDutyCount >= duty.family.trafficRequirement %}
+                <tr class="success">
+            {% elif duty.trafficDutyCount > 0 %}
+                <tr class="info">
+            {% else %}
+                <tr class="danger">
+            {% endif %}
+                <td>{{ duty.family.familyName }}</td>
+                <td>{% for vol in duty.family.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
+                <td>{% for stu in duty.family.students.all %} {{ stu.grade}}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
+                <td>{{duty.family.trafficRequirement}}</td>
+                <td>{{duty.trafficDutyCount}}</td>
+                <td>
+                {% if duty.family.trafficRequirement == 0 %}
+                Waived
+                {% elif duty.trafficDutyCount >= duty.family.trafficRequirement %}
+                Met Requirement
+                {% elif duty.trafficDutyCount > 0 %}
+                Partially Met
+                {% else %}
+                 No shifts completed
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

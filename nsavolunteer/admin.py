@@ -46,7 +46,7 @@ class RewardCardInfoAdmin(admin.ModelAdmin):
 class RewardCardDataAdmin(admin.ModelAdmin):
     models= RewardCardUsage
     search_fields = ('volunteerId__name','customerCardNumber','statementCardNumber',)
-    list_display = ('volunteerId','linkedFamily','refillDate','customerCardNumber','statementCardNumber','storeName','schoolYear','refillValue')
+    list_display = ('volunteerId','linkedFamily','refillDate','customerCardNumber','statementCardNumber','storeName','schoolYear','refillValue','dateCreated')
     list_editable = ('schoolYear',)
     actions = [really_delete_selected]
 

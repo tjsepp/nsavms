@@ -55,6 +55,7 @@
                 <th>Family</th>
                 <th>Store</th>
                 <th>Card Number</th>
+                <th>Statment Card Number</th>
                 <th>Purchase Value</th>
                 <th>Volunteer Hours</th>
             </tr>
@@ -80,6 +81,7 @@
                 {% endif %}
 
            </td>
+           <td>{{ int.statementCardNumber }}</td>
 
            <td>${{ int.refillValue }}</td>
            <td>{{ int.volunteerHours }}</td>

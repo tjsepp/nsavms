@@ -9,6 +9,7 @@ from nsaEvents.models import NsaEvents, EventTasks
 from django.db.models import Sum, Count
 from collections import defaultdict
 from itertools import chain
+import datetime
 
 
 STORES = (('King Soopers','King Soopers'),('Safeway','Safeway'))
@@ -415,7 +416,6 @@ class RewardCardUsers(TimeStampedModel):
     storeName = models.CharField(max_length=25,db_column='store',verbose_name='Store',null=True,blank=False,choices=STORES)
     customerCardNumber = models.CharField(max_length=50, db_column='cardNumber',verbose_name='Card Number',blank=False,null=True)
     active = models.BooleanField(verbose_name='active',db_column='active',default=True)
-    lastReportedUsage = models.DateField(db_column='lastReportedUsage', verbose_name='Last Reported Usage', null=True, blank=True)
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -527,15 +527,6 @@ class RewardCardUsage(TimeStampedModel):
                     p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
             p.save()
 
-        #update cards usage
-        card = RewardCardUsers.objects.get(customerCardNumber = self.customerCardNumber)
-        if card.lastReportedUsage:
-            if self.refillDate>card.lastReportedUsage:
-                card.lastReportedUsage = self.refillDate
-        else:
-            card.lastReportedUsage = self.refillDate
-        card.save()
-
         super(RewardCardUsage,self).save(force_insert, force_update)
 
 
@@ -612,6 +603,7 @@ class FamilyAggHours(TimeStampedModel):
     schoolYear = models.ForeignKey(SchoolYear,db_column='schoolYear',null=True,blank=False, verbose_name='School Year')
     totalVolHours = models.DecimalField(db_column='totalVolunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Volunteer Hours', default=0)
     trafficDutyCount = models.IntegerField(db_column='trafficDutyCount',verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
+    benchmarkDate = models.DateField(db_column='benchMarkDate', verbose_name='Bench Mark Date',null=True,blank=True)
 
     def currentYear(self):
         curYear = self.objects.filter(schoolYear = SchoolYear.objects.get(currentYear=1))
@@ -624,6 +616,19 @@ class FamilyAggHours(TimeStampedModel):
         if created:
             FamilyAggHours.objects.get_or_create(family = instance, schoolYear = SchoolYear.objects.get(currentYear = 1))
     post_save.connect(create_familyAgg_on_familyProfile_creation, sender=FamilyProfile)
+
+    def save(self, *args, **kwargs):
+        if not self.benchmarkDate:
+            if self.totalVolHours>=40:
+                self.benchmarkDate = datetime.date.today()
+            else:
+                self.benchmarkDate =None
+        if self.benchmarkDate:
+            if self.totalVolHours<=40:
+                self.benchmarkDate =None
+        super(FamilyAggHours,self).save(*args, **kwargs)
+
+
 
     class Meta:
         verbose_name_plural='Family Sums'

@@ -108,7 +108,7 @@ def InactiveVolunteerIndex(request):
 
 
 def FamilyIndex(request):
-    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students').order_by('familyName')
+    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students','students__grade').order_by('familyName')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
 
@@ -119,9 +119,7 @@ def InterestIndex(request):
 
 
 class Report_Family_Hours_Current(ListView):
-    model = FamilyProfile
-    paginate_by = 100
-    queryset = FamilyProfile.objects.prefetch_related('famvolunteers','students','familyAgg','familyAgg__schoolYear').order_by('familyName')
+    queryset = FamilyProfile.objects.select_related('familyAgg').prefetch_related('famvolunteers','students','familyAgg__schoolYear').order_by('familyName')
     context_object_name = "FamilyIndex"
     template_name="reports/totalFamilyHours.html"
 
@@ -917,6 +915,13 @@ class TrafficReportWeekly(TemplateView):
         context['recentTraffic'] = Traffic_Duty.objects.all().order_by('-dateCreated')
         return context
 
+
+class TrafficBoardReport(ListView):
+    queryset = FamilyAggHours.objects.select_related('family').prefetch_related('family__famvolunteers','family__students').filter(schoolYear=SchoolYear.objects.get(currentYear=1))
+    context_object_name = "trafficData"
+    template_name = "tables/trafficDutyBoardReport.html"
+
+
 def deleteTrafficDuty(request, trafficid):
     obj = Traffic_Duty.objects.get(pk=trafficid)
     obj.delete()
@@ -950,6 +955,15 @@ def RewardCardPurchaseIndex_unlinkedCards(request):
     response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex,'unlinked':unlinked})
     return response
 
+def RewardUploadedDataReport(request):
+    '''
+    This view populates the volunteerIndex table with all active users
+    '''
+    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','volunteerId__linkedUser','linkedFamily')\
+        .filter(dateCreated__contains=datetime.date.today()).order_by('-refillDate')
+    response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex})
+    return response
+
 
 class AddRewardCardUsersView(FormView):
     template_name = 'forms/RewardCardUsers.html'
@@ -971,7 +985,7 @@ class AddRewardCardPurchaseData(FormView):
     #success_url = '/upload/'
 
     def get_success_url(self):
-        return reverse('rewardCardPurchaseIndex')
+        return reverse('rewardCardUploadPurchaseIndex')
 
     def form_valid(self, form):
         form.process_data()

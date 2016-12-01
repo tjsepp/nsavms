@@ -32,6 +32,7 @@
                 <th>Students</th>
                 <th>Hours</th>
                 <th>Traffic</th>
+                <th>40 Hour Date</th>
 
             </tr>
         </thead>
@@ -40,8 +41,8 @@
             {%  for fam in FamilyIndex %}
                 <tr>
                 <td>{{ fam.familyName }}</td>
-                <td>{{ fam.listVolunteers }}</td>
-                <td>{{ fam.listStudents }}</td>
+                <td>{% for vol in fam.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
+                <td>{% for stu in fam.students.all %} {{ stu.studentFirstName }}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
                 <td>{% if fam.familyAgg.all %}
                         {% for aggData in fam.familyAgg.all %}
                             {%  if aggData.schoolYear.currentYear %}
@@ -50,8 +51,7 @@
                         {% endfor %}
                      {% else %}
                     0
-                    {% endif %}
-                </td>
+                    {% endif %}</td>
                 <td>{% if fam.familyAgg.all %}
                         {% for aggData in fam.familyAgg.all %}
                             {%  if aggData.schoolYear.currentYear %}
@@ -60,8 +60,14 @@
                         {% endfor %}
                      {% else %}
                     0
-                    {% endif %}
-                </td>
+                    {% endif %}</td>
+                 <td>{% if fam.familyAgg.all %}
+                        {% for aggData in fam.familyAgg.all %}
+                            {%  if aggData.schoolYear.currentYear %}
+                                {{ aggData.benchmarkDate|default:''  }}
+                            {% endif %}
+                        {% endfor %}
+                     {% endif %}</td>
             </tr>
         {% endfor %}
          </tbody>
