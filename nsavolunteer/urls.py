@@ -38,6 +38,7 @@ url(r'^familyindex',FamilyIndex,name='familyIndex'),
 url(r'^studentindex',StudentIndex,name='studentIndex'),
 url(r'^familyprofile/(?P<famid>\d+)/$',FamilyProfilePage,name='familyprofile'),
 url(r'^totalFamilyHoursCurrent',Report_Family_Hours_Current.as_view(),name='rptFamilyHoursCurrent'),
+url(r'^forty_hour_club',FortyHourClub.as_view(),name='40hourclub'),
 url(r'^weeklytrafficreport',TrafficReportWeekly.as_view(),name='trafficReportWeekly'),
 url(r'^trafficboardreport',TrafficBoardReport.as_view(),name='trafficBoardReport'),
 url(r'^approveHours',hoursToApprove,name='approveHours'),
@@ -95,7 +96,8 @@ url(r'^edit_purchase_data/(?P<purchaseId>\d+)$',EditRewardCardPurchaseData.as_vi
 url(r'^delete_purchase_data/(?P<purchaseId>\d+)$',deleteRewardCardPurchase,name='deletePurchase'),
 url(r'^get_related_cards/(?P<usid>\d+)',get_related_rewardCards,name='GetCards'),
 url(r'^add_user_from_index/(?P<cardNo>[\d\s]+)',AddRewardCardUser_FromIndex.as_view(),name='add_card_from_index'),
-url(r'^add_card_user',AddRewardCardUser.as_view(),name='add_card_user')
+url(r'^add_card_user',AddRewardCardUser.as_view(),name='add_card_user'),
+url(r'^family_agg_errors',Bad_family_agg_data,name='bad_family_agg')
 ]
 
 

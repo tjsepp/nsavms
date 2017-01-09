@@ -1,0 +1,71 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Total Volunteer Hours
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">40 Hour Club</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Family Name</th>
+                <th>Volunteers</th>
+                <th>Students</th>
+                <th>Teachers</th>
+                <th>Note</th>
+                <th>Req'd</th>
+                <th>Hours</th>
+                <th>40 Hour Date</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for fam in FamilyIndex %}
+                <tr>
+                <td>{{ fam.family.familyName }}</td>
+                <td>{% for vol in fam.family.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
+                <td>{% for stu in fam.family.students.all %} {{ stu.studentFirstName }}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
+                <td>{% for stu in fam.family.students.all %} {{ stu.teacher }}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
+                <td>{{ fam.family.specialInfo|default:''}}</td>
+                <td>{{fam.family.volunteerRequirement}}</td>
+                <td>{{ fam.totalVolHours }}</td>
+                 <td>{{ fam.benchmarkDate|default:''  }}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

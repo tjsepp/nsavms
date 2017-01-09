@@ -27,6 +27,15 @@ import  datetime
 from operator import itemgetter
 
 
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+
+
 def homeView(request):
     news = VolunteerNews.objects.all()
     response = render(request, 'home.html')
@@ -122,6 +131,12 @@ class Report_Family_Hours_Current(ListView):
     queryset = FamilyProfile.objects.select_related('familyAgg').prefetch_related('famvolunteers','students','familyAgg__schoolYear').order_by('familyName')
     context_object_name = "FamilyIndex"
     template_name="reports/totalFamilyHours.html"
+
+class FortyHourClub(ListView):
+    queryset = FamilyAggHours.objects.select_related('family').prefetch_related('family__famvolunteers','family__students').filter(schoolYear = SchoolYear.objects.filter(currentYear=1)).filter(totalVolHours__gte=40)
+    #queryset = FamilyProfile.objects.select_related('familyAgg').prefetch_related('famvolunteers','students','familyAgg__schoolYear').order_by('familyName').filter(familyAgg__totalVolHours)
+    context_object_name = "FamilyIndex"
+    template_name="reports/40HourClub.html"
 
 @login_required
 def userVolunteerData(request):
@@ -1128,3 +1143,17 @@ def get_related_rewardCards(request,usid):
     for card in all_cards:
         result_set.append({card.RewardCardId:card.customerCardNumber})
     return HttpResponse(json.dumps(result_set), content_type='application/json')
+
+
+
+
+def Bad_family_agg_data(request):
+    from django.db import connection
+    from raw_queries import bad_familyAgg_records
+    cur = connection.cursor()
+    sqlstrg = bad_familyAgg_records
+    cur.execute(sqlstrg)
+
+    familyindex =dictfetchall(cur)
+    print familyindex
+    return render(request,'tables/bad_family_agg_data.html',{'familyindex':familyindex})

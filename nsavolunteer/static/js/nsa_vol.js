@@ -44,6 +44,8 @@ $(document).ready(function() {
 
 } );
 
+
+
 $(document).ready(function() {
     $('.datatableNoReport').DataTable({
             "paging": false,
@@ -93,7 +95,6 @@ $(document).ready(function() {
 $(document).ready(function () {
     $('#ProfileNagModal').modal('show');
 });
-
 
 $(document).ready(function () {
     $('.select2It').select2({

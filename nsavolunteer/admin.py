@@ -73,6 +73,7 @@ class StudentAdmin(SimpleHistoryAdmin):
     model = Student
     list_display = ('getFullStudentName','activeStatus','grade','teacher')
     list_editable = ('grade','teacher',)
+    search_fields = ('studentFirstName','studentLastName','teacher')
 
 
 class VolunteerHoursAdmin(SimpleHistoryAdmin):

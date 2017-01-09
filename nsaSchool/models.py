@@ -42,6 +42,7 @@ class GradeLevel(models.Model):
     gradeName = models.CharField(max_length=25, db_column='gradeName', null=True, blank=False,verbose_name='Grade Name')
     gradeOrder = models.IntegerField(db_column='gradeOrder',unique=True,null=True,blank=True, verbose_name='Grade Order')
 
+
     def __unicode__(self):
         return self.gradeName
 

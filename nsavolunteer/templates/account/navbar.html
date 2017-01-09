@@ -75,11 +75,13 @@
                                 <li class="navIndent"><a href="{% url 'addfamily' %}">Add A New Family</a></li>
 
                             {% if perms.nsavolunteer.is_volunteer_manager %}
-
+                            <li class="divider"></li>
                             <li class="dropdown-submenu">
                                     <a class='navIndent' tabindex="-1" href="#">Reporting</a>
                                     <ul class="dropdown-menu">
+                                      <li class="navIndent"><a href="{% url '40hourclub'  %}">40 Hour Club</a></li>
                                       <li class="navIndent"><a href="{% url 'rptFamilyHoursCurrent'  %}">Hours/Traffic</a></li>
+                                      <li class="navIndent"><a href="{% url 'bad_family_agg'  %}">Calc Issues (Tim)</a></li>
                                       <!--<li class="navIndent"><a href="#">Report 2</a></li>-->
                                       <!--<li class="navIndent"><a href="#">Report 3</a></li>-->
                                       <!--<li class="navIndent"><a href="#">Report 4</a></li>-->

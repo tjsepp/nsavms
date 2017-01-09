@@ -1,0 +1,74 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Family sums - Calc Issues
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+<form action="" id="volunteerIdx" method="post">{% csrf_token %}
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Calculating Issues To Review</h2>
+                    <p>This report does.........</p>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+        <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Family Name</th>
+                <th>School Year</th>
+                <th>Summed Hours</th>
+                <th>Hours from Sum Table</th>
+            </tr>
+        </thead>
+
+        <tbody>
+                {% for rec in familyindex %}
+                <tr>
+                <td>{{rec.familyName}}</td>
+                <td>{{ rec.schoolYear }}</td>
+                <td>{{ rec.totalHoursSum }}</td>
+                <td>{{ rec.totHoursFromAgg }}</td>
+                </tr>
+                {%  endfor %}
+         </tbody>
+
+</table>
+        </div>
+
+</div>
+ </form>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+    <script>
+    $("#newFam").click(function(){
+        $('#volunteerIdx').attr("method",'')
+
+    })
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+            trigger : 'hover'
+        });
+    });
+    </script>
+{% endblock %}
+
