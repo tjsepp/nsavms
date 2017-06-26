@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    Total Volunteer Hours
+    40 Hour Club
 {% endblock %}
 
 {% block extra_head %}
@@ -12,7 +12,6 @@
 
 
 {% block base_content %}
-
 
 
 
@@ -42,7 +41,7 @@
         <tbody>
             {%  for fam in FamilyIndex %}
                 <tr>
-                <td>{{ fam.family.familyName }}</td>
+                <td><a href="{% url 'consolidateFamilyData' fam.family.familyProfileId %}">{{ fam.family.familyName }}</a></td>
                 <td>{% for vol in fam.family.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
                 <td>{% for stu in fam.family.students.all %} {{ stu.studentFirstName }}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
                 <td>{% for stu in fam.family.students.all %} {{ stu.teacher }}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>

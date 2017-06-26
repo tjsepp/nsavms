@@ -618,13 +618,14 @@ class FamilyAggHours(TimeStampedModel):
     post_save.connect(create_familyAgg_on_familyProfile_creation, sender=FamilyProfile)
 
     def save(self, *args, **kwargs):
+        requirement = FamilyProfile.objects.get(pk=self.family.familyProfileId).volunteerRequirement
         if not self.benchmarkDate:
-            if self.totalVolHours>=40:
+            if self.totalVolHours>=requirement:
                 self.benchmarkDate = datetime.date.today()
             else:
                 self.benchmarkDate =None
         if self.benchmarkDate:
-            if self.totalVolHours<=40:
+            if self.totalVolHours < requirement:
                 self.benchmarkDate =None
         super(FamilyAggHours,self).save(*args, **kwargs)
 

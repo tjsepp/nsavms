@@ -661,4 +661,3 @@ class upLoadRewardCardPurchaseData(forms.Form):
                                                       statementCardNumber=data['cardnumber'])
                 except:
                     pass
-

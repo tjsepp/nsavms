@@ -8,14 +8,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, UserPassesTestMixin
 from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFormExtra, \
     StudentUpdateForm, AddUserEventForm,AddNewFamily,AddFamilyVolunteers,\
     AddNewVolunteersToFamily,PasswordRecoveryForm,AddInterestForm, RecruitingEmailForm,EditVolunteersLogin,\
     TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData,AddEditRewardCardData,AddEditRewardCardUsers
 from .models import *
 from django.forms.formsets import formset_factory
-from django.db.models import Sum
+from django.db.models import Sum, F
 from nsaSchool.models import VolunteerNews, SchoolYear
 from nsaEvents.models import EventTasks
 import json
@@ -34,6 +34,7 @@ def dictfetchall(cursor):
         dict(zip(columns, row))
         for row in cursor.fetchall()
     ]
+
 
 
 def homeView(request):
@@ -132,8 +133,13 @@ class Report_Family_Hours_Current(ListView):
     context_object_name = "FamilyIndex"
     template_name="reports/totalFamilyHours.html"
 
+class volunteerHoursBoardReport(ListView):
+    queryset = FamilyAggHours.objects.select_related('family').prefetch_related('family__famvolunteers','family__students').filter(family__active=True).filter(schoolYear=SchoolYear.objects.get(currentYear=1))
+    context_object_name = "volunteerData"
+    template_name = "reports/BodReport.html"
+
 class FortyHourClub(ListView):
-    queryset = FamilyAggHours.objects.select_related('family').prefetch_related('family__famvolunteers','family__students').filter(schoolYear = SchoolYear.objects.filter(currentYear=1)).filter(totalVolHours__gte=40)
+    queryset = FamilyAggHours.objects.select_related('familyAgg').prefetch_related('family__famvolunteers','family__students').filter(schoolYear = SchoolYear.objects.filter(currentYear=1)).filter(family__volunteerRequirement__gt=0).filter(family__volunteerRequirement__lte=F('totalVolHours'))
     #queryset = FamilyProfile.objects.select_related('familyAgg').prefetch_related('famvolunteers','students','familyAgg__schoolYear').order_by('familyName').filter(familyAgg__totalVolHours)
     context_object_name = "FamilyIndex"
     template_name="reports/40HourClub.html"
@@ -172,6 +178,46 @@ def userVolunteerData(request):
         'totalVolunteerHoursUser':totalVolunteerHoursUser,'multFam':multFam,
         'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests,'traffic':traffic})
     return response
+
+
+class viewOtherUserDashboard(UserPassesTestMixin, TemplateView):
+
+    template_name = "volunteerData/volunteerData.html"
+
+    def get_context_data(self, **kwargs):
+        curUser = User.objects.select_related('trafficDuty_User','linkedUser','linkedUser__linkedUserAccount__volunteerhours_set','linkedUser__linkedUserAccount__rewardCardValue')\
+            .prefetch_related('linkedUser__linkedUserAccount__family').get(pk=self.kwargs['userId'])
+        curYear = SchoolYear.objects.get(currentYear = 1)
+        traffic = curUser.trafficDuty_User.filter(schoolYear = curYear).order_by('-weekStart')
+        volhours = curUser.volunteerhours_set.select_related('event','family').filter(schoolYear=curYear).all().order_by('-eventDate')
+
+        context = super(viewOtherUserDashboard, self).get_context_data(**kwargs)
+        context['curUser'] = curUser
+        context['curYear'] = curYear
+        context['traffic']=traffic
+        context['rewardCardData']=curUser.rewardCardValue.filter(schoolYear = curYear).order_by('-refillDate')
+        context['volHours'] = volhours
+        context['rewardCardSum'] =curUser.rewardCardValue.filter(schoolYear = curYear).aggregate(Sum('volunteerHours')).values()[0]
+        context['volunteerHoursSum']=volhours.filter(approved=True).aggregate(Sum('volunteerHours')).values()[0]
+        context['parkingDutySum']=traffic.aggregate(Sum('volunteerHours')).values()[0]
+        if context['rewardCardSum']==None:
+            context['rewardCardSum']=0
+        if context['volunteerHoursSum'] ==None:
+            context['volunteerHoursSum'] = 0
+        if context['parkingDutySum']==None:
+            context['parkingDutySum']=0
+
+        context['totalVolunteerHoursUser'] = context['rewardCardSum']+context['volunteerHoursSum']+context['parkingDutySum']
+
+        context['hasInterests'] = 1
+        if curUser.family.count()>1:
+            context['multFam'] = True
+        else:
+            context['multFam'] = False
+        return context
+
+    def test_func(self, user):
+        return (user.is_superuser)
 
 
 
@@ -1086,13 +1132,14 @@ class EditRewardCardPurchaseData(LoginRequiredMixin,UpdateView):
 
 def GetMailGunLogs():
     logData=[]
-    myDate = datetime.datetime.now() - datetime.timedelta(days=10)
+    myDate = datetime.datetime.now() - datetime.timedelta(days=3)
+    print myDate
     startDate = myDate.strftime('%a, %d %B %y %H:%M:%S -0000')
     mgreturn= requests.get(
         "https://api.mailgun.net/v3/mg.nsavms.com/events",
         auth=("api", settings.MAILGUN_API_KEY),
-        params={"begin"       : startDate,
-                "ascending"   : "yes",
+        params={"end"       : datetime.datetime.now().strftime('%a, %d %B %y %H:%M:%S -0000'),
+                "ascending"   : "no",
                 "limit"       :  300,
                 "pretty"      : "yes"
                 })
@@ -1101,7 +1148,10 @@ def GetMailGunLogs():
         mgDict={}
         mgDict['recipient'] = y['recipient']
         mgDict['date'] = datetime.datetime.fromtimestamp(y['timestamp'])
-        mgDict['subject']=y['message']['headers']['subject']
+        try:
+            mgDict['subject']=y['message']['headers']['subject']
+        except:
+            pass
         mgDict['event']=y['event']
         mgDict['timestamp']=y['timestamp']
         logData.append(mgDict)
@@ -1157,3 +1207,14 @@ def Bad_family_agg_data(request):
     familyindex =dictfetchall(cur)
     print familyindex
     return render(request,'tables/bad_family_agg_data.html',{'familyindex':familyindex})
+
+def consolidated_family_data(request,famid):
+    from django.db import connection
+    from raw_queries import FAMILY_DATA_CONSOLIDATED
+    cur = connection.cursor()
+    sqlstrg = FAMILY_DATA_CONSOLIDATED %(famid,famid,famid)
+    cur.execute(sqlstrg)
+
+    familyindex =dictfetchall(cur)
+    print familyindex
+    return render(request,'tables/consolidate_family_data.html',{'familyindex':familyindex})

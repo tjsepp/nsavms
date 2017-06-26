@@ -43,6 +43,9 @@
                             <li class="dropdown-header"><b>Reward Card Data</b></li>
                             <li class="navIndent"><a href="{% url 'rewardCardUserIndex' %}">Reward Card User Index</a>
                             <li class="navIndent"><a href="{% url 'rewardCardPurchaseIndex' %}">Purchase Index</a>
+                            <li class="divider"></li>
+                            <li class="navIndent"><a href="{% url 'add_card_user' %}">Add Reward Card</a>
+                            <li class="navIndent"><a href="{% url 'addPurchase' %}">Add Single Purchase</a>
                         </ul>
                 </li>
               {%  endif %}
@@ -80,6 +83,7 @@
                                     <a class='navIndent' tabindex="-1" href="#">Reporting</a>
                                     <ul class="dropdown-menu">
                                       <li class="navIndent"><a href="{% url '40hourclub'  %}">40 Hour Club</a></li>
+                                      <li class="navIndent"><a href="{% url 'bodReport'  %}">Board Report</a></li>
                                       <li class="navIndent"><a href="{% url 'rptFamilyHoursCurrent'  %}">Hours/Traffic</a></li>
                                       <li class="navIndent"><a href="{% url 'bad_family_agg'  %}">Calc Issues (Tim)</a></li>
                                       <!--<li class="navIndent"><a href="#">Report 2</a></li>-->

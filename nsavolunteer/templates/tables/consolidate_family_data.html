@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    Family sums - Calc Issues
+    Family Data
 {% endblock %}
 
 {% block extra_head %}
@@ -19,8 +19,8 @@
     <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
-                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Calculating Issues To Review</h2>
-                    <p>This report does.........</p>
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Consolidated Family Data</h2>
+
                 </div>
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">
@@ -28,20 +28,22 @@
         <table id="volIndex" class="table table-condensed table-striped table-bordered datatable" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th>Family Name</th>
+                <th>Volunteer</th>
+                <th>Family</th>
                 <th>School Year</th>
-                <th>Summed Hours</th>
-                <th>Hours from Sum Table</th>
+                <th>Type</th>
+                <th>Hours</th>
             </tr>
         </thead>
 
         <tbody>
                 {% for rec in familyindex %}
                 <tr>
-                <td><a href="{% url 'consolidateFamilyData' rec.family %}">{{rec.familyName}}</a></td></td>
-                <td>{{ rec.schoolYear }}</td>
-                <td>{{ rec.totalHoursSum }}</td>
-                <td>{{ rec.totHoursFromAgg }}</td>
+                <td>{{rec.name}}</td>
+                <td>{{rec.familyname}}</td>
+                <td>{{ rec.year }}</td>
+                <td>{{ rec.Type }}</td>
+                <td>{{ rec.volunteerHours}}</td>
                 </tr>
                 {%  endfor %}
          </tbody>

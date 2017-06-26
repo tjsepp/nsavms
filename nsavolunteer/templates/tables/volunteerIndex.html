@@ -17,6 +17,7 @@
             <tr>
                 {% if perms.nsavolunteer.is_volunteer_manager%}
                 <th style="text-align: center"><input type="checkbox" name="toggle" id="checkToggle"></th>
+                    <th></th>
                     <th>AVC</th>
                 {% endif %}
                 <th>Status</th>
@@ -36,6 +37,7 @@
                 <tr>
                 {% if perms.nsavolunteer.is_volunteer_manager%}
                 <td align="center"><input type="checkbox" name="UserRecs" value="{{ vol.linkedUser.volunteerProfileID }}"></td>
+                <td align="center" style="width: 2%"><a href="{% url 'dm_view_user_dash' vol.id %}"><button type="button" class="btn primary btn-xs">Dashboard</button></a></td>
                 <td>{{ vol.groups.all|is_avc|default:''|safe}}</td>
                 {% endif%}
                 <td>

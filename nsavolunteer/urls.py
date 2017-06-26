@@ -29,6 +29,7 @@ url(r'^changePassword/$',ChangePassword.as_view(),name='changepassword'),
 url(r'^user_profile',userSettings,name='user_profile'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
+url(r'^data_manage_view_dashboard/(?P<userId>\d+)',viewOtherUserDashboard.as_view(),name='dm_view_user_dash'),
 ##Admin templates
 url(r'^volunteerindex',VolunteerIndex,name='volunteerIndex'),
 url(r'^pending_volunteerindex',PendingVolunteerIndex,name='pendingvolunteerIndex'),
@@ -97,7 +98,9 @@ url(r'^delete_purchase_data/(?P<purchaseId>\d+)$',deleteRewardCardPurchase,name=
 url(r'^get_related_cards/(?P<usid>\d+)',get_related_rewardCards,name='GetCards'),
 url(r'^add_user_from_index/(?P<cardNo>[\d\s]+)',AddRewardCardUser_FromIndex.as_view(),name='add_card_from_index'),
 url(r'^add_card_user',AddRewardCardUser.as_view(),name='add_card_user'),
-url(r'^family_agg_errors',Bad_family_agg_data,name='bad_family_agg')
+url(r'^family_agg_errors',Bad_family_agg_data,name='bad_family_agg'),
+url(r'^consolidate_fam_data/(?P<famid>[\d\s]+)',consolidated_family_data,name='consolidateFamilyData'),
+url(r'^bod_report',volunteerHoursBoardReport.as_view(),name='bodReport')
 ]
 
 
