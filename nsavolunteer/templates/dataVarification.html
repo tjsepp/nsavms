@@ -1,0 +1,54 @@
+{%  extends 'account/base.html' %}
+{% block base_content %}
+
+ <div>
+    {% if superuser %}
+
+        <div  class ="row" style="color:#C0C0C0; margin-top: 3%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Data Varification</h2>
+        </div>
+
+    <table class="table table-condensed table-striped table-bordered" cellspacing="0" width="100%" style="margin-top: 15px">
+            <thead>
+                <tr>
+                    <th>Grade</th>
+                    <th>Student Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for studentCount in gradeCounts %}
+                <tr>
+                    <td>{{ studentCount.grade__gradeName }}</td>
+                    <td>{{ studentCount.total }}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+     </table>
+    </div>
+
+    <table class="table table-condensed table-striped table-bordered" cellspacing="0" width="100%" style="margin-top: 10px">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in statusCounts %}
+                <tr>
+                    <td>{% if status.volStatus == 'pending'%}Pending {% elif status.volStatus == 'approved'%} {% else %}{{ status.volstatus }} {% endif %}</td>
+                    <td>{{ status.total }}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+     </table>
+    </div>
+
+
+    {% else %}
+        <div  class ="row" style="margin-top: 15%; margin-bottom: -10%; text-align: center">
+        <h2 class="vmsHeader" style="text-align: center; margin-top: 50px; color:red;">You do not have access to perform this function</h2>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

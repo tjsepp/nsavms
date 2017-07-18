@@ -8,10 +8,21 @@
 
 {% block base_content %}
 <div class="container-fluid" style="padding: 7%">
-    <div class="row" style="margin-top: 2%">
-                <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-bottom: 2%">
-                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">{{ family.familyName }} Profile</h2>
-                </div>
+    <div class="row" style="margin-top: 0%">
+                <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-bottom: 2%; text-align: center">
+                    <h2 class="vmsHeader" style="margin-top: 0px">{{ family.familyName }} Profile</h2>
+                     {% if perms.nsavolunteer.is_volunteer_manager%}
+                         <div style="margin-top: -2%">
+                         {% if family.active %}
+                            <a href="#"><button type="button" class="btn-default" data-toggle="modal"
+                             data-target="#deactivateFamilyModal">Deactivate Family</button></a>
+                          {% elif family.active == False %}
+                             <a href="{% url 'reactivateFullFamily' family.familyProfileId %}"><button type="button" class="btn-default"
+                             >Reactivate Family</button></a>
+                         {% endif %}
+                         </div>
+                     {% endif %}
+                    </div>
 
         <div class="row">
         <div class="col-md-12 col-md-12">
@@ -51,6 +62,7 @@
 
             {% include './tables/familyProfileVolunteersTable.html' %}
             {% include './tables/familyProfileStudentsTable.html' %}
+            {% include 'modals/deactivateFamilyModal.html' %}
 
     </div>
 </div>

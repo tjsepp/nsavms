@@ -504,21 +504,89 @@ def RemoveContactFromFamily(request,famid,volunteerid):
 
 
 
-def YearEndProcess(request):
+def year_end_process(request):
     '''
     This process will update all volunteerProfiles and mark them as pending.
     It will also increment all childrens grade one position up. The student update is done via methon
     on the Student model
     '''
-    VolunteerProfile.objects.update(volStatus='pending')
-    activeStudents = Student.objects.filter(activeStatus=True)
-    for t in activeStudents:
-        t.newYear()
+    superuser = False
+    if request.user.is_superuser:
+        superuser = True
+        VolunteerProfile.objects.update(volStatus='pending')
+        activeStudents = Student.objects.filter(activeStatus=True)
+        for t in activeStudents:
+            t.newYear()
+    response = HttpResponseRedirect(reverse('dataVarification'))
+    return response
+
+def data_varification(request):
+    '''
+    this function provides a redirect for the year end process. It helps to obscure the bigger process as to
+    keep this process from being run multiple times.
+    '''
+    superuser = False
+    if request.user.is_superuser:
+        superuser = True
+    gradeCounts = Student.objects.values('grade','grade__gradeName','grade_id').annotate(total =Count('grade')).order_by('grade')
+    statusCounts = VolunteerProfile.objects.filter(linkedUserAccount__is_active=True).values('volStatus').annotate(total=Count('volStatus')).order_by('volStatus')
+    response = render(request, 'dataVarification.html',{'superuser':superuser,'gradeCounts':gradeCounts,'statusCounts':statusCounts})
+    return response
 
 
 def deactivateFullFamily(request, famid):
-    pass
+    '''
+    This function will deactivate all members of the family. This will be used
+    to keep all family related data, but will remove access for the volunteers
+    by marking them as inactive. It will also mark the students as inactive.
+    '''
+    family = FamilyProfile.objects.get(pk=famid)
+    volunteers = family.famvolunteers.all()
+    students = family.students.all()
+    if request.user.is_superuser:
+        #make family inactive
+        family.active = False
+        family.inactiveDate = datetime.datetime.now()
+        family.save()
+        #start marking all members as inactive
+        for vol in volunteers:
+            if not vol.is_superuser:
+                vol.is_active = False
+            vol.save()
 
+        for stu in students:
+            stu.activeStatus = False
+            stu.save()
+
+        #return to calling page.
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def reactivateFullFamily(request, famid):
+    '''
+    This function will deactivate all members of the family. This will be used
+    to keep all family related data, but will remove access for the volunteers
+    by marking them as inactive. It will also mark the students as inactive.
+    '''
+    family = FamilyProfile.objects.get(pk=famid)
+    volunteers = family.famvolunteers.all()
+    students = family.students.all()
+    if request.user.is_superuser:
+        #make family inactive
+        family.active = True
+        family.inactiveDate = None
+        family.save()
+        #start marking all members as inactive
+        for vol in volunteers:
+            vol.is_active = True
+            vol.save()
+
+        for stu in students:
+            if stu.grade.gradeOrder < 9:
+                stu.activeStatus = True
+                stu.save()
+
+        #return to calling page.
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def markAsPending(request):
@@ -531,13 +599,15 @@ def markAsPending(request):
 
 
 def markAsApproved(request):
+    '''
+    This view takes all volunteers marked in front end and set them to approved
+    '''
     selected_values = request.POST.getlist('UserRecs')
     for vol in selected_values:
         ur = VolunteerProfile.objects.get(pk=vol)
         if ur.linkedUserAccount.is_active:
             ur.volStatus = 'approved'
             ur.save()
-
             for fam in ur.linkedUserAccount.family.all():
                 if fam.active:
                     FamilyAggHours.objects.get_or_create(family = fam, schoolYear = SchoolYear.objects.get(currentYear=1))

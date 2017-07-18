@@ -26,8 +26,13 @@
             {% for vol in family.famvolunteers.all %}
             <tr>
                             <td style="white-space: nowrap; width: 5%">
+
+                    {% if perms.nsavolunteer.is_volunteer_manager%}
                     <a href="{%  url 'updateVolunteerProfile' vol.linkedUser.volunteerProfileID  family.familyProfileId %}"><button type="button" class="btn btnnavy btn-xs">Edit</button></a>
                     <a href="{%  url 'removeContactFromFamily' family.familyProfileId vol.id %}"><button type="button" class="btn btn-danger btn-xs">Remove</button></a>
+                    {% else %}
+                    <a href="{%  url 'updateVolunteerProfile' vol.linkedUser.volunteerProfileID  family.familyProfileId %}"><button type="button" class="btn btnnavy btn-xs" style="width: 95%">Edit</button></a>
+                    {% endif %}
                 </td>
                 <td>
                     {% if vol.is_active %}

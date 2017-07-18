@@ -72,7 +72,6 @@ class SchoolYear(TimeStampedModel):
                 currentYear=True).update(currentYear=False)
         super(SchoolYear, self).save(*args, **kwargs)
 
-
     class Meta:
         verbose_name_plural='School Year'
         db_table = 'schoolYear'

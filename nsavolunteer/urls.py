@@ -100,7 +100,15 @@ url(r'^add_user_from_index/(?P<cardNo>[\d\s]+)',AddRewardCardUser_FromIndex.as_v
 url(r'^add_card_user',AddRewardCardUser.as_view(),name='add_card_user'),
 url(r'^family_agg_errors',Bad_family_agg_data,name='bad_family_agg'),
 url(r'^consolidate_fam_data/(?P<famid>[\d\s]+)',consolidated_family_data,name='consolidateFamilyData'),
-url(r'^bod_report',volunteerHoursBoardReport.as_view(),name='bodReport')
+url(r'^bod_report',volunteerHoursBoardReport.as_view(),name='bodReport'),
+
+#processes
+url(r'^closeOutSchoolYear/$', year_end_process,name='advanceYear'),
+url(r'^dataVarification/$', data_varification,name='dataVarification'),
+url(r'^deactivate_family/(?P<famid>[\d\s]+)',deactivateFullFamily,name='deactivateFullFamily'),
+url(r'^reactivate_family/(?P<famid>[\d\s]+)',reactivateFullFamily,name='reactivateFullFamily'),
+
+
 ]
 
 
