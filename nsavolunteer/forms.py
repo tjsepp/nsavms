@@ -240,7 +240,7 @@ class AddNewFamily(ModelForm):
         ))
 
 
-class AddFamilyVolunteers(UserCreationForm):
+class AddFamilyVolunteers1(UserCreationForm):
     '''
     This form is for the new family initialization process. This is used to build the
     formset allowing the administrators to add several users at one time.
@@ -266,6 +266,75 @@ class AddFamilyVolunteers(UserCreationForm):
             return self.cleaned_data['email']
         raise forms.ValidationError('This email is already in use. Please check for existing user')
 
+class AddFamilyVolunteers(UserCreationForm):
+    '''
+    This form is for the new family initialization process. This is used to build the
+    formset allowing the administrators to add several users at one time.
+    '''
+    cell_phone = forms.CharField(max_length=15, required=False)
+    vol_type = forms.ModelChoiceField(queryset=VolunteerType.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(AddFamilyVolunteers, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
+        self.autoPassword = User.objects.make_random_password(8)
+        self.fields['password2'].help_text=None
+        self.fields['password1'].required = False
+        self.fields['password2'].required = False
+        self.helper = FormHelper()
+        self.helper.form_class='form-inline volunteerProfile'
+        self.helper.form_id='volunteerProfile'
+        self.helper.layout = Layout(
+            'name',
+            'email',
+            'cell_phone',
+            'vol_type',
+            'password1',
+            'password2',
+            )
+    def clean_email(self):
+        try:
+            User.objects.get(email = self.cleaned_data['email'])
+        except User.DoesNotExist:
+            return self.cleaned_data['email']
+        raise forms.ValidationError('This email is already in use. Please check for existing user')
+    '''
+    def clean_password2(self):
+        password1 = self.autoPassword
+        password2 = self.autoPassword
+        super(AddFamilyVolunteers, self)
+    '''
+
+    def send_welcome_email(self,email,name,password):
+        body = """
+        Hi {name},
+        You have been added to the North Star Academy volunteer management system.
+        Here is your login information:
+        Username:{username}
+        Password:{password}
+
+        You can login at: http://www.nsavms.com/login/
+        Once logged in, we recommend you change your password using this link: http://www.nsavms.com/changePassword/
+        """.format(username = email,name = name,password=password)
+
+        email = EmailMessage(
+            '[NSA VMS] Account Creation', body, 'no-reply@nsavms.com',
+            [email])
+        email.send()
+
+    def save(self, commit=True):
+        self.cleaned_data['password1']= self.autoPassword
+        self.cleaned_data['password2']=self.autoPassword
+        user = super(AddFamilyVolunteers,self).save(commit=True)
+        user.save()
+        profile = VolunteerProfile.objects.get_or_create(linkedUserAccount=user.id)[0]
+        profile.cellPhone = self.cleaned_data['cell_phone']
+        profile.save()
+        self.send_welcome_email(user.email,profile.firstName,self.autoPassword)
+        return user,profile
+
+
 
 class AddNewVolunteersToFamily(UserCreationForm):
     '''
@@ -282,7 +351,6 @@ class AddNewVolunteersToFamily(UserCreationForm):
         self.helper.layout = Layout(
             'name',
             'email',
-
             'password1',
             'password2',
             )
@@ -296,6 +364,12 @@ class AddNewVolunteersToFamily(UserCreationForm):
         except User.DoesNotExist:
             return self.cleaned_data['email']
         raise forms.ValidationError('This email is already in use. Please check for existing user')
+
+class userFormTest(forms.ModelForm):
+    class Meta:
+        model = User
+
+
 
 class AddUserEventForm(ModelForm):
     class Meta:

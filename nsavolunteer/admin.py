@@ -30,7 +30,7 @@ class VolunteerProfileAdmin(SimpleHistoryAdmin):
     model = VolunteerProfile
     search_fields = ('firstName','lastName')
     filter_horizontal = ('interest',)
-    list_display = ('linkedUserAccount','firstName','lastName','volunteerType','cellPhone')
+    list_display = ('linkedUserAccount','firstName','lastName','cellPhone')
     raw_id_fields = ('linkedUserAccount',)
     actions = [mark_approved,mark_pending]
 
