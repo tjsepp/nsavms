@@ -107,8 +107,7 @@ url(r'^closeOutSchoolYear/$', year_end_process,name='advanceYear'),
 url(r'^dataVarification/$', data_varification,name='dataVarification'),
 url(r'^deactivate_family/(?P<famid>[\d\s]+)',deactivateFullFamily,name='deactivateFullFamily'),
 url(r'^reactivate_family/(?P<famid>[\d\s]+)',reactivateFullFamily,name='reactivateFullFamily'),
-
-
+url(r'^createAnnualSumRecord/$',createAnnualSumRecord,name='createAnnualSumRecord'),
 ]
 
 

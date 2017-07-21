@@ -118,7 +118,7 @@ def InactiveVolunteerIndex(request):
 
 
 def FamilyIndex(request):
-    FamilyIndex = FamilyProfile.objects.all().prefetch_related('famvolunteers','students','students__grade').order_by('familyName')
+    FamilyIndex = FamilyProfile.objects.filter(active=True).prefetch_related('famvolunteers','students','students__grade').order_by('familyName')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
 
@@ -559,7 +559,7 @@ def deactivateFullFamily(request, famid):
             stu.save()
 
         #return to calling page.
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(reverse('familyIndex'))
 
 def reactivateFullFamily(request, famid):
     '''
@@ -586,7 +586,8 @@ def reactivateFullFamily(request, famid):
                 stu.save()
 
         #return to calling page.
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(reverse('familyIndex'))
+
 
 
 def markAsPending(request):
@@ -634,6 +635,14 @@ def activateVolunteerAccount(request):
             ur.linkedUserAccount.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
+def createAnnualSumRecord(request):
+    selected_values = request.POST.getlist('UserRecs')
+    for fam in selected_values:
+        ur = FamilyProfile.objects.get(pk=fam)
+        aggRecord = FamilyAggHours.objects.get_or_create(family=ur,schoolYear = SchoolYear.objects.get(currentYear=1))[0]
+        aggRecord.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def markAsAvc(request):
     selected_values = request.POST.getlist('UserRecs')
@@ -863,30 +872,7 @@ def get_recruits_email(request):
     print request.session['recruitingEmailList']
     return HttpResponseRedirect(reverse('sendRecruitingEmail'))
 
-'''
-def send_recruiting_email(request):
-    if request.method=='POST':
-        emailForm = RecruitingEmailForm(request.POST or None, request.FILES or None)
-        if emailForm.is_valid():
-            subject = request.POST['subject']
-            msgbody = request.POST['msgbody']
-            if 'file' in request.FILES:
-                attach = request.FILES['file']
-            destination = set(request.session['recruitingEmailList'])
-            destination= list(destination)
-            html_content = (subject,msgbody)
-            msg = EmailMessage(subject,msgbody,'NSA-VolunteerRecruiting@nsavms.com',bcc=destination, headers = {'Reply-To': 'volunteer@nstaracademy.org'})
-            if 'file' in request.FILES:
-                msg.attach(attach.name,attach.read(),attach.content_type)
-            msg.send()
-            return HttpResponseRedirect(request.session['filterPath'])
 
-    else:
-        volunteerNames = User.objects.filter(email__in=request.session['recruitingEmailList']).values('name')
-        emailForm = RecruitingEmailForm()
-    ctx={'form':emailForm, 'text_dc':file, 'recps':request.session['recruitingEmailList'],'volNames':volunteerNames}
-    return render_to_response('forms/recruitingEmailForm.html', ctx, context_instance=RequestContext(request))
-'''
 def send_recruiting_email(request):
     volunteerNames = User.objects.filter(email__in=request.session['recruitingEmailList']).values('name')
     if request.method=='POST':

@@ -29,7 +29,7 @@
           <div class="input-group" style="margin-left: -2.5%; width: 70%">
           <select id="formActionSelect" class="form-control">
             <option value="" data-toggle="">---Select Action---</option>
-            <option value="#">Future Family Action 1</option>
+            <option value="{% url 'createAnnualSumRecord' %}">Create Aggregate Record</option>
             <option value="#">Future Family Action 2</option>
             <option value="#">Future Family Action 3</option>
             <option value="#">Future Family Action 4</option>
@@ -95,6 +95,20 @@
 
 
 {% block extraJquery %}
+
+    <script>
+$("#checkToggle").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
+
+<script>
+$(document).ready(function(){
+    myVal = $('#formActionSelect').change(function(){
+        $('#formActionBtn').attr("formaction",$('#formActionSelect').val())
+    });
+});
+</script>
 
     <script>
     $("#newFam").click(function(){

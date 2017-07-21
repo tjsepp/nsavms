@@ -479,7 +479,7 @@ class RecruitingEmailForm(forms.Form):
             '''),
             'subject',
             'msgbody',
-            'file',
+            'file'
         )
         self.helper.add_input(Submit('submit','Send Email'))
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))

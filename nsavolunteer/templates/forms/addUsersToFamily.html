@@ -6,7 +6,7 @@
 
 
 {% block base_content %}
-<h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add Voluteers To {{ familyName }}</h2>
+<h2 style="color:#C0C0C0; text-align: center; margin-top: 100px">Add Volunteers To {{ familyName }}</h2>
 
     <form class="form-horizontal" action="{% url 'addusertofamily' famid %}" method="post" style="margin: 5%">
     {% csrf_token %}
@@ -19,9 +19,9 @@
 
 
         {%  if form.errors %}
-            <div class="form-group user-formset bg-danger" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+            <div class="form-group user-formset bg-danger" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0;;padding-bottom: 1% ">
         {% else %}
-            <div class="form-group user-formset" style="border-bottom: dotted 1px; border-bottom-color:#C0C0C0; ">
+            <div class="form-group user-formset" style="border-bottom: dotted 1px;border-bottom-color:#C0C0C0;padding-bottom: 1% ">
         {% endif %}
 
             <label class="col-md-1" style="margin-right: -4%">Name: </label>
@@ -47,7 +47,7 @@
         </div>
 
         {% endfor %}
-    <br>
+    <br style="margin-top: 2%">
     <div id="buttonzone" class="row" style="margin-top: 3%;text-align:center;">
         <button class="btn btnnavy" type="submit" name='saveFamily'>Save & Exit</button>
         <button class="btn btnnavy" type="submit" name='saveAndAdd'>Save & Add Another</button>

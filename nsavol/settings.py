@@ -122,7 +122,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme_advanced_buttons1' : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect,fullscreen,code",
     'theme_advanced_buttons2' : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,|,forecolor,backcolor",
     'theme_advanced_buttons3' : "tablecontrols,|,hr,sub,sup,|,charmap",
-
     'cleanup_on_startup': True,
     'custom_undo_redo_levels': 10,
     'textcolor':True
