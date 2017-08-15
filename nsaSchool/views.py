@@ -33,7 +33,7 @@ class addNewTeacher(LoginRequiredMixin, CreateView):
 #@login_required
 def teacherProfile(request, teachid):
     teacher = Teachers.objects.get(pk= teachid)
-    students = Student.objects.filter(teacher = teacher.teacherId).all().order_by('studentLastName')
+    students = Student.objects.filter(teacher = teacher.teacherId).filter(activeStatus=True).order_by('studentLastName')
     request.session['teachUpdate']= teacher.teacherId
     #rewardCards = RewardCardUsers.objects.filter(linkedUser=request.user).all()
     response = render(request, 'profiles/teacherProfile.html',{'teacher':teacher,'students':students})
@@ -86,7 +86,7 @@ def deleteTeacher(request):
 
 def StudentToTeacherAssignment(request,teachid):
     teach=Teachers.objects.get(pk=teachid)
-    students = Student.objects.filter(grade = teach.gradeLevel).filter(teacher=None)
+    students = Student.objects.filter(grade = teach.gradeLevel).filter(teacher=None).filter(activeStatus=True)
     response = render(request, 'tables/classAssignment.html',{'teacher':teach,'students':students})
     return response
 

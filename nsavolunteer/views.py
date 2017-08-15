@@ -25,7 +25,7 @@ import requests
 from django.conf import settings
 import  datetime
 from operator import itemgetter
-
+from django.db.models import Prefetch
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -118,7 +118,7 @@ def InactiveVolunteerIndex(request):
 
 
 def FamilyIndex(request):
-    FamilyIndex = FamilyProfile.objects.filter(active=True).prefetch_related('famvolunteers','students','students__grade').order_by('familyName')
+    FamilyIndex = FamilyProfile.objects.filter(active=True).prefetch_related('famvolunteers',Prefetch('students',queryset=Student.objects.filter(grade__lte=8)),'students__grade')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
 
@@ -1029,7 +1029,7 @@ class TrafficReportWeekly(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TrafficReportWeekly, self).get_context_data(**kwargs)
-        context['recentTraffic'] = Traffic_Duty.objects.all().order_by('-dateCreated')
+        context['recentTraffic'] = Traffic_Duty.objects.filter(schoolYear=SchoolYear.objects.get(currentYear=1)).order_by('-dateCreated')
         return context
 
 

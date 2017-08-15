@@ -80,7 +80,8 @@
                 <td>{{ fam.city }}</td>
                 <td>{{ fam.zip }}</td>
                 <td>{% for vol in fam.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
-                <td>{% for stu in fam.students.all %} {{ stu.getFullStudentName}}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
+                <td>{% for stu in fam.students.all %}
+                    {{ stu.getFullStudentName}}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
 
             </tr>
         {% endfor %}
