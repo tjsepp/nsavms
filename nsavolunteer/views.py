@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views.generic import FormView, CreateView, RedirectView, UpdateView, \
         ListView, DeleteView,TemplateView
 from django.http import HttpResponseRedirect
+from django.template.loader import render_to_string,get_template
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
@@ -27,6 +28,18 @@ import  datetime
 from operator import itemgetter
 from django.db.models import Prefetch
 
+
+def sendMailGunEmailNoAttachments(to,subject,html = None):
+    requests.post(
+                    "https://api.mailgun.net/v3/mg.nsavms.com/messages",
+                    auth=("api", settings.MAILGUN_API_KEY),
+                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      "to":to,
+                      "subject": subject,
+                      "html":html,
+                      "o:tracking": True})
+
+
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
@@ -34,7 +47,6 @@ def dictfetchall(cursor):
         dict(zip(columns, row))
         for row in cursor.fetchall()
     ]
-
 
 
 def homeView(request):
@@ -605,10 +617,23 @@ def markAsApproved(request):
     '''
     selected_values = request.POST.getlist('UserRecs')
     for vol in selected_values:
+        year = SchoolYear.objects.get(currentYear = True)
         ur = VolunteerProfile.objects.get(pk=vol)
         if ur.linkedUserAccount.is_active:
             ur.volStatus = 'approved'
             ur.save()
+            interest = len(ur.interest.all())
+            url = request.build_absolute_uri(reverse('updateProfile'))
+            itms = {
+                'name':ur.firstName,
+                'year':year.schoolYear,
+                'interest':interest,
+                'url':url
+            }
+            html = render_to_string('mailTemplates/volunteerApproved.html',itms)
+            print html
+
+            sendMailGunEmailNoAttachments(ur.linkedUserAccount.email,'[NSA VMS] - Approved Status',html)
             for fam in ur.linkedUserAccount.family.all():
                 if fam.active:
                     FamilyAggHours.objects.get_or_create(family = fam, schoolYear = SchoolYear.objects.get(currentYear=1))
