@@ -25,6 +25,7 @@
                 <th>Last Name</th>
                  <th>Status</th>
                 <th>Type</th>
+                <th>Email Address</th>
                 <th>Email</th>
                 <th>Family Membership</th>
                 <th>Interests</th>
@@ -64,6 +65,15 @@
                         {{ vol.email }}
                     {% endif %}
                 </td>
+
+                <td> {% if vol.linkedUser.doNotEmail %}
+                    <span class="glyphicon glyphicon-remove" style="color: red"><div style='display: none;'>Do Not Email</div>
+                     {%  else %}
+                        <span class="glyphicon glyphicon-ok" style='color: green;'><div style='display: none;'>Email</div>
+                      {% endif %}
+                        </span>
+                </td>
+
                 <td>
                     {% for fam in vol.family.all %}
 					    <a href='familyprofile/{{ fam.familyProfileId }}' target='_blank'>{{ fam.familyName }}</a>{%if not forloop.last %}, {% endif %}
