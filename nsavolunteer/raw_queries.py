@@ -75,6 +75,8 @@ name,
 Family as family,
 familyname,
 sc.schoolYear as year,
+evt.eventName,
+volunteerDate,
 volunteerHours
 FROM
 volunteerHours vh
@@ -84,7 +86,10 @@ join authtools_user au
 	on au.id = volunteer
 join schoolYear sc
 	on vh.SchoolYear = sc.yearId
+join nsaEvents evt
+	on evt.eventId = vh.event
 where vh.approved = 1
+and sc.currentYear = 1
 and FamilyProfileId =%s
 Union all
 SELECT
@@ -93,6 +98,8 @@ name,
 Relatedfamily as family,
 familyname,
 sc.schoolYear as year,
+'Traffic Duty',
+trafficDutyWeekEnd,
 volunteerHours
 FROM
 traffic_Duty vh
@@ -103,6 +110,7 @@ join authtools_user au
 join schoolYear sc
 	on vh.SchoolYear = sc.yearId
 where FamilyProfileId =%s
+and sc.currentYear = 1
 Union all
 SELECT
 name,
@@ -110,6 +118,8 @@ name,
 Relatedfamily as family,
 familyname,
 sc.schoolYear as year,
+'King Soopers',
+refillDate,
 volunteerHours
 FROM
 rewardCardData vh
@@ -120,5 +130,37 @@ join authtools_user au
 join schoolYear sc
 	on vh.SchoolYear = sc.yearId
 where FamilyProfileId =%s
+and sc.currentYear = 1
 order by 4,5,1,2
+"""
+
+currentVsPriorYear = """
+SELECT
+yearName,
+sum(volunteerHours) as totalHours
+FROM
+(
+	SELECT
+    vh.*,
+    sy.schoolYear as yearName
+    FROM
+    volunteerHours vh
+    Join schoolYear sy
+    	on vh.SchoolYear = sy.yearId
+    where
+    vh.schoolYear = 3
+    and volunteerDate <=DATE_ADD(CURRENT_DATE,INTERVAL -1 YEAR)
+    Union
+    SELECT
+    vh.*,
+    sy.schoolYear as yearName
+    FROM
+    volunteerHours vh
+    Join schoolYear sy
+    	on vh.SchoolYear = sy.yearId
+    where
+    vh.schoolYear = 4
+    and volunteerDate <=CURRENT_DATE
+) agg
+group by yearName
 """

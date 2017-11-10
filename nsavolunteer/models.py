@@ -105,13 +105,6 @@ class VolunteerProfile(TimeStampedModel):
             filter(volunteer = self.volunteerProfileID)
         return volunteerEvents
 
-    '''
-    @property
-    def currentTrafficDutyData(self):
-        trafficDuty = TrafficDuty.objects.filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
-            filter(volunteerId = self.volunteerProfileID)
-        return trafficDuty
-    '''
 
     @property
     def currentRewardCardData(self):
@@ -498,11 +491,23 @@ class RewardCardUsage(TimeStampedModel):
 
         # This block will deal with the updates to the family aggregate process
         if cardfamily:
-            p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
-            if created:
-                p.totalVolHours = p.totalVolHours+self.volunteerHours
-                try:
-                    if self.pk:
+            if cardfamily.active:
+                p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
+                if created:
+                    p.totalVolHours = p.totalVolHours+self.volunteerHours
+                    try:
+                        if self.pk:
+                            try:
+                                origRecord = RewardCardUsage.objects.get(pk=self.pk)
+                                oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
+                                oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
+                                oldAgg.save()
+                            except:
+                                pass
+                    except:
+                        pass
+                else:
+                    if self.pk: #if this is an existing record
                         try:
                             origRecord = RewardCardUsage.objects.get(pk=self.pk)
                             oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
@@ -510,22 +515,11 @@ class RewardCardUsage(TimeStampedModel):
                             oldAgg.save()
                         except:
                             pass
-                except:
-                    pass
-            else:
-                if self.pk: #if this is an existing record
-                    try:
-                        origRecord = RewardCardUsage.objects.get(pk=self.pk)
-                        oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
-                        oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
-                        oldAgg.save()
-                    except:
-                        pass
-                    #add back updated data
-                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-                else:
-                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-            p.save()
+                        #add back updated data
+                        p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+                    else:
+                        p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+                p.save()
 
         super(RewardCardUsage,self).save(force_insert, force_update)
 
@@ -602,7 +596,7 @@ class FamilyAggHours(TimeStampedModel):
     family = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name="Family",null=True,blank=False, related_name='familyAgg')
     schoolYear = models.ForeignKey(SchoolYear,db_column='schoolYear',null=True,blank=False, verbose_name='School Year')
     totalVolHours = models.DecimalField(db_column='totalVolunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Volunteer Hours', default=0)
-    trafficDutyCount = models.IntegerField(db_column='trafficDutyCount',verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
+    trafficDutyCount = models.DecimalField(db_column='trafficDutyCount',max_digits=8, decimal_places=3,verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
     benchmarkDate = models.DateField(db_column='benchMarkDate', verbose_name='Bench Mark Date',null=True,blank=True)
 
     def currentYear(self):

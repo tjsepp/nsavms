@@ -1,0 +1,71 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Board Report
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+
+
+
+
+    <div class="row">
+
+        <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Board Report</h2>
+                </div>
+
+            <div class="table-responsive" style="padding:5%; margin-top: 3%">
+
+    <table id="volIndex" class="table table-condensed table-bordered datatable" cellspacing="0" width="100%">
+        <thead>
+
+            <tr>
+                <th>Family</th>
+                <th>Volunteers</th>
+                <th>Email</th>
+                <th>Vol. Requirement</th>
+                <th>Total Vol. Hours</th>
+                <th>Traffic Requirement</th>
+                <th>Total Shifts</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+        {% for fam in volunteerData %}
+                <td><a href="{% url 'consolidateFamilyData' fam.family.familyProfileId %}">{{ fam.family.familyName}}</a></td>
+                <td>{% for vol in fam.family.famvolunteers.all %} {{ vol.name }}{%if not forloop.last %},{% endif %}{% endfor %}</td>
+                <td>{% for vol in fam.family.famvolunteers.all %} {{ vol.email}}{%if not forloop.last %},{% endif %}{% endfor %}</td></td>
+                <td>{{fam.family.volunteerRequirement}}</td>
+                <td>{{fam.totalVolHours }}</td>
+                <td>{{fam.family.trafficRequirement}}</td>
+                <td>{{fam.trafficDutyCount}}</td>
+                <td>{{ fam.family.specialInfo|default:'' }}</td>
+            </tr>
+        {% endfor %}
+         </tbody>
+</table>
+        </div>
+
+</div>
+
+{%  endblock %}
+
+
+{% block extraJquery %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+</script>
+{% endblock %}
+

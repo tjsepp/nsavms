@@ -47,7 +47,7 @@
            <td>{{ int.linkedUser.linkedUser.firstName }}</td>
            <td>{{ int.family }}</td>
            <td>{{ int.storeName }}</td>
-           <td>{{ int.customerCardNumber }}</td>
+           <td><a href="{%  url 'SingleCardPurchaseData'  int.RewardCardId %}">{{ int.customerCardNumber }}</a></td>
            </tr>
         {% endfor %}
          </tbody>

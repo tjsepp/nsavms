@@ -16,7 +16,7 @@ from forms import LoginForm, UserProfileForm,FamilyProfileForm,PasswordChangeFor
     TrafficWeeklyUpdate,DeclineLoggedHours,upLoadRewardCardUsers,upLoadRewardCardPurchaseData,AddEditRewardCardData,AddEditRewardCardUsers
 from .models import *
 from django.forms.formsets import formset_factory
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count
 from nsaSchool.models import VolunteerNews, SchoolYear
 from nsaEvents.models import EventTasks
 import json
@@ -27,6 +27,7 @@ from django.conf import settings
 import  datetime
 from operator import itemgetter
 from django.db.models import Prefetch
+
 
 
 def sendMailGunEmailNoAttachments(to,subject,html = None):
@@ -109,6 +110,7 @@ def VolunteerIndex(request):
     response = render(request, 'tables/volunteerIndex.html',{'volunteerIndex':volunteerIndex})
     return response
 
+
 def PendingVolunteerIndex(request):
     '''
     This view populates the volunteerIndex table with all active users
@@ -133,6 +135,27 @@ def FamilyIndex(request):
     FamilyIndex = FamilyProfile.objects.filter(active=True).prefetch_related('famvolunteers',Prefetch('students',queryset=Student.objects.filter(grade__lte=8)),'students__grade')
     response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex})
     return response
+
+
+def FamiliesMissingAggregateRecord(request):
+    reportName ='Families Missing Aggregate Record in Current Year'
+    famList = FamilyAggHours.objects.filter(family__active=True).filter(schoolYear = SchoolYear.objects.filter(currentYear=1)).values('family__familyProfileId')
+    FamilyIndex = FamilyProfile.objects.filter(active=True).exclude(pk__in=famList)
+    response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex,'reportName':reportName})
+    return response
+
+def InactiveFamiliesWithAggregateRecord(request):
+    reportName ='Deactivated Families With Sum Records '
+    reportDescription ='''
+    This report provides a list of families that have aggregated records, but are inactive in the system. We would want to remove
+    These records since they're used to sum all data.
+    '''
+    famList = FamilyAggHours.objects.filter(schoolYear=SchoolYear.objects.filter(currentYear=1))\
+        .filter(family__active=False).values('family__familyProfileId')
+    FamilyIndex = FamilyProfile.objects.filter(pk__in=famList)
+    response = render(request, 'tables/FamilyIndex.html',{'FamilyIndex':FamilyIndex,'reportName':reportName})
+    return response
+
 
 def InterestIndex(request):
     interestIndex = VolunteerInterests.objects.all()
@@ -661,6 +684,7 @@ def activateVolunteerAccount(request):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
+
 def createAnnualSumRecord(request):
     selected_values = request.POST.getlist('UserRecs')
     for fam in selected_values:
@@ -1080,11 +1104,24 @@ def RewardCardUserIndex(request):
 
 def RewardCardPurchaseIndex(request):
     '''
-    This view populates the volunteerIndex table with all active users
+    This view show all reward card purchases for the current year.
     '''
     rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','volunteerId__linkedUser','linkedFamily')\
         .filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).order_by('-refillDate')
     response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex})
+    return response
+
+
+def SingleRewardCardPurchaseIndexCurrentYear(request,rewardCardNumber):
+    '''
+    This view show all reward card purchases for the current year for a single user
+    '''
+    card = RewardCardUsers.objects.get(pk=rewardCardNumber)
+    currentYear = SchoolYear.objects.get(currentYear = 1)
+    rewardCardPurchaseIndex =RewardCardUsage.objects.select_related('volunteerId','volunteerId__linkedUser','linkedFamily')\
+        .filter(schoolYear = currentYear).filter(customerCardNumber = card.customerCardNumber).order_by('-refillDate')
+    response = render(request, 'tables/rewardCardPurchaseDataTable.html',{'rewardCardPurchaseIndex':rewardCardPurchaseIndex,'singeCard':1,
+                                                                          'card':card,'currentYear':currentYear})
     return response
 
 def RewardCardPurchaseIndex_unlinkedCards(request):
@@ -1276,8 +1313,6 @@ def get_related_rewardCards(request,usid):
     return HttpResponse(json.dumps(result_set), content_type='application/json')
 
 
-
-
 def Bad_family_agg_data(request):
     from django.db import connection
     from raw_queries import bad_familyAgg_records
@@ -1286,7 +1321,6 @@ def Bad_family_agg_data(request):
     cur.execute(sqlstrg)
 
     familyindex =dictfetchall(cur)
-    print familyindex
     return render(request,'tables/bad_family_agg_data.html',{'familyindex':familyindex})
 
 def consolidated_family_data(request,famid):
@@ -1299,3 +1333,18 @@ def consolidated_family_data(request,famid):
     familyindex =dictfetchall(cur)
     print familyindex
     return render(request,'tables/consolidate_family_data.html',{'familyindex':familyindex})
+
+def AnnualSums(request):
+    from django.db import connection
+    from raw_queries import currentVsPriorYear
+    annualSums = FamilyAggHours.objects.values('schoolYear__schoolYear').annotate(hours = Sum('totalVolHours')).\
+        annotate(traffic = Sum('trafficDutyCount')).annotate(families = Count('family')).order_by('schoolYear')
+
+    statusCounts = VolunteerProfile.objects.filter(linkedUserAccount__is_active=True).values('volStatus').\
+        annotate(status_total = Count('volStatus')).order_by('volStatus')
+
+    cur = connection.cursor()
+    cur.execute(currentVsPriorYear)
+    yearOverYear = dictfetchall(cur)
+
+    return render(request,'reports/totalAnnualResults.html',{'annualSums':annualSums,'statusCounts':statusCounts,'yearOverYear':yearOverYear})

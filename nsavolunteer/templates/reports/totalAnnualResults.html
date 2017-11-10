@@ -1,0 +1,84 @@
+{%  extends 'account/base.html' %}
+
+
+{% block title %}
+    Annual Totals
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+
+{% block base_content %}
+<div class="container-fluid" style="padding: 7%">
+
+<div  class ="row" id = "profileHeader"; style="color:#C0C0C0; text-align: center; margin-bottom: -4%">
+    <h2 class="vmsHeader" style="text-align: center; margin-top: 1%">Summary Data</h2>
+</div>
+
+
+<div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title"><span id="trafficTable">Annual Summary Data</span></h4>
+        </div>
+
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Families</th>
+                    <th>Total Volunteer Hours</th>
+                    <th>Total Traffic Shifts</th>
+                </tr>
+                </thead>
+            {% for year in annualSums %}
+                <tr>
+                    <td>{{ year.schoolYear__schoolYear }}</td>
+                   <td>{{ year.families }}</td>
+                    <td>{{ year.hours }}</td>
+                <td>{{ year.traffic }}</td>
+                </tr>
+                {% endfor %}
+                </table>
+    </div>
+
+
+
+
+<div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title"><span id="trafficTable">Active Volunteer Status</span></h4>
+        </div>
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+            {% for stat in statusCounts %}
+                <tr>
+                    <td>{% if stat.volStatus == 'pending' %}
+                        <a href="{% url 'pendingvolunteerIndex' %}">{{ stat.volStatus|title }}</a></td>
+                        {% else %}
+                        {{ stat.volStatus|title }}
+                        {% endif %}
+                   <td>{{ stat.status_total }}</td>
+                </tr>
+                {% endfor %}
+                </table>
+    </div>
+
+
+
+
+
+</div>
+{%  endblock %}
+
+
+{% block extraJquery %}
+
+{% endblock %}
