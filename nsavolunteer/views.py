@@ -548,7 +548,14 @@ def year_end_process(request):
     superuser = False
     if request.user.is_superuser:
         superuser = True
+        #Update the year and roll it forward
+        newYear = SchoolYear.objects.get(currentYear=1).yearOrder+1
+        updatedYear= SchoolYear.objects.get(yearOrder=newYear)
+        updatedYear.currentYear = 1
+        updatedYear.save()
+        #Set all user profiles to pending
         VolunteerProfile.objects.update(volStatus='pending')
+        #reset all students and Move 8th graders out
         activeStudents = Student.objects.filter(activeStatus=True)
         for t in activeStudents:
             t.newYear()
@@ -563,7 +570,7 @@ def data_varification(request):
     superuser = False
     if request.user.is_superuser:
         superuser = True
-    gradeCounts = Student.objects.values('grade','grade__gradeName','grade_id').annotate(total =Count('grade')).order_by('grade')
+    gradeCounts = Student.objects.filter(activeStatus=True).values('grade','grade__gradeName','grade_id').annotate(total =Count('grade')).order_by('grade')
     statusCounts = VolunteerProfile.objects.filter(linkedUserAccount__is_active=True).values('volStatus').annotate(total=Count('volStatus')).order_by('volStatus')
     response = render(request, 'dataVarification.html',{'superuser':superuser,'gradeCounts':gradeCounts,'statusCounts':statusCounts})
     return response
