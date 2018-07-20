@@ -602,7 +602,7 @@ class FamilyAggHours(TimeStampedModel):
     family = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name="Family",null=True,blank=False, related_name='familyAgg')
     schoolYear = models.ForeignKey(SchoolYear,db_column='schoolYear',null=True,blank=False, verbose_name='School Year')
     totalVolHours = models.DecimalField(db_column='totalVolunteerHours',max_digits=8, decimal_places=3,null=True, blank=True,verbose_name='Total Volunteer Hours', default=0)
-    trafficDutyCount = models.IntegerField(db_column='trafficDutyCount',verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
+    trafficDutyCount = models.DecimalField(db_column='trafficDutyCount',max_digits=8, decimal_places=3,verbose_name='Traffic Duty Count',null=True, blank=True, default=0)
     benchmarkDate = models.DateField(db_column='benchMarkDate', verbose_name='Bench Mark Date',null=True,blank=True)
 
     def currentYear(self):
