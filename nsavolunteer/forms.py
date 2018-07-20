@@ -16,7 +16,17 @@ from django.core.mail import EmailMessage, send_mail
 from nsaEvents.models import EventTasks
 import io, csv
 import datetime
+import requests
 
+def sendMailGunEmailNoAttachments(to,subject,msgbody):
+    requests.post(
+                    "https://api.mailgun.net/v3/mg.nsavms.com/messages",
+                    auth=("api", settings.MAILGUN_API_KEY),
+                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      "to":to,
+                      "subject": subject,
+                      "text": msgbody,
+                      "o:tracking": True})
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -48,8 +58,8 @@ class PasswordChangeFormExtra(PasswordChangeForm):
         #self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
             PrependedText('old_password',"<span class='glyphicon glyphicon-asterisk'></span>",css_class="passwordfields", placeholder="Old Password"),
-            PrependedText('new_password1',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Old Password"),
-            PrependedText('new_password2',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Old Password"),
+            PrependedText('new_password1',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="New Password"),
+            PrependedText('new_password2',"<span class='glyphicon glyphicon-lock'></span>",css_class="passwordfields", placeholder="Re-Enter New Password"),
             HTML('<div class="form-group"><div class="col-md-4"> </div>'),
             ButtonHolder(
                 Submit('submit', 'Reset', css_class='btn btnnavy'),
@@ -99,10 +109,11 @@ class PasswordRecoveryForm(PasswordResetForm):
         Change your password here:http://www.nsavms.com/changePassword/
         """.format(username = user.email, password=password)
 
-        email = EmailMessage(
-            '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
-            [user.email])
-        email.send()
+        #email = EmailMessage(
+        #    '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
+        #    [user.email])
+        #email.send()
+        sendMailGunEmailNoAttachments(user.email,'[NSA VMS] Password Reset',body)
 
 
 class AuthUserUpdateForm(ModelForm):
@@ -318,10 +329,12 @@ class AddFamilyVolunteers(UserCreationForm):
         Once logged in, we recommend you change your password using this link: http://www.nsavms.com/changePassword/
         """.format(username = email,name = name,password=password)
 
-        email = EmailMessage(
-            '[NSA VMS] Account Creation', body, 'no-reply@nsavms.com',
-            [email])
-        email.send()
+        sendMailGunEmailNoAttachments(email,'[NSA VMS] Account Creation',body)
+        #email = EmailMessage(
+        #    '[NSA VMS] Account Creation', body, 'no-reply@nsavms.com',
+        #    [email])
+        #email.send()
+
 
     def save(self, commit=True):
         self.cleaned_data['password1']= self.autoPassword
@@ -330,6 +343,7 @@ class AddFamilyVolunteers(UserCreationForm):
         user.save()
         profile = VolunteerProfile.objects.get_or_create(linkedUserAccount=user.id)[0]
         profile.cellPhone = self.cleaned_data['cell_phone']
+        profile.volunteerType = self.cleaned_data['vol_type']
         profile.save()
         self.send_welcome_email(user.email,profile.firstName,self.autoPassword)
         return user,profile
@@ -351,6 +365,7 @@ class AddNewVolunteersToFamily(UserCreationForm):
         self.helper.layout = Layout(
             'name',
             'email',
+
             'password1',
             'password2',
             )
@@ -364,12 +379,6 @@ class AddNewVolunteersToFamily(UserCreationForm):
         except User.DoesNotExist:
             return self.cleaned_data['email']
         raise forms.ValidationError('This email is already in use. Please check for existing user')
-
-class userFormTest(forms.ModelForm):
-    class Meta:
-        model = User
-
-
 
 class AddUserEventForm(ModelForm):
     class Meta:
@@ -455,7 +464,7 @@ class AddInterestForm(ModelForm):
 class RecruitingEmailForm(forms.Form):
     subject = forms.CharField(max_length=100, label='Subject')
     msgbody = forms.CharField(widget=forms.Textarea, label='Message')
-    file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Attachement')
+    file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Attachment')
     def __init__(self,*args, **kwargs):
         super(RecruitingEmailForm,self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -479,7 +488,7 @@ class RecruitingEmailForm(forms.Form):
             '''),
             'subject',
             'msgbody',
-            'file'
+            'file',
         )
         self.helper.add_input(Submit('submit','Send Email'))
         self.helper.add_input(Button('cancel', 'Cancel', css_class='btn-default', onclick="window.history.back()"))
@@ -521,7 +530,7 @@ class TrafficWeeklyUpdate(ModelForm):
     def __init__(self, *args, **kwargs):
         super(TrafficWeeklyUpdate,self).__init__(*args, **kwargs)
         self.fields['schoolYear'].initial = SchoolYear.objects.get(currentYear = 1).yearId
-        self.fields['volunteerId'].queryset = User.objects.filter(is_active = True)
+        self.fields['volunteerId'].queryset = User.objects.select_related('linkedUser').filter(linkedUser__volStatus='approved').all()
         self.helper = FormHelper(self)
         self.helper.form_class='form-horizontal'
         self.helper.form_class='volunteerProfile'

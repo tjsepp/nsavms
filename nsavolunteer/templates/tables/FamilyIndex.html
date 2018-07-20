@@ -19,7 +19,13 @@
     <div class="row">
 
         <div  class ="row" id = "profileHeader"; style="color:#C0C0C0; margin-top: 5%; margin-bottom: -7%; text-align: center">
-                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">Family Index</h2>
+                    <h2 class="vmsHeader" style="text-align: center; margin-top: 50px">
+                        {% if reportName %}
+                        {{ reportName }}
+                        {% else %}
+                        Family Index
+                        {% endif %}
+                    </h2>
                 </div>
 
             <div class="table-responsive" style="padding:5%; margin-top: 3%">

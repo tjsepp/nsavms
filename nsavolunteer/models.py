@@ -105,13 +105,6 @@ class VolunteerProfile(TimeStampedModel):
             filter(volunteer = self.volunteerProfileID)
         return volunteerEvents
 
-    '''
-    @property
-    def currentTrafficDutyData(self):
-        trafficDuty = TrafficDuty.objects.filter(schoolYear = SchoolYear.objects.get(currentYear = 1)).\
-            filter(volunteerId = self.volunteerProfileID)
-        return trafficDuty
-    '''
 
     @property
     def currentRewardCardData(self):
@@ -498,11 +491,23 @@ class RewardCardUsage(TimeStampedModel):
 
         # This block will deal with the updates to the family aggregate process
         if cardfamily:
-            p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
-            if created:
-                p.totalVolHours = p.totalVolHours+self.volunteerHours
-                try:
-                    if self.pk:
+            if cardfamily.active:
+                p, created = FamilyAggHours.objects.get_or_create(family = self.linkedFamily, schoolYear = self.schoolYear)
+                if created:
+                    p.totalVolHours = p.totalVolHours+self.volunteerHours
+                    try:
+                        if self.pk:
+                            try:
+                                origRecord = RewardCardUsage.objects.get(pk=self.pk)
+                                oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
+                                oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
+                                oldAgg.save()
+                            except:
+                                pass
+                    except:
+                        pass
+                else:
+                    if self.pk: #if this is an existing record
                         try:
                             origRecord = RewardCardUsage.objects.get(pk=self.pk)
                             oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
@@ -510,22 +515,11 @@ class RewardCardUsage(TimeStampedModel):
                             oldAgg.save()
                         except:
                             pass
-                except:
-                    pass
-            else:
-                if self.pk: #if this is an existing record
-                    try:
-                        origRecord = RewardCardUsage.objects.get(pk=self.pk)
-                        oldAgg = FamilyAggHours.objects.get(family = origRecord.linkedFamily, schoolYear = origRecord.schoolYear)
-                        oldAgg.totalVolHours = oldAgg.totalVolHours - origRecord.volunteerHours
-                        oldAgg.save()
-                    except:
-                        pass
-                    #add back updated data
-                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-                else:
-                    p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
-            p.save()
+                        #add back updated data
+                        p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+                    else:
+                        p.totalVolHours = float(p.totalVolHours) + float(self.volunteerHours)
+                p.save()
 
         super(RewardCardUsage,self).save(force_insert, force_update)
 

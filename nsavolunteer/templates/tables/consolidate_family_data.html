@@ -32,6 +32,8 @@
                 <th>Family</th>
                 <th>School Year</th>
                 <th>Type</th>
+                <th>Event</th>
+                <th>Date</th>
                 <th>Hours</th>
             </tr>
         </thead>
@@ -43,6 +45,8 @@
                 <td>{{rec.familyname}}</td>
                 <td>{{ rec.year }}</td>
                 <td>{{ rec.Type }}</td>
+                <td>{{ rec.eventName }}</td>
+                <td>{{ rec.volunteerDate }}</td>
                 <td>{{ rec.volunteerHours}}</td>
                 </tr>
                 {%  endfor %}

@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'nsaSchool',
     'authtools',
     'braces',
     'tinymce',
@@ -44,7 +45,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'simple_history',
     'nsavolunteer',
-    'nsaSchool',
     'nsaEvents',
     'django_filters',
 )

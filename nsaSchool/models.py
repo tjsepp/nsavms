@@ -61,6 +61,7 @@ class SchoolYear(TimeStampedModel):
     yearId = models.AutoField(primary_key=True,db_column='yearId',verbose_name='School Year ID')
     schoolYear = models.CharField(db_column='schoolYear', max_length=100, null=False,blank=False,verbose_name='School Year')
     currentYear = models.BooleanField(db_column='currentYear',verbose_name='Current Year', default=False)
+    yearOrder = models.IntegerField(db_column ='yearOrder', verbose_name='Year Order', null=True, blank=False)
     history = HistoricalRecords()
 
     def __unicode__(self):

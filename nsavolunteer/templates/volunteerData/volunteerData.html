@@ -64,10 +64,13 @@
                 {% if user.linkedUser.volStatus == 'approved' %}
                 <td align="center" id="editIcons">
 
+                    {% if not hrs.approved %}
                         <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
                         <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
                                           style="margin-left: 5%" title="Delete Event" data-toggle='modal'
                                           data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
+
+                    {% endif %}
 
                 </td>
                 {% endif %}

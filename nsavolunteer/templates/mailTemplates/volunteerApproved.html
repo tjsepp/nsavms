@@ -1,7 +1,14 @@
 {% load staticfiles %}
-<p>Hey {{ name }}!</p>
-<p>You have been approved as a NSA volunteer for the {{ year }} school year, and you are now able to log your volunteer hours.</p>
+<p>{{ name }},</p>
+<p>You have been <b>APPROVED</b> as a NSA volunteer for the {{ year }} school year, and you are now able to log your volunteer hours.</p>
 {% if interest == 0 %}
 <p> Also - it looks like you haven't added any interests to your profile. Please take a few minutes to select some interests as it helps us
 match volunteers for opportunities that are best suited for your skills and needs.  <a href='{{url}}'>Add volunteer Interests</a></p>
 {% endif %}
+<p>See you in the hallways at NSA!</p>
+
+
+<div>Dawn D'Amato</div>
+<div>Volunteer Coordinator</div>
+<div>North Star Academy</div>
+<div>volunteer@nstaracademy.org</div>
