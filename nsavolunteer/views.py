@@ -34,7 +34,7 @@ def sendMailGunEmailNoAttachments(to,subject,html = None):
     requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
-                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                    data={"from": '"NSA-VolunteerRecruiting" <no-reply@nsavms.com>',
                       "to":to,
                       "subject": subject,
                       "html":html,
@@ -946,22 +946,29 @@ def send_recruiting_email(request):
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
                       files=[('attachment',attach)],
-                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      data={"from": '"NSA-VolunteerRecruiting" <no-reply@nsavms.com>',
                       "to":["volunteer@nstaracademy.org"],
                       "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
-                      "o:tracking": True})
+                      "o:tracking": True,
+                      'h:Reply-To': 'volunteer@nstaracademy.org'
+                            }
+                )
             else:
                 requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
-                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      data={"from": '"NSA-VolunteerRecruiting" <no-reply@nsavms.com>',
                       "to":["volunteer@nstaracademy.org"],
                       "bcc": destination,
                       "subject": subject,
                       "text": msgbody,
-                      "o:tracking": True})
+                      "o:tracking": True,
+                      'h:Reply-To': 'volunteer@nstaracademy.org'
+                            }
+                )
+
             return HttpResponseRedirect(request.session['filterPath'])
 
     else:
@@ -989,7 +996,6 @@ def decline_volunteerHours_email(request,vhoursId):
         emailForm = DeclineLoggedHours()
     ctx={'form':emailForm, 'recps':rec.volunteer.name,'volNames':volunteerNames,'volDetail':rec}
     return render_to_response('forms/decliningVolunteerHours.html', ctx, context_instance=RequestContext(request))
-
 
 
 def massPasswordReset(request):
