@@ -29,6 +29,7 @@ url(r'^changePassword/$',ChangePassword.as_view(),name='changepassword'),
 url(r'^user_profile',userSettings,name='user_profile'),
 url(r'^updateProfile',UpdateVolunteerProfile.as_view(),name='updateProfile'),
 url(r'^userVolunteerdata',userVolunteerData,name='userVolunteerData'),
+url(r'^usertestdash',userDashBoard,name='userdashTest'),
 url(r'^data_manage_view_dashboard/(?P<userId>\d+)',viewOtherUserDashboard.as_view(),name='dm_view_user_dash'),
 ##Admin templates
 url(r'^volunteerindex',VolunteerIndex,name='volunteerIndex'),

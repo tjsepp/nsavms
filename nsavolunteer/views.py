@@ -215,6 +215,27 @@ def userVolunteerData(request):
     return response
 
 
+@login_required
+def userDashBoard(request):
+    '''
+    View to pull all user data for VMS dashboard
+    '''
+    curYear = SchoolYear.objects.get(currentYear = 1)
+    curUser = User.objects.select_related('trafficDuty_User','linkedUser','linkedUser__linkedUserAccount__volunteerhours_set','linkedUser__linkedUserAccount__rewardCardValue')\
+        .prefetch_related('linkedUser__linkedUserAccount__family').get(pk=request.user.id)
+    #check to see if user belongs to more than one family (grandparents, aunt uncle etc.)
+    if curUser.family.count()>1:
+        multFam = True
+    else:
+        multFam = False
+    #check to see if user has added interests to their profile. If not, it will generate a popup
+    hasInterests = curUser.linkedUser.interest.count()
+
+    response = render(request, 'volunteerData/volunteerDashboard.html',{'multFam':multFam,
+    'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests})
+
+    return response
+
 class viewOtherUserDashboard(UserPassesTestMixin, TemplateView):
 
     template_name = "volunteerData/volunteerData.html"

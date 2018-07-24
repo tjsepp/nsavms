@@ -1,0 +1,283 @@
+{%  extends 'account/base.html' %}
+{% block base_content %}
+
+    <div class="container-fluid" style="padding: 7%">
+
+
+
+        <div class="row" id="one">
+        {% if user.linkedUser.volStatus == 'approved' %}
+        <div class="col-md-12 text-center" style="margin-bottom: 1%">
+
+                <a href="{% url 'logUserHours' %}" class='btn btn-md btnnavy',
+                   role="button"style="margin-top: 0%">Log Volunteer Hours</a>
+        </div>
+            {% else %}
+        <div class="col-md-12 text-center" style="margin-bottom: 1%">
+               <i style="color: red;font-size: 18px">** Cannot log hours until approved for {{ curYear }} **</i>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="row">
+    <table data-toggle="table">
+        <thead>
+            <tr>
+                {% if multFam %}
+                    <th>Family</th>
+                {% endif %}
+                 <th>Volunteer Hours</th>
+                 <th>Traffic Duty Hours</th>
+                 <th>Traffic Duty Requirement</th>
+                 <th>Reward Card Hours</th>
+                 <th>All Family Hours</th>
+                 <th>Pending Hours</th>
+                <th>Total Family Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for famx in curUser.family.all %}
+        <tr>
+            {% if multFam %}
+            <td>{{ famx.familyName}}</td>
+            {% endif %}
+            <td>data2</td>
+            <td>data3</td>
+            <td> x of {{ famx.trafficRequirement|default_if_none:'0' }}</td>
+            <td>data5</td>
+            <td>data6</td>
+            <td> x of {{ famx.volunteerRequirement }}</td>
+            <td>data8</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+    <div class="panel panel-default user-data-panel"style="margin-top: 2%">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-top:8px"><span id="curYearRecords">Volunteer Hours for {{ curYear }} school year</span></h4>
+        </div>
+            {% if volHours %}
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+                    {% if user.linkedUser.volStatus == 'approved' %}
+                    <th style="width: 6%"></th>
+                    {% endif %}
+                    {% if multFam %}
+                    <th>Family</th>
+                     {% endif %}
+                    <th style="width: 12%">Date</th>
+                    <th>Event</th>
+                    <th>Task</th>
+                    <th style="width: 12%">Hours</th>
+                </tr>
+                </thead>
+                    {% for hrs in volHours %}
+                <tr>
+                {% if user.linkedUser.volStatus == 'approved' %}
+                <td align="center" id="editIcons">
+
+                    {% if not hrs.approved %}
+                        <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
+                        <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
+                                          style="margin-left: 5%" title="Delete Event" data-toggle='modal'
+                                          data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
+
+                    {% endif %}
+
+                </td>
+                {% endif %}
+                    {% if multFam %}
+                    <td>
+                        {{ hrs.family }}
+                    </td>
+                 {% endif %}
+                    <td>
+                        {{ hrs.eventDate }}
+                    </td>
+                    <td>
+                        {{ hrs.event }}
+                    </td>
+                <td>{{ hrs.task|truncatewords:7 }}</td>
+                    <td>
+                        {{ hrs.volunteerHours }} {% if not hrs.approved %}
+                        <i style="color: red;font-size: 12px;margin-left: 1%"> (Pending Approval)</i>{% endif %}
+                    </td>
+                </tr>
+                        {%  include 'modals/deleteVolunteerHoursModal.html' %}
+                    {% endfor %}
+                </table>
+        {% else %}
+            <h4 style="color: red; text-align: center"><i>No volunteer hours reported</i></h4>
+        {% endif %}
+
+    </div>
+
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title"><span id="trafficTable">Traffic Duty for {{ curYear }} school year</span></h4>
+        </div>
+     {% if traffic %}
+                <table class="table table-hover table-bordered table-condensed">
+                <thead>
+                <tr>
+
+                    <th style="width: 15%">Week Of</th>
+                    {% if multFam %}
+                    <th>Family</th>
+                     {% endif %}
+                    <th>A.M. Shifts</th>
+                    <th>P.M. Shifts</th>
+                    <th>Total Shifts</th>
+                    <th>Volunteer Hours</th>
+                </tr>
+                </thead>
+                    {% for duty in traffic %}
+                <tr>
+
+                    <td>
+                        {{ duty.weekStart }} - {{ duty.weekEnd }}
+                    </td>
+                    {% if multFam %}
+                    <td>{{ duty.linkedFamily }}</td>
+                     {% endif %}
+                    <td>{{ duty.morning_shifts|default_if_none:0 }}</td>
+                    <td>{{ duty.afternoon_shifts|default_if_none:0 }}</td>
+                    <td>
+                        {{ duty.totalTrafficShifts|floatformat }}
+                    </td>
+                    <td>
+                        {{ duty.volunteerHours }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+                <h4 style="color: red; text-align: center"><i>No traffic duty reported</i></h4>
+        {% endif %}
+
+    </div>
+
+
+
+
+    <div class="panel panel-default user-data-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title"><span id="rewardCardTable">Reward Cards for {{ curYear }} school year</span></h4>
+        </div>
+    {% if rewardCardData %}
+                <table class="table table-hover table-bordered table-condensed" id="rewardCard">
+                <thead>
+                <tr>
+                    <th>Refill Date</th>
+                    <th>Store</th>
+                    <th>Refill Value</th>
+                    <th>Volunteer Hours</th>
+                </tr>
+                </thead>
+                    {% for storeData in rewardCardData %}
+                <tr>
+                    <td>
+                        {{ storeData.refillDate }}
+                    </td>
+
+                    <td>
+                        {{ storeData.storeName }}
+                    </td>
+                    <td>${{ storeData.refillValue }}</td>
+
+                    <td>
+                        {{ storeData.volunteerHours }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                </table>
+        {% else %}
+                <h4 style="color: red; text-align: center"><i>No reward card purchase data reported</i></h4>
+        {% endif %}
+
+    </div>
+
+
+  {%  if hasInterests == 0 %}
+      {%  include 'modals/volunteerInterestNagModal.html' %}
+ {%  endif %}
+
+</div>
+
+
+
+{%  endblock %}
+
+    {% block extraJquery %}
+<script>
+$("#startTour").click(function(){
+    DashBoardTour.start();
+});
+</script>
+
+
+<script>
+// Instance the tour
+var DashBoardTour = new Tour({
+  debug: true,
+  storage: false,
+  steps: [
+  {
+    element: "#userHours",
+    title: "Your individual hours",
+    content: "This contains the total number of hours you as an individual have volunteered for in the current school year.",
+    placement: "right"
+  },
+  {
+    element: "#familyHours",
+    title: "Total hours by family",
+    content: "This contains the total number of hours you and other family members have volunteered for in the current year.",
+    placement:"right"
+  },
+  {
+    element: "#logHrsBtn",
+    title: "Log your hours",
+    content: "Clicking this button will take you to a new screen where you can log your hours.",
+    placement:"right"
+  },
+    {
+    element: "#curYearRecords",
+    title: "Volunteer Events Table",
+    content: "This table list all of the individual events you have volunteered for this year",
+    placement:"right"
+  },
+  {
+    element: "#editIcons",
+    title: "Edit Events",
+    content: "Use the edit & trash icons to manage the data you have entered.",
+    placement:"right"
+  },
+    {
+    element: "#trafficTable",
+    title: "Traffic Duty",
+    content: "This table lists your traffic duty for the current year. This data is entered & maintained by the traffic coordinator.",
+    placement:"right"
+  },
+      {
+    element: "#rewardCardTable",
+    title: "Reward Card Data",
+    content: "This table lists the hours you have accumulated through the use of the King Soopers & Safeway reward cards ",
+    placement:"right"
+  },
+      {
+    element: "#histTable",
+    title: "Your historical totals",
+    content: "This table lists the hours you volunteered for in the past. These are your volunteer hours and do not reflect your whole family",
+    placement:"right"
+  }
+]});
+DashBoardTour.init();
+</script>
+
+
+        {% endblock %}
