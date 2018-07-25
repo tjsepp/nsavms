@@ -463,7 +463,8 @@ class AddInterestForm(ModelForm):
 
 class RecruitingEmailForm(forms.Form):
     subject = forms.CharField(max_length=100, label='Subject')
-    msgbody = forms.CharField(widget=forms.Textarea, label='Message')
+    msgbody = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),label='Message')
+        #forms.CharField(widget=forms.Textarea, label='Message')
     file = forms.FileField(widget = forms.FileInput(attrs={'name':'file'}),required=False,label='Attachment')
     def __init__(self,*args, **kwargs):
         super(RecruitingEmailForm,self).__init__(*args, **kwargs)
