@@ -18,10 +18,11 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^manage/', include(admin.site.urls)),
+    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^',include('nsavolunteer.urls')),
     url(r'^',include('nsaEvents.urls')),
     url(r'^',include('nsaSchool.urls')),
-    url(r'^tinymce/', include('tinymce.urls')),
+
 ]
 
 admin.site.site_header = 'NSA Volunteer Management Admin '

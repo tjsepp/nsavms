@@ -116,19 +116,22 @@ TEMPLATE_DIRS = (
 
 AUTH_USER_MODEL = 'authtools.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins' : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
-    'theme': "advanced",
-    'theme_advanced_buttons1' : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect,fullscreen,code",
-    'theme_advanced_buttons2' : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,|,forecolor,backcolor",
-    'theme_advanced_buttons3' : "tablecontrols,|,hr,sub,sup,|,charmap",
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-    'textcolor':True
+    'selector': 'textarea',
+    'plugins': 'textcolor link preview codesample contextmenu table code lists ',
+    'toolbar1': 'formatselect | bold italic underline|forecolor backcolor | alignleft aligncenter alignright alignjustify '
+               '| bullist numlist | outdent indent | table  | codesample | preview code',
+    'contextmenu': 'formats | link image',
+    'menubar': False,
+    'inline': False,
+    'statusbar': True,
+    'width': 'auto',
+    'height': 360,
 }
 TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = True
-
 FIXTURE_DIRS = (
    os.path.join(BASE_DIR, 'fixtures'),
 )

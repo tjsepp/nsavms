@@ -971,7 +971,8 @@ def send_recruiting_email(request):
                       "to":["volunteer@nstaracademy.org"],
                       "bcc": destination,
                       "subject": subject,
-                      "text": msgbody,
+                      #"text": msgbody,
+                      'html':msgbody,
                       "o:tracking": True,
                       'h:Reply-To': 'volunteer@nstaracademy.org'
                             }
@@ -984,8 +985,9 @@ def send_recruiting_email(request):
                       "to":["volunteer@nstaracademy.org"],
                       "bcc": destination,
                       "subject": subject,
-                      "text": msgbody,
-                      "o:tracking": True,
+                      #"text": msgbody,
+                            'html': msgbody,
+                            "o:tracking": True,
                       'h:Reply-To': 'volunteer@nstaracademy.org'
                             }
                 )
@@ -1034,11 +1036,15 @@ def massPasswordReset(request):
             Change your password here:http://www.nsavms.com/changePassword/
             """.format(username = volunteer.email, password=password)
 
-        email = EmailMessage(
-                '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
-                [volunteer.email])
-        email.send()
+        #email = EmailMessage(
+        #        '[NSA VMS] Password Reset', body, 'no-reply@nsavms.com',
+        #        [volunteer.email])
+        #email.send()
+        sendMailGunEmailNoAttachments(volunteer.email, '[NSA VMS] Password Reset', body)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
 
 
 class UpdateVolunteerLogin(LoginRequiredMixin,UpdateView):
