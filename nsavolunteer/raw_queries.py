@@ -164,3 +164,77 @@ FROM
 ) agg
 group by yearName
 """
+
+
+DASHBOARD_FAMILY_TOTALS='''
+select
+fp.familyProfileId,
+fp.trafficReq,
+fp.volunteerReq,
+volHrs.schoolYear,
+volHrs.volunteerHours,
+pndHrs.pendingHours,
+rwcard.rewardCardHours,
+tr.trafficDutyHours,
+tr.totalShifts,
+volHrs.volunteerHours+rwcard.rewardCardHours+tr.trafficDutyHours as totalHours
+ from
+ familyProfile fp
+Left join
+(
+select
+	family,
+	schoolYear,
+	sum(volunteerHours) as volunteerHours
+	from
+	volunteerHours
+	where approved = 1
+	and schoolYear = 5
+	group by family,schoolYear) volHrs
+on fp.FamilyProfileId = volhrs.family
+left join
+(
+select
+	family,
+	schoolYear,
+	sum(volunteerHours) as pendingHours
+	from
+	volunteerHours
+	where approved = 0
+	and schoolYear = 5
+	group by family,schoolYear) pndHrs
+on pndHrs.family = volHrs.family
+and pndHrs.schoolYear = volHrs.SchoolYear
+left join
+	(
+		select
+		relatedFamily,
+		schoolYear,
+		sum(volunteerHours) as rewardCardHours
+		from
+		rewardCardData
+		where
+		schoolYear = 5
+		group by relatedFamily,schoolYear
+		) rwcard
+		on  rwcard.relatedFamily = volHrs.family
+	and rwcard.schoolYear = volHrs.SchoolYear
+left join
+	(
+		select
+		relatedFamily,
+		schoolYear,
+		sum(volunteerHours) as trafficDutyHours,
+		sum(totalTrafficShifts) as totalShifts
+		from
+		traffic_Duty
+		where
+		schoolYear = 5
+		group by relatedFamily,schoolYear
+		) tr
+		on  tr.relatedFamily = volHrs.family
+	and tr.schoolYear = volHrs.SchoolYear
+where
+fp.familyProfileId in (select familyprofile_id from familyVolunteers where user_id = 1)
+'''
+
