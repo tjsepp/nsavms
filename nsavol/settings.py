@@ -120,10 +120,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 TINYMCE_DEFAULT_CONFIG = {
     'selector': 'textarea',
-    'plugins': 'textcolor link preview codesample contextmenu table code lists ',
-    'toolbar1': 'formatselect | bold italic underline|forecolor backcolor | alignleft aligncenter alignright alignjustify '
-               '| bullist numlist | outdent indent | table  | codesample | preview code',
-    'contextmenu': 'formats | link image',
+    'plugins': 'textcolor link preview codesample table code lists ',
+    'toolbar1': 'formatselect | bold italic sizeselect fontselect fontsizeselect link |,forecolor,backcolor|fontselect,fontsizeselect|alignleft aligncenter alignright alignjustify '
+               '| bullist numlist | outdent indent | table ',
+    'contextmenu': 'paste | formats',
     'menubar': False,
     'inline': False,
     'statusbar': True,

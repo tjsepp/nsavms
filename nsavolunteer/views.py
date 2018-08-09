@@ -27,6 +27,7 @@ from django.conf import settings
 import  datetime
 from operator import itemgetter
 from django.db.models import Prefetch
+from django.db import connection
 
 
 
@@ -217,22 +218,35 @@ def userVolunteerData(request):
 
 @login_required
 def userDashBoard(request):
+    cur = connection.cursor()
+    from raw_queries import DASHBOARD_FAMILY_TOTALS
     '''
     View to pull all user data for VMS dashboard
+    This is the updated dashboard view
     '''
     curYear = SchoolYear.objects.get(currentYear = 1)
-    curUser = User.objects.select_related('trafficDuty_User','linkedUser','linkedUser__linkedUserAccount__volunteerhours_set','linkedUser__linkedUserAccount__rewardCardValue')\
-        .prefetch_related('linkedUser__linkedUserAccount__family').get(pk=request.user.id)
+    yrId = curYear.yearId
+    curUser = User.objects.select_related('trafficDuty_User','linkedUser',
+                'linkedUser__linkedUserAccount__volunteerhours_set',
+                 'linkedUser__linkedUserAccount__rewardCardValue')\
+        .prefetch_related('linkedUser__linkedUserAccount__family',
+                          'linkedUser__linkedUserAccount__family__familyAgg')\
+        .get(pk=request.user.id)
     #check to see if user belongs to more than one family (grandparents, aunt uncle etc.)
     if curUser.family.count()>1:
         multFam = True
     else:
         multFam = False
+
     #check to see if user has added interests to their profile. If not, it will generate a popup
     hasInterests = curUser.linkedUser.interest.count()
+    #gather Useful data
+    sqlstrg =  DASHBOARD_FAMILY_TOTALS %(yrId,yrId,yrId,yrId,curUser.id)
+    cur.execute(sqlstrg)
+    fams =dictfetchall(cur)
 
     response = render(request, 'volunteerData/volunteerDashboard.html',{'multFam':multFam,
-    'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests})
+    'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests,'fams':fams})
 
     return response
 

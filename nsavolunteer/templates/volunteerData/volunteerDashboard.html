@@ -25,30 +25,30 @@
         <thead>
             <tr>
                 {% if multFam %}
-                    <th>Family</th>
+                    <th data-align='center'>Family</th>
                 {% endif %}
-                 <th>Volunteer Hours</th>
-                 <th>Traffic Duty Hours</th>
-                 <th>Traffic Duty Requirement</th>
-                 <th>Reward Card Hours</th>
-                 <th>All Family Hours</th>
-                 <th>Pending Hours</th>
-                <th>Total Family Hours</th>
+                 <th data-align='center'>Volunteer Hours</th>
+                 <th data-align='center'>Traffic Duty Hours</th>
+                 <th data-align='center'>Traffic Duty Requirement</th>
+                 <th data-align='center'>Reward Card Hours</th>
+                 <th data-align='center'>Reward Card Amount</th>
+                 <th data-align='center'>Pending Hours</th>
+                <th data-align='center'>Total Family Hours</th>
             </tr>
         </thead>
         <tbody>
-        {% for famx in curUser.family.all %}
+        {% for fam in fams %}
         <tr>
             {% if multFam %}
-            <td>{{ famx.familyName}}</td>
+            <td>{{ fam.familyName}}</td>
             {% endif %}
-            <td>data2</td>
-            <td>data3</td>
-            <td> x of {{ famx.trafficRequirement|default_if_none:'0' }}</td>
-            <td>data5</td>
-            <td>data6</td>
-            <td> x of {{ famx.volunteerRequirement }}</td>
-            <td>data8</td>
+            <td>{{ fam.volunteerHours|default_if_none:'0' }}</td>
+            <td>{{ fam.trafficDutyHours|default_if_none:'0'  }}</td>
+            <td> {{ fam.totalShifts|default_if_none:'0' }} of {{ fam.trafficReq|default_if_none:'0' }}</td>
+            <td>{{ fam.rewardCardHours|default_if_none:'0' }}</td>
+            <td>${{ fam.rewardCardValue|default_if_none:'$0' }}</td>
+            <td>{{ fam.pendingHours|default_if_none:'0' }}</td>
+            <td> {{ fam.totalHours|default_if_none:'0' }} of {{ fam.volunteerReq|default_if_none:'0' }}</td>
         </tr>
         {% endfor %}
         </tbody>
