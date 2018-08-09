@@ -22,7 +22,7 @@ def sendMailGunEmailNoAttachments(to,subject,msgbody):
     requests.post(
                     "https://api.mailgun.net/v3/mg.nsavms.com/messages",
                     auth=("api", settings.MAILGUN_API_KEY),
-                      data={"from": '"NSA-VolunteerRecruiting" <volunteer@nstaracademy.org>',
+                      data={"from": '"NSA-VolunteerRecruiting" <no-reply@nsavms.com>',
                       "to":to,
                       "subject": subject,
                       "text": msgbody,
