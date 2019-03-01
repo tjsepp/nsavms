@@ -25,15 +25,15 @@
         <thead>
             <tr>
                 {% if multFam %}
-                    <th data-align='center'>Family</th>
+                    <th data-align='center' data-width="5%">Family Name</th>
                 {% endif %}
-                 <th data-align='center'>Volunteer Hours</th>
-                 <th data-align='center'>Traffic Duty Hours</th>
-                 <th data-align='center'>Traffic Duty Requirement</th>
-                 <th data-align='center'>Reward Card Hours</th>
-                 <th data-align='center'>Reward Card Amount</th>
-                 <th data-align='center'>Pending Hours</th>
-                <th data-align='center'>Total Family Hours</th>
+                 <th data-align='center' data-width="5%">Volunteer Hours</th>
+                 <th data-align='center' data-width="5%">Traffic Duty Hours</th>
+                 <th data-align='center' data-width="5%"> Hours Pending Approval</th>
+                 <th data-align='center' data-width="5%">Reward Card Hours</th>
+                 <th data-align='center' data-width="5%">Reward Card Total ($)</th>
+                <th data-align='center' data-width="5%">Traffic Duty Requirement</th>
+                <th data-align='center' data-width="5%">Total Family Hours</th>
             </tr>
         </thead>
         <tbody>
@@ -44,10 +44,10 @@
             {% endif %}
             <td>{{ fam.volunteerHours|default_if_none:'0' }}</td>
             <td>{{ fam.trafficDutyHours|default_if_none:'0'  }}</td>
-            <td> {{ fam.totalShifts|default_if_none:'0' }} of {{ fam.trafficReq|default_if_none:'0' }}</td>
-            <td>{{ fam.rewardCardHours|default_if_none:'0' }}</td>
-            <td>${{ fam.rewardCardValue|default_if_none:'$0' }}</td>
             <td>{{ fam.pendingHours|default_if_none:'0' }}</td>
+            <td>{{ fam.rewardCardHours|default_if_none:'0' }}</td>
+            <td>${{ fam.rewardCardValue|default_if_none:'0' }}</td>
+            <td> {{ fam.totalShifts|floatformat:1|default_if_none:'0' }} of {{ fam.trafficReq|default_if_none:'0' }}</td>
             <td> {{ fam.totalHours|default_if_none:'0' }} of {{ fam.volunteerReq|default_if_none:'0' }}</td>
         </tr>
         {% endfor %}
@@ -55,153 +55,58 @@
     </table>
     </div>
 
-
-    <div class="panel panel-default user-data-panel"style="margin-top: 2%">
-        <div class="panel-heading">
-            <h4 class="panel-title" style="margin-top:8px"><span id="curYearRecords">Volunteer Hours for {{ curYear }} school year</span></h4>
-        </div>
-            {% if volHours %}
-                <table class="table table-hover table-bordered table-condensed">
+    <div class="row" style="margin-top: 3%">
+                <table data-toggle="table" data-show-export="true" data-striped="True" data-search="true"
+                data-export-types=["csv","txt","excel"] data-export-options='{
+                "fileName":"{{ user.linkedUser }}_volunteerData"
+                }'>
                 <thead>
                 <tr>
-                    {% if user.linkedUser.volStatus == 'approved' %}
-                    <th style="width: 6%"></th>
-                    {% endif %}
                     {% if multFam %}
-                    <th>Family</th>
-                     {% endif %}
-                    <th style="width: 12%">Date</th>
-                    <th>Event</th>
-                    <th>Task</th>
-                    <th style="width: 12%">Hours</th>
+                        <th data-sortable="True">Family Name</th>
+                    {% endif %}
+                    <th data-align='center' data-width="15%" data-sortable="True">Volunteer</th>
+                    <th data-align='center' data-width="10%" data-sortable="True">Date</th>
+                    <th data-sortable="True">Volunteer Activity</th>
+                    <th data-sortable="True">Task</th>
+                    <th data-align='center' data-width="5%" data-sortable="True">Volunteer Hours</th>
+                    <th data-align='center'data-width="3%" data-sortable="True">Approved</th>
                 </tr>
                 </thead>
-                    {% for hrs in volHours %}
-                <tr>
-                {% if user.linkedUser.volStatus == 'approved' %}
-                <td align="center" id="editIcons">
+                {% if volData %}
+                    {% for data in volData %}
+                    <tr>
 
-                    {% if not hrs.approved %}
-                        <a href="{%  url 'editUserHours' hrs.volunteerHoursId  %}"><span class="glyphicon glyphicon-edit" style="margin-right: 5%" title="Edit Event"></span></a>|
-                        <a href="#"><span id="deletehrs{{hrs.volunteerHoursId}}" class="glyphicon glyphicon-trash"
-                                          style="margin-left: 5%" title="Delete Event" data-toggle='modal'
-                                          data-target="#deleteVolunteerEvent_{{hrs.volunteerHoursId}}"></span></a>
-
+                    {% if multFam %}
+                        <td>
+                            {{ data.familyName }}
+                        </td>
                     {% endif %}
+                    <td>{{ data.firstName }}</td>
+                    <td>
+                        {{ data.volDate|date:"SHORT_DATE_FORMAT"}}
+                    </td>
+                    <td>{{ data.hrsType }}</td>
+                    <td>{{ data.task|truncatechars:60 }}</td>
 
+                    <td>
+                        {{ data.volunteerHours }}
+                    </td>
+                    <td>
+                        {{ data.approved }}
+                    </td>
+                </tr>
+                    {% endfor %}
+                 {% else %}
+                <tr>
+                <td colspan="6">
+                    <span  style="color: red">No Volunteer Data Entered</span>
                 </td>
+                </tr>
                 {% endif %}
-                    {% if multFam %}
-                    <td>
-                        {{ hrs.family }}
-                    </td>
-                 {% endif %}
-                    <td>
-                        {{ hrs.eventDate }}
-                    </td>
-                    <td>
-                        {{ hrs.event }}
-                    </td>
-                <td>{{ hrs.task|truncatewords:7 }}</td>
-                    <td>
-                        {{ hrs.volunteerHours }} {% if not hrs.approved %}
-                        <i style="color: red;font-size: 12px;margin-left: 1%"> (Pending Approval)</i>{% endif %}
-                    </td>
-                </tr>
-                        {%  include 'modals/deleteVolunteerHoursModal.html' %}
-                    {% endfor %}
                 </table>
-        {% else %}
-            <h4 style="color: red; text-align: center"><i>No volunteer hours reported</i></h4>
-        {% endif %}
 
-    </div>
-
-    <div class="panel panel-default user-data-panel">
-        <div class="panel-heading">
-            <h4 class="panel-title"><span id="trafficTable">Traffic Duty for {{ curYear }} school year</span></h4>
         </div>
-     {% if traffic %}
-                <table class="table table-hover table-bordered table-condensed">
-                <thead>
-                <tr>
-
-                    <th style="width: 15%">Week Of</th>
-                    {% if multFam %}
-                    <th>Family</th>
-                     {% endif %}
-                    <th>A.M. Shifts</th>
-                    <th>P.M. Shifts</th>
-                    <th>Total Shifts</th>
-                    <th>Volunteer Hours</th>
-                </tr>
-                </thead>
-                    {% for duty in traffic %}
-                <tr>
-
-                    <td>
-                        {{ duty.weekStart }} - {{ duty.weekEnd }}
-                    </td>
-                    {% if multFam %}
-                    <td>{{ duty.linkedFamily }}</td>
-                     {% endif %}
-                    <td>{{ duty.morning_shifts|default_if_none:0 }}</td>
-                    <td>{{ duty.afternoon_shifts|default_if_none:0 }}</td>
-                    <td>
-                        {{ duty.totalTrafficShifts|floatformat }}
-                    </td>
-                    <td>
-                        {{ duty.volunteerHours }}
-                    </td>
-                </tr>
-                    {% endfor %}
-                </table>
-        {% else %}
-                <h4 style="color: red; text-align: center"><i>No traffic duty reported</i></h4>
-        {% endif %}
-
-    </div>
-
-
-
-
-    <div class="panel panel-default user-data-panel">
-        <div class="panel-heading">
-            <h4 class="panel-title"><span id="rewardCardTable">Reward Cards for {{ curYear }} school year</span></h4>
-        </div>
-    {% if rewardCardData %}
-                <table class="table table-hover table-bordered table-condensed" id="rewardCard">
-                <thead>
-                <tr>
-                    <th>Refill Date</th>
-                    <th>Store</th>
-                    <th>Refill Value</th>
-                    <th>Volunteer Hours</th>
-                </tr>
-                </thead>
-                    {% for storeData in rewardCardData %}
-                <tr>
-                    <td>
-                        {{ storeData.refillDate }}
-                    </td>
-
-                    <td>
-                        {{ storeData.storeName }}
-                    </td>
-                    <td>${{ storeData.refillValue }}</td>
-
-                    <td>
-                        {{ storeData.volunteerHours }}
-                    </td>
-                </tr>
-                    {% endfor %}
-                </table>
-        {% else %}
-                <h4 style="color: red; text-align: center"><i>No reward card purchase data reported</i></h4>
-        {% endif %}
-
-    </div>
-
 
   {%  if hasInterests == 0 %}
       {%  include 'modals/volunteerInterestNagModal.html' %}

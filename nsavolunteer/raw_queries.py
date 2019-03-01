@@ -167,77 +167,130 @@ group by yearName
 
 
 DASHBOARD_FAMILY_TOTALS='''
-select
-fp.familyProfileId,
+SELECT
+fp.FamilyProfileId,
 fp.familyName,
 fp.trafficReq,
 fp.volunteerReq,
-volHrs.schoolYear,
+fa.schoolYear,
 volHrs.volunteerHours,
 pndHrs.pendingHours,
 rwcard.rewardCardHours,
 rwcard.rewardCardValue,
 tr.trafficDutyHours,
 tr.totalShifts,
-volHrs.volunteerHours+rwcard.rewardCardHours+tr.trafficDutyHours as totalHours
- from
- familyProfile fp
+ifnull(volHrs.volunteerHours,0)+ifnull(rwcard.rewardCardHours,0)+ifnull(tr.trafficDutyHours,0) as totalHours
+FROM
+familyProfile fp
+join familyAggregate fa
+	on fp.FamilyProfileId = fa.relatedFamily
+    and fa.schoolYear = (select yearId from schoolYear where currentYear = 1)
 Left join
-(
-select
-	family,
-	schoolYear,
-	sum(volunteerHours) as volunteerHours
-	from
-	volunteerHours
-	where approved = 1
-	and schoolYear = %s
-	group by family,schoolYear) volHrs
-on fp.FamilyProfileId = volhrs.family
+	( select
+         family,
+         schoolYear,
+         sum(volunteerHours) as volunteerHours
+     from
+     	volunteerHours
+     where approved = 1
+
+     group by family,schoolYear) volHrs
+     on fp.FamilyProfileId = volHrs.family
+     and volHrs.schoolYear = fa.schoolYear
 left join
-(
-select
-	family,
-	schoolYear,
-	sum(volunteerHours) as pendingHours
-	from
-	volunteerHours
-	where approved = 0
-	and schoolYear = %s
-	group by family,schoolYear) pndHrs
-on pndHrs.family = volHrs.family
-and pndHrs.schoolYear = volHrs.SchoolYear
-left join
-	(
-		select
-		relatedFamily,
-		schoolYear,
-		sum(volunteerHours) as rewardCardHours,
-		sum(refillValue) as rewardCardValue
-		from
-		rewardCardData
-		where
-		schoolYear = %s
-		group by relatedFamily,schoolYear
-		) rwcard
-		on  rwcard.relatedFamily = volHrs.family
-	and rwcard.schoolYear = volHrs.SchoolYear
-left join
-	(
-		select
-		relatedFamily,
-		schoolYear,
-		sum(volunteerHours) as trafficDutyHours,
-		sum(totalTrafficShifts) as totalShifts
-		from
-		traffic_Duty
-		where
-		schoolYear = %s
-		group by relatedFamily,schoolYear
-		) tr
-		on  tr.relatedFamily = volHrs.family
-	and tr.schoolYear = volHrs.SchoolYear
+	(select
+            family,
+            schoolYear,
+            sum(volunteerHours) as pendingHours
+     	from
+      		volunteerHours
+     	where approved = 0
+     	group by family,schoolYear) pndHrs
+        	on pndHrs.family = fp.FamilyProfileId
+            and pndHrs.schoolYear = fa.SchoolYear
+left join(
+    select
+            relatedFamily,
+            schoolYear,
+            sum(volunteerHours) as rewardCardHours,
+            sum(refillValue) as rewardCardValue
+    	from
+    		rewardCardData
+    	group by relatedFamily,schoolYear) rwcard
+        on  rwcard.relatedFamily = fp.FamilyProfileId
+        and rwcard.schoolYear = fa.SchoolYear
+left join(
+    	select
+    		relatedFamily,
+    		schoolYear,
+    		sum(volunteerHours) as trafficDutyHours,
+    		sum(totalTrafficShifts) as totalShifts
+    	from
+    		traffic_Duty
+    	group by
+    		relatedFamily,schoolYear) tr
+            	on  tr.relatedFamily = fp.FamilyProfileId
+                and tr.schoolYear = fa.SchoolYear
+
 where
 fp.familyProfileId in (select familyprofile_id from familyVolunteers where user_id = %s)
 '''
 
+DASHBOARD_VOLUNTEER_DATA ='''
+select
+fp.familyName,
+vp.firstName,
+hrs.*
+from
+(
+	select
+	vh.volunteer,
+	vh.family,
+	schoolYear,
+	vh.volunteerDate as volDate,
+	ev.eventName as hrsType,
+	vh.task,
+	vh.volunteerHours,
+	case
+	when vh.approved = 1
+		then 'Yes'
+		else 'No'
+	end as approved
+	from
+	volunteerHours vh
+	join nsaEvents ev
+		ON vh.event = ev.eventId
+UNION
+	select
+	td.volunteer,
+	td.relatedfamily,
+	schoolYear,
+	td.trafficDutyWeekEnd as volDate,
+	'Traffic Duty' as hrsType,
+	'' as task,
+	volunteerHours,
+	'Yes' as approved
+	from
+	traffic_Duty td
+union
+	select
+	volunteer,
+	relatedFamily,
+	schoolYear,
+	refilldate  as volDate,
+	'King Soopers Purchase' as hrsType,
+	'' as task,
+	volunteerHours,
+	'Yes' as approved
+	from
+	rewardCardData rd
+) hrs
+join familyProfile fp
+	on fp.FamilyProfileId = hrs.family
+join volunteerProfile vp
+	  on vp.linkedUserAccount_id = hrs.volunteer
+where
+family in (select familyprofile_id from familyVolunteers where user_id = %s)
+and schoolYear=%s
+order by voldate desc
+'''

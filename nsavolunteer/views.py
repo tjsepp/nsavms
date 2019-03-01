@@ -181,7 +181,7 @@ class FortyHourClub(ListView):
     template_name="reports/40HourClub.html"
 
 @login_required
-def userVolunteerData(request):
+def userVolunteerData__old(request):
     '''
     This view will generate all data needed for all user data. This will include family,
     grocery & donotions data
@@ -217,9 +217,10 @@ def userVolunteerData(request):
 
 
 @login_required
-def userDashBoard(request):
+def userVolunteerData(request):
     cur = connection.cursor()
-    from raw_queries import DASHBOARD_FAMILY_TOTALS
+    cur2 = connection.cursor()
+    from raw_queries import DASHBOARD_FAMILY_TOTALS, DASHBOARD_VOLUNTEER_DATA
     '''
     View to pull all user data for VMS dashboard
     This is the updated dashboard view
@@ -241,12 +242,16 @@ def userDashBoard(request):
     #check to see if user has added interests to their profile. If not, it will generate a popup
     hasInterests = curUser.linkedUser.interest.count()
     #gather Useful data
-    sqlstrg =  DASHBOARD_FAMILY_TOTALS %(yrId,yrId,yrId,yrId,curUser.id)
+    sqlstrg =  DASHBOARD_FAMILY_TOTALS %(curUser.id)
     cur.execute(sqlstrg)
     fams =dictfetchall(cur)
 
+    volSqlStrg = DASHBOARD_VOLUNTEER_DATA %(curUser.id,yrId)
+    cur2.execute(volSqlStrg)
+    volData =dictfetchall(cur2)
+
     response = render(request, 'volunteerData/volunteerDashboard.html',{'multFam':multFam,
-    'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests,'fams':fams})
+    'curYear':curYear,'curUser':curUser,'hasInterests':hasInterests,'fams':fams,'volData':volData})
 
     return response
 
