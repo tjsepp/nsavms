@@ -12,6 +12,11 @@
                 <a href="{% url 'logUserHours' %}" class='btn btn-md btnnavy',
                    role="button"style="margin-top: 0%">Log Volunteer Hours</a>
         </div>
+        <div class="col-md-12 text-center" style="margin-bottom: 1%">
+
+                <a href="{% url 'addNewLoyaltyCard' %}" class='btn btn-danger',
+                   role="button"style="margin-top: 0%">Enter King Soopers Card Info</a>
+        </div>
             {% else %}
         <div class="col-md-12 text-center" style="margin-bottom: 1%">
                <i style="color: red;font-size: 18px">** Cannot log hours until approved for {{ curYear }} **</i>

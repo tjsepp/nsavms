@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^',include('nsavolunteer.urls')),
     url(r'^',include('nsaEvents.urls')),
     url(r'^',include('nsaSchool.urls')),
+    url(r'^',include('loyaltyCards.urls')),
 
 ]
 

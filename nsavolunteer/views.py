@@ -337,7 +337,7 @@ def FamilyProfilePage(request, famid):
     '''
     family = FamilyProfile.objects.prefetch_related('famvolunteers','famvolunteers__linkedUser','students'
                                                     ,'famvolunteers__linkedUser__volunteerType','students__teacher',
-                                                   'famvolunteers__linkedUser__interest','students__grade' ).get(pk=famid)
+                                                   'famvolunteers__linkedUser__interest','students__grade').select_related('loyaltyCardFamily').get(pk=famid)
 
     return render_to_response('userprofile/familyProfile.html',{'family':family},context_instance=RequestContext(request))
 

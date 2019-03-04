@@ -14,7 +14,7 @@ class TimeStampedModel(models.Model):
 
 class LoyaltyCardNumbers(TimeStampedModel):
     loyaltyCardID = models.AutoField(primary_key=True, db_column='loyaltyCardId',verbose_name='Loyalty Card Id')
-    relatedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='Family',null=False, blank=False)
+    relatedFamily = models.ForeignKey(FamilyProfile,db_column='relatedFamily',verbose_name='Family',null=False, blank=False,related_name='loyaltyCardFamily')
     loyaltyCardNumber = models.CharField(db_column='loyaltyCardNumber', max_length=20, null=False, blank=False,verbose_name='Loyalty Card Number')
     alternateId = models.CharField(db_column='alternateId', max_length=10, null=True, blank=True,verbose_name='Alternate ID')
 
