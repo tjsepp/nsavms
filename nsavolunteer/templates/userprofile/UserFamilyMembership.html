@@ -28,9 +28,8 @@
 
                     <!--Section showing the family volunteers-->
                     <div class='row' style="padding-left: 2%">
-                    <span style="color: navy"><strong>Family Volunteers:</strong></span> 
-
-                     <ul>
+                    <div><strong style="color: navy">Family Volunteers:</strong></div>
+                        <ul>
                          {% for mems in fam.famvolunteers.all %}
                              {% ifnotequal mems.id user.id %}
                                  <li>
@@ -43,7 +42,7 @@
 
                     <!--Section showing the family volunteers-->
                     <div class='row' style="padding-left: 2%">
-                    <span style="color: navy"><strong>Students</strong></span> 
+                    <div><strong style="color: navy">Students:</strong></div>
 
                         <ul>
                         {% for mems in fam.students.all %}
@@ -56,6 +55,18 @@
                                 {{ mems.getFullStudentName }}<i> ({{ mems.grade }})
                             {%  endif %}
                             </li>
+                       {% endfor %}
+                    </ul>
+                     </div>
+
+                   <!--Section showing the registered King Soopers Cards-->
+                    <div class='row' style="padding-left: 2%">
+                    <div><strong style="color: navy">Registered King Soopers Cards:</strong></div>
+
+                        <ul>
+                        {% for card in fam.loyaltyCardFamily.all %}
+
+                            <li> {{ card.loyaltyCardNumber }}</li>
                        {% endfor %}
                     </ul>
                      </div>

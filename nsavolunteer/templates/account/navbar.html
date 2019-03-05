@@ -112,6 +112,29 @@
                 {%  endif %}
             {%  endif %}
 
+            {% if user.is_authenticated %}
+            <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">King Soopers<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                    <li class="dropdown-header"><b>Loyalty Cards</b></li>
+                                    <li class="navIndent"><a href="{% url 'addNewLoyaltyCard' %}">Add New Card</a></li>
+
+                            {% if perms.nsavolunteer.is_reward_card_manager %}
+                                <li class="dropdown-submenu">
+                                    <a class='navIndent' tabindex="-1" href="#">Card Admin</a>
+                                    <ul class="dropdown-menu">
+                                      <li class="navIndent"><a href="#"> Future Link 1</a></li>
+                                      <li class="navIndent"><a href="#">Future Link 2</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                           </ul>
+                    </li>
+            {% endif %}
+
+
+
                 {% if user.is_authenticated %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome: {{user.name}}<b class="caret"></b></a>
